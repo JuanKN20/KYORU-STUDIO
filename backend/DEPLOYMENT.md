@@ -2,8 +2,8 @@
 
 ## URLs actuales
 
-- Frontend publico (Cloudflare): `https://akai-studio.juann200213.workers.dev`
-- Backend publico (Render): `https://yorurei-studio-backend1.onrender.com`
+- Frontend publico (Cloudflare Workers Static Assets): `https://kyoru-studio.juann200213.workers.dev`
+- Backend publico (servicio Render `kyoru-studio-backend`; hostname tecnico actual): `https://yorurei-studio-backend1.onrender.com`
 
 Nota: el dominio propio de Kyoru Studio sigue pendiente.
 
@@ -30,7 +30,7 @@ Variables de entorno:
 Nota CORS:
 
 - `FRONTEND_ORIGIN` puede incluir múltiples URLs separadas por coma.
-- Ejemplo: `FRONTEND_ORIGIN=https://akai-studio.juann200213.workers.dev,http://localhost:5173,http://localhost:5174`
+- Ejemplo: `FRONTEND_ORIGIN=https://kyoru-studio.juann200213.workers.dev,http://localhost:5173,http://localhost:5174`
 
 ## 2) Base de datos cloud (Supabase / Neon / Render Postgres)
 
@@ -57,14 +57,14 @@ Nunca subas contraseñas reales al repositorio.
 2. `prisma migrate deploy` en deploy.
 3. `prisma db seed` solo si necesitas datos iniciales.
 
-## 4) Frontend (Cloudflare Pages)
+## 4) Frontend (Cloudflare Workers Static Assets)
 
 - Root directory: `frontend`
 - Build command: `npm run build`
-- Output directory: `dist`
-- Confirmar fallback SPA:
-  - `frontend/public/_redirects` con `/* /index.html 200`
-  - o `frontend/wrangler.toml` con `not_found_handling = "single-page-application"`
+- Configuracion de Workers Static Assets en `frontend/wrangler.toml`:
+  - `directory = "./dist"`
+  - `not_found_handling = "single-page-application"`
+  - No se requiere una regla de redireccion SPA adicional.
 
 Variables de entorno:
 
@@ -80,7 +80,7 @@ Variables de entorno:
 - `GET https://yorurei-studio-backend1.onrender.com/api/projects`
 - `GET https://yorurei-studio-backend1.onrender.com/api/products`
 - Probar envío del formulario público (`POST /api/contacts`).
-- Verificar CORS: `FRONTEND_ORIGIN` debe coincidir exactamente con la URL de Cloudflare Pages.
+- Verificar CORS: `FRONTEND_ORIGIN` debe coincidir exactamente con la URL del frontend oficial en Cloudflare Workers.
 
 ## 6) Seguridad mínima
 

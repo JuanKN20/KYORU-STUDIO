@@ -9,8 +9,8 @@ API backend en Node.js + Express + Prisma para gestionar contenido de Kyoru Stud
 
 ## URLs actuales
 
-- Frontend publico (Cloudflare): `https://akai-studio.juann200213.workers.dev`
-- Backend publico (Render): `https://yorurei-studio-backend1.onrender.com`
+- Frontend publico (Cloudflare Workers Static Assets): `https://kyoru-studio.juann200213.workers.dev`
+- Backend publico (servicio Render `kyoru-studio-backend`; hostname tecnico actual): `https://yorurei-studio-backend1.onrender.com`
 
 Nota: el dominio propio de Kyoru Studio sigue pendiente.
 
@@ -50,7 +50,7 @@ Variables de configuración:
 Nota CORS en producción:
 
 - `FRONTEND_ORIGIN` acepta múltiples orígenes separados por coma.
-- Ejemplo: `FRONTEND_ORIGIN=https://akai-studio.juann200213.workers.dev,http://localhost:5173,http://localhost:5174`
+- Ejemplo: `FRONTEND_ORIGIN=https://kyoru-studio.juann200213.workers.dev,http://localhost:5173,http://localhost:5174`
 
 ### Supabase + Prisma
 
@@ -203,7 +203,7 @@ Pasos sugeridos:
 5. Ejecutar migraciones con `npx prisma migrate deploy`.
 6. Ejecutar seed si aplica (`npm run prisma:seed`).
 7. Probar `GET /api/health/live` y `GET /api/health/ready`.
-8. Actualizar frontend Cloudflare con `VITE_API_BASE_URL=https://yorurei-studio-backend1.onrender.com`.
+8. Actualizar el frontend en Cloudflare Workers Static Assets con `VITE_API_BASE_URL=https://yorurei-studio-backend1.onrender.com`.
 
 `GET /api/health` se conserva como alias compatible de liveness y no comprueba PostgreSQL. Configura el health check operativo contra `GET /api/health/ready` cuando el servicio solo deba recibir tráfico con la base de datos disponible.
 
