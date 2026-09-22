@@ -1,22 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Bot, Boxes, Clapperboard, Code2, Cpu, Gamepad2, Palette, Sparkles, Target, Zap } from 'lucide-react';
+import { Boxes, Clapperboard, Code2, Cpu, Sparkles, Target, Zap } from 'lucide-react';
 import ServicesCarousel from '../components/ServicesCarousel';
 import { fallbackProjects } from '../data/fallbackProjects';
-import { fallbackServices } from '../data/fallbackServices';
-import { getPublicProjects, getPublicServices, ProjectItem, ServiceItem } from '../services/api';
-
-type IconComponent = React.ComponentType<{ className?: string }>;
-
-function resolveServiceIcon(service: ServiceItem): IconComponent {
-  const value = `${service.slug} ${service.title}`.toLowerCase();
-  if (value.includes('videojuego') || value.includes('game')) return Gamepad2;
-  if (value.includes('animacion') || value.includes('animación')) return Clapperboard;
-  if (value.includes('modelado') || value.includes('3d')) return Boxes;
-  if (value.includes('inteligencia') || value.includes('ia')) return Bot;
-  if (value.includes('branding')) return Palette;
-  return Code2;
-}
+import { getPublicProjects, ProjectItem } from '../services/api';
 
 function projectStatusLabel(status: ProjectItem['status']): string {
   if (status === 'published') return 'Publicado';
@@ -48,33 +35,30 @@ const differentiators = [
   },
 ];
 
+const businessServices = [
+  {
+    title: 'Desarrollo Web',
+    description: 'Diseñamos y desarrollamos sitios web, plataformas y aplicaciones digitales adaptadas a las necesidades de cada proyecto.',
+    icon: Code2,
+  },
+  {
+    title: 'Modelado y Experiencias 3D',
+    description: 'Creamos modelos, entornos y experiencias tridimensionales para productos, espacios y proyectos digitales.',
+    icon: Boxes,
+  },
+  {
+    title: 'Animación y Contenido Digital',
+    description: 'Desarrollamos animaciones 2D y 3D, piezas audiovisuales y contenido visual para marcas, productos y proyectos creativos.',
+    icon: Clapperboard,
+  },
+];
+
 const Home: React.FC = () => {
-  const [services, setServices] = useState<ServiceItem[]>(fallbackServices);
   const [projects, setProjects] = useState<ProjectItem[]>(fallbackProjects);
-  const [isLoadingServices, setIsLoadingServices] = useState(true);
   const [isLoadingProjects, setIsLoadingProjects] = useState(true);
 
   useEffect(() => {
     let mounted = true;
-
-    const loadServices = async () => {
-      try {
-        const apiServices = await getPublicServices();
-        if (!mounted) return;
-        if (apiServices.length > 0) {
-          setServices(apiServices);
-        } else {
-          setServices(fallbackServices);
-        }
-      } catch {
-        if (!mounted) return;
-        setServices(fallbackServices);
-      } finally {
-        if (mounted) {
-          setIsLoadingServices(false);
-        }
-      }
-    };
 
     const loadProjects = async () => {
       try {
@@ -95,14 +79,13 @@ const Home: React.FC = () => {
       }
     };
 
-    void Promise.all([loadServices(), loadProjects()]);
+    void loadProjects();
 
     return () => {
       mounted = false;
     };
   }, []);
 
-  const topServices = useMemo(() => services.slice(0, 6), [services]);
   const featuredProjects = useMemo(() => projects.filter((item) => item.featured).slice(0, 3), [projects]);
 
   return (
@@ -232,36 +215,20 @@ const Home: React.FC = () => {
           visual.
         </p>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {isLoadingServices ? (
-            <article className="akai-card p-6 md:col-span-2 xl:col-span-3">
-              <p className="text-sm text-zinc-300">Cargando servicios principales del estudio...</p>
-            </article>
-          ) : topServices.length > 0 ? (
-            topServices.map((service) => {
-              const Icon = resolveServiceIcon(service);
-              return (
-                <Link key={service.id} to="/services" className="akai-card block p-6" aria-label={`Ver servicios de ${service.title}`}>
-                  <div className="inline-flex rounded-xl border border-red-500/35 bg-red-950/40 p-2 text-red-200">
-                    <Icon className="h-5 w-5" />
-                  </div>
-                  <h3 className="mt-4 text-lg font-semibold text-white">{service.title}</h3>
-                  <p className="mt-2 text-sm text-zinc-300">{service.description}</p>
-                  <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-red-200">Ver servicios</p>
-                </Link>
-              );
-            })
-          ) : (
-            <article className="akai-card p-6 md:col-span-2 xl:col-span-3">
-              <h3 className="text-lg font-semibold text-white">Servicios principales</h3>
-              <p className="mt-2 text-sm text-zinc-300">
-                Estamos actualizando esta sección. Puedes revisar todas las capacidades del estudio en la página de servicios.
-              </p>
-              <Link to="/services" className="mt-4 inline-flex text-sm font-semibold text-red-200 underline underline-offset-4">
-                Ir a servicios
+        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {businessServices.map((service) => {
+            const Icon = service.icon;
+            return (
+              <Link key={service.title} to="/services" className="akai-card block p-6" aria-label={`Ver servicios de ${service.title}`}>
+                <div className="inline-flex rounded-xl border border-red-500/35 bg-red-950/40 p-2 text-red-200">
+                  <Icon className="h-5 w-5" aria-hidden="true" />
+                </div>
+                <h3 className="mt-4 text-lg font-semibold text-white">{service.title}</h3>
+                <p className="mt-2 text-sm text-zinc-300">{service.description}</p>
+                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-red-200">Ver servicios</p>
               </Link>
-            </article>
-          )}
+            );
+          })}
         </div>
       </section>
 
