@@ -8,6 +8,7 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Usuarios from './components/Usuarios';
 import Trabajos from './pages/Trabajos';
+import Yorutsugi from './pages/Yorutsugi';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
 import Login from './pages/Login';
@@ -34,6 +35,7 @@ function AppContent() {
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
           <Route path="/trabajos" element={<Trabajos />} />
+          <Route path="/trabajos/yorutsugi" element={<Yorutsugi />} />
           <Route path="/juegos" element={<Juegos />} />
           <Route path="/contact" element={<Contact />} />
 

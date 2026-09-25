@@ -1,16 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { Boxes, Clapperboard, Code2, Cpu, Sparkles, Target, Zap } from 'lucide-react';
+import { ArrowRight, Boxes, Clapperboard, Code2, Cpu, Sparkles, Target, Zap } from 'lucide-react';
 import ServicesCarousel from '../components/ServicesCarousel';
-import { fallbackProjects } from '../data/fallbackProjects';
-import { getPublicProjects, ProjectItem } from '../services/api';
-
-function projectStatusLabel(status: ProjectItem['status']): string {
-  if (status === 'published') return 'Publicado';
-  if (status === 'coming_soon') return 'Próximamente';
-  if (status === 'archived') return 'Archivado';
-  return 'Borrador';
-}
+import YorutsugiArtwork from '../components/YorutsugiArtwork';
+import { yorutsugi } from '../data/yorutsugi';
 
 const differentiators = [
   {
@@ -54,40 +47,6 @@ const businessServices = [
 ];
 
 const Home: React.FC = () => {
-  const [projects, setProjects] = useState<ProjectItem[]>(fallbackProjects);
-  const [isLoadingProjects, setIsLoadingProjects] = useState(true);
-
-  useEffect(() => {
-    let mounted = true;
-
-    const loadProjects = async () => {
-      try {
-        const apiProjects = await getPublicProjects();
-        if (!mounted) return;
-        if (apiProjects.length > 0) {
-          setProjects(apiProjects);
-        } else {
-          setProjects(fallbackProjects);
-        }
-      } catch {
-        if (!mounted) return;
-        setProjects(fallbackProjects);
-      } finally {
-        if (mounted) {
-          setIsLoadingProjects(false);
-        }
-      }
-    };
-
-    void loadProjects();
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  const featuredProjects = useMemo(() => projects.filter((item) => item.featured).slice(0, 3), [projects]);
-
   return (
     <div className="w-full">
       <section className="relative isolate overflow-hidden pt-28 sm:pt-32 lg:pt-36">
@@ -232,42 +191,59 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      <section className="akai-page pt-2 md:pt-2">
-        <div className="flex items-center gap-3">
-          <div className="akai-hud-line" />
-          <p className="text-xs uppercase tracking-[0.24em] text-red-300">Destacados</p>
+      <section className="akai-page pt-2 md:pt-2" aria-labelledby="home-original-title">
+        <div className="max-w-3xl">
+          <div className="flex items-center gap-3">
+            <div aria-hidden="true" className="akai-hud-line" />
+            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-300">PRODUCCIÓN ORIGINAL</p>
+          </div>
+          <h2 id="home-original-title" className="akai-section-title mt-3">
+            Nuestra primera obra original.
+          </h2>
+          <p className="akai-section-subtitle leading-relaxed">
+            YORUTSUGI es la primera producción original de Kyoru Studio: un manga de fantasía y acción actualmente en desarrollo.
+          </p>
         </div>
-        <h2 className="akai-section-title mt-3">Proyectos destacados</h2>
-        <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-          {isLoadingProjects ? (
-            <article className="akai-card p-6 md:col-span-2 xl:col-span-3">
-              <p className="text-sm text-zinc-300">Cargando proyectos seleccionados...</p>
-            </article>
-          ) : featuredProjects.length > 0 ? (
-            featuredProjects.map((project) => (
-              <Link key={project.id} to="/trabajos" className="akai-card block p-5" aria-label={`Ver proyecto ${project.title}`}>
-                <p className="text-xs uppercase tracking-[0.16em] text-red-300">{project.category || 'Proyecto'}</p>
-                <h3 className="mt-2 text-lg font-semibold text-white">{project.title}</h3>
-                <p className="mt-2 text-sm text-zinc-300">{project.short_description}</p>
-                <div className="mt-4 flex flex-wrap gap-2">
-                  <span className="akai-chip">{projectStatusLabel(project.status)}</span>
-                  {project.featured ? <span className="akai-chip">Destacado</span> : null}
+
+        <article
+          aria-labelledby="home-yorutsugi-title"
+          className="akai-panel mt-8 overflow-hidden p-4 sm:p-6 lg:p-8"
+        >
+          <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:items-center lg:gap-12">
+            <YorutsugiArtwork className="min-h-[22rem] sm:min-h-[26rem]" />
+
+            <div className="min-w-0 px-1 pb-2 sm:px-2 lg:px-0">
+              <div className="flex flex-wrap gap-2">
+                <span className="akai-chip">{yorutsugi.label}</span>
+                <span className="akai-chip">{yorutsugi.editorialStatus}</span>
+              </div>
+
+              <h3 id="home-yorutsugi-title" className="mt-6 break-words text-3xl font-black tracking-tight text-white sm:text-4xl">
+                {yorutsugi.title}
+              </h3>
+              <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:text-base">{yorutsugi.description}</p>
+
+              <dl className="mt-6 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-red-300">Formato</dt>
+                  <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.format}</dd>
                 </div>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-red-200">Ver proyectos</p>
+                <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
+                  <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-red-300">Género</dt>
+                  <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.genres.join(' y ')}</dd>
+                </div>
+              </dl>
+
+              <Link
+                to={yorutsugi.route}
+                className="akai-btn-primary mt-7 gap-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+              >
+                Descubrir {yorutsugi.title}
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-            ))
-          ) : (
-            <article className="akai-card p-6 md:col-span-2 xl:col-span-3">
-              <h3 className="text-lg font-semibold text-white">Proyectos seleccionados</h3>
-              <p className="mt-2 text-sm text-zinc-300">
-                Estamos organizando casos para publicación. Puedes visitar la sección de trabajos para ver el portafolio completo.
-              </p>
-              <Link to="/trabajos" className="mt-4 inline-flex text-sm font-semibold text-red-200 underline underline-offset-4">
-                Ir a proyectos
-              </Link>
-            </article>
-          )}
-        </div>
+            </div>
+          </div>
+        </article>
       </section>
 
       <section className="akai-page pt-2 md:pt-6">
