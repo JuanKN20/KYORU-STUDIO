@@ -1,6 +1,6 @@
 const { uploadImage } = require('../storage/supabaseStorage');
+const { validateImageFile } = require('../utils/imageValidation');
 
-const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/svg+xml']);
 const ALLOWED_FOLDERS = new Set(['projects', 'products', 'general']);
 
 function resolveFolder(req) {
@@ -28,12 +28,7 @@ async function uploadAdminImage(req, res, next) {
       });
     }
 
-    if (!ALLOWED_MIME_TYPES.has(req.file.mimetype)) {
-      return res.status(400).json({
-        ok: false,
-        error: 'Tipo de archivo no permitido. Usa JPG, PNG, WEBP o SVG.',
-      });
-    }
+    validateImageFile(req.file);
 
     const result = await uploadImage(req.file, folder);
 

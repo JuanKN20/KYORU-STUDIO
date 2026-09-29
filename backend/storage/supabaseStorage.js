@@ -1,14 +1,8 @@
-const path = require('path');
+const { randomUUID } = require('crypto');
 const { createClient } = require('@supabase/supabase-js');
+const { getImageExtension } = require('../utils/imageValidation');
 
 const DEFAULT_BUCKET = 'yorurei-media';
-
-const MIME_EXTENSION_MAP = {
-  'image/jpeg': '.jpg',
-  'image/png': '.png',
-  'image/webp': '.webp',
-  'image/svg+xml': '.svg',
-};
 
 function buildConfig() {
   const supabaseUrl = String(process.env.SUPABASE_URL || '').trim();
@@ -28,22 +22,9 @@ function buildConfig() {
   };
 }
 
-function resolveExtension(file) {
-  if (MIME_EXTENSION_MAP[file.mimetype]) {
-    return MIME_EXTENSION_MAP[file.mimetype];
-  }
-
-  const originalExt = path.extname(String(file.originalname || '')).toLowerCase();
-  if (/^\.[a-z0-9]{1,8}$/.test(originalExt)) {
-    return originalExt;
-  }
-
-  return '.bin';
-}
-
 function buildObjectPath(folder, file) {
-  const extension = resolveExtension(file);
-  const random = Math.random().toString(16).slice(2, 10);
+  const extension = getImageExtension(file.mimetype);
+  const random = randomUUID();
   const timestamp = Date.now();
   const dateKey = new Date().toISOString().slice(0, 10);
   const fileName = `${timestamp}-${random}${extension}`;
