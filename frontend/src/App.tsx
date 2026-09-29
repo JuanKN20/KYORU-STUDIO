@@ -9,6 +9,7 @@ import Footer from './components/Footer';
 import Usuarios from './components/Usuarios';
 import Trabajos from './pages/Trabajos';
 import Yorutsugi from './pages/Yorutsugi';
+import Estudio from './pages/Estudio';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
 import Login from './pages/Login';
@@ -36,6 +37,7 @@ function AppContent() {
           <Route path="/services" element={<Services />} />
           <Route path="/trabajos" element={<Trabajos />} />
           <Route path="/trabajos/yorutsugi" element={<Yorutsugi />} />
+          <Route path="/estudio" element={<Estudio />} />
           <Route path="/juegos" element={<Juegos />} />
           <Route path="/contact" element={<Contact />} />
 

@@ -5,6 +5,7 @@ import { Menu, X } from "lucide-react";
 const businessLinks = [
   { to: "/services", label: "Servicios" },
   { to: "/trabajos", label: "Proyectos" },
+  { to: "/estudio", label: "Estudio" },
 ];
 
 const mobileLinks = [{ to: "/", label: "Inicio" }, ...businessLinks];
