@@ -4,10 +4,13 @@ export type YorutsugiProtagonist = {
   imageUrl: string | null;
 };
 
+export type YorutsugiPublicationStatus = 'published' | 'announced';
+
 export type YorutsugiPublication = {
   title: string;
   label: string;
-  url: string;
+  status: YorutsugiPublicationStatus;
+  url: string | null;
 };
 
 export type YorutsugiOfficialLink = {

@@ -46,7 +46,7 @@ const YorutsugiArtwork: React.FC<YorutsugiArtworkProps> = ({ className = '', pri
         </div>
 
         <div className="my-12 min-w-0 text-center sm:my-16">
-          <p className="whitespace-nowrap text-[clamp(2.15rem,7vw,5rem)] font-black leading-none tracking-[-0.065em] text-white">
+          <p className="max-w-full break-words text-[clamp(2.15rem,7vw,5rem)] font-black leading-none tracking-[-0.065em] text-white">
             {yorutsugi.title}
           </p>
           <p className="mt-4 text-xs font-semibold uppercase tracking-[0.28em] text-red-200 sm:text-sm">

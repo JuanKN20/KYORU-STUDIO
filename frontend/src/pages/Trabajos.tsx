@@ -4,6 +4,83 @@ import { ArrowRight, BookOpen, Layers3, Sparkles } from 'lucide-react';
 import YorutsugiArtwork from '../components/YorutsugiArtwork';
 import { yorutsugi } from '../data/yorutsugi';
 
+type PortfolioProduction = {
+  title: string;
+  route: string;
+  label: string;
+  editorialStatus: string;
+  description: string;
+  format: string;
+  genres: string[];
+};
+
+type ProductionArtwork = React.ComponentType<{
+  className?: string;
+  priority?: boolean;
+}>;
+
+type PortfolioEntry = {
+  id: string;
+  production: PortfolioProduction;
+  Artwork: ProductionArtwork;
+};
+
+const portfolioEntries: PortfolioEntry[] = [
+  {
+    id: 'yorutsugi',
+    production: yorutsugi,
+    Artwork: YorutsugiArtwork,
+  },
+];
+
+const FeaturedProductionCard: React.FC<{ entry: PortfolioEntry }> = ({ entry }) => {
+  const { production, Artwork } = entry;
+  const headingId = `portfolio-${entry.id}-title`;
+
+  return (
+    <article aria-labelledby={headingId} className="akai-panel overflow-hidden p-4 sm:p-6 lg:p-8">
+      <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(20rem,0.92fr)] lg:items-center lg:gap-12">
+        <Artwork className="min-h-[24rem] sm:min-h-[30rem]" />
+
+        <div className="min-w-0 px-1 pb-2 sm:px-2 lg:px-0">
+          <div className="flex flex-wrap gap-2">
+            <span className="akai-chip">{production.label}</span>
+            <span className="akai-chip">{production.editorialStatus}</span>
+          </div>
+
+          <h3 id={headingId} className="mt-6 break-words text-4xl font-black tracking-[-0.04em] text-white sm:text-5xl">
+            {production.title}
+          </h3>
+          <p className="mt-5 text-sm leading-relaxed text-zinc-300 sm:text-base">{production.description}</p>
+
+          <dl className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
+            <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Formato</dt>
+              <dd className="mt-2 text-sm font-semibold text-zinc-100">{production.format}</dd>
+            </div>
+            <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Género</dt>
+              <dd className="mt-2 text-sm font-semibold text-zinc-100">{production.genres.join(' y ')}</dd>
+            </div>
+            <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
+              <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Estado editorial</dt>
+              <dd className="mt-2 text-sm font-semibold text-zinc-100">{production.editorialStatus}</dd>
+            </div>
+          </dl>
+
+          <Link
+            to={production.route}
+            className="akai-btn-primary mt-8 gap-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+          >
+            Conocer la obra
+            <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          </Link>
+        </div>
+      </div>
+    </article>
+  );
+};
+
 const Trabajos: React.FC = () => {
   return (
     <div className="w-full overflow-hidden">
@@ -106,52 +183,11 @@ const Trabajos: React.FC = () => {
             </p>
           </div>
 
-          <article
-            aria-labelledby="portfolio-yorutsugi-title"
-            className="akai-panel mt-10 overflow-hidden p-4 sm:p-6 lg:p-8"
-          >
-            <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1.08fr)_minmax(20rem,0.92fr)] lg:items-center lg:gap-12">
-              <YorutsugiArtwork className="min-h-[24rem] sm:min-h-[30rem]" priority />
-
-              <div className="min-w-0 px-1 pb-2 sm:px-2 lg:px-0">
-                <div className="flex flex-wrap gap-2">
-                  <span className="akai-chip">{yorutsugi.label}</span>
-                  <span className="akai-chip">{yorutsugi.editorialStatus}</span>
-                </div>
-
-                <h3
-                  id="portfolio-yorutsugi-title"
-                  className="mt-6 break-words text-4xl font-black tracking-[-0.04em] text-white sm:text-5xl"
-                >
-                  {yorutsugi.title}
-                </h3>
-                <p className="mt-5 text-sm leading-relaxed text-zinc-300 sm:text-base">{yorutsugi.description}</p>
-
-                <dl className="mt-7 grid gap-3 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3">
-                  <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
-                    <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Formato</dt>
-                    <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.format}</dd>
-                  </div>
-                  <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
-                    <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Género</dt>
-                    <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.genres.join(' y ')}</dd>
-                  </div>
-                  <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
-                    <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Estado editorial</dt>
-                    <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.editorialStatus}</dd>
-                  </div>
-                </dl>
-
-                <Link
-                  to={yorutsugi.route}
-                  className="akai-btn-primary mt-8 gap-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                >
-                  Conocer la obra
-                  <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </div>
-            </div>
-          </article>
+          <div className="mt-10 grid gap-8">
+            {portfolioEntries.map((entry) => (
+              <FeaturedProductionCard key={entry.id} entry={entry} />
+            ))}
+          </div>
         </section>
 
         <section aria-labelledby="future-portfolio-title" className="mx-auto w-full max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8">

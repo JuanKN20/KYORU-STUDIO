@@ -1,8 +1,44 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ArrowRight, BookOpen, Clock3, ExternalLink } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Clock3, ExternalLink, Link2 } from 'lucide-react';
 import YorutsugiArtwork from '../components/YorutsugiArtwork';
-import { yorutsugi } from '../data/yorutsugi';
+import { yorutsugi, type YorutsugiPublication } from '../data/yorutsugi';
+
+const publicationStatusLabels: Record<YorutsugiPublication['status'], string> = {
+  published: 'Publicado',
+  announced: 'Anunciado',
+};
+
+const PublicationCard: React.FC<{ publication: YorutsugiPublication }> = ({ publication }) => {
+  const content = (
+    <>
+      <span className="min-w-0">
+        <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-red-300">{publication.label}</span>
+        <span className="mt-2 block break-words font-semibold text-white">{publication.title}</span>
+        <span className="mt-3 inline-flex rounded-full border border-red-500/30 bg-red-950/30 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-red-100">
+          {publicationStatusLabels[publication.status]}
+        </span>
+      </span>
+      {publication.url ? <ExternalLink className="h-4 w-4 shrink-0 text-red-200" aria-hidden="true" /> : null}
+    </>
+  );
+
+  if (publication.url) {
+    return (
+      <a
+        href={publication.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="akai-card flex min-w-0 items-center justify-between gap-4 p-5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+        aria-label={`${publication.label}: ${publication.title}. Abre en una pestaña nueva`}
+      >
+        {content}
+      </a>
+    );
+  }
+
+  return <article className="akai-card flex min-w-0 items-center justify-between gap-4 p-5">{content}</article>;
+};
 
 const Yorutsugi: React.FC = () => {
   return (
@@ -65,7 +101,7 @@ const Yorutsugi: React.FC = () => {
                   href="#publicaciones"
                   className="akai-btn-secondary motion-reduce:transition-none motion-reduce:hover:translate-y-0"
                 >
-                  Estado de publicación
+                  Capítulos y avances
                 </a>
               </div>
             </div>
@@ -79,9 +115,45 @@ const Yorutsugi: React.FC = () => {
 
       <div>
         <section
+          aria-labelledby="yorutsugi-presentation-title"
+          className="mx-auto grid w-full max-w-7xl gap-8 px-4 py-16 sm:px-6 sm:py-20 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:items-start lg:gap-12 lg:px-8 lg:py-24"
+        >
+          <div className="max-w-2xl">
+            <div className="flex items-center gap-3">
+              <div aria-hidden="true" className="akai-hud-line" />
+              <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-300">PRESENTACIÓN</p>
+            </div>
+            <h2 id="yorutsugi-presentation-title" className="akai-section-title mt-3">
+              Una obra original en construcción.
+            </h2>
+            <p className="akai-section-subtitle max-w-2xl leading-relaxed">
+              Esta ficha reúne únicamente la información editorial confirmada para la presentación pública de la obra.
+            </p>
+          </div>
+
+          <div className="akai-panel p-6 sm:p-8">
+            <p className="text-base leading-relaxed text-zinc-200 sm:text-lg">{yorutsugi.description}</p>
+            <dl className="mt-7 grid gap-3 sm:grid-cols-3">
+              <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Formato</dt>
+                <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.format}</dd>
+              </div>
+              <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Género</dt>
+                <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.genres.join(' y ')}</dd>
+              </div>
+              <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
+                <dt className="text-[11px] font-semibold uppercase tracking-[0.17em] text-red-300">Estado editorial</dt>
+                <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.editorialStatus}</dd>
+              </div>
+            </dl>
+          </div>
+        </section>
+
+        <section
           id="protagonistas"
           aria-labelledby="protagonists-title"
-          className="mx-auto w-full max-w-7xl scroll-mt-24 px-4 py-16 sm:scroll-mt-28 sm:px-6 sm:py-20 lg:px-8 lg:py-24"
+          className="mx-auto w-full max-w-7xl scroll-mt-24 px-4 pb-16 sm:scroll-mt-28 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24"
         >
           <div className="max-w-3xl">
             <div className="flex items-center gap-3">
@@ -112,7 +184,7 @@ const Yorutsugi: React.FC = () => {
                   ) : (
                     <div
                       aria-hidden="true"
-                      className="flex aspect-[4/3] items-center justify-center rounded-2xl border border-red-900/35 bg-[radial-gradient(circle_at_center,rgba(179,23,47,0.2),transparent_58%),linear-gradient(145deg,#0d0e13,#070709)]"
+                      className="flex aspect-[4/5] items-center justify-center rounded-2xl border border-red-900/35 bg-[radial-gradient(circle_at_center,rgba(179,23,47,0.2),transparent_58%),linear-gradient(145deg,#0d0e13,#070709)]"
                     >
                       <span className="text-3xl font-black tracking-[-0.04em] text-red-200/70">{String(index + 1).padStart(2, '0')}</span>
                     </div>
@@ -146,31 +218,19 @@ const Yorutsugi: React.FC = () => {
                 <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-300">AVANCES Y CAPÍTULOS</p>
               </div>
               <h2 id="publications-title" className="akai-section-title mt-3">
-                Estado de publicación.
+                Capítulos y avances verificados.
               </h2>
               <p className="akai-section-subtitle max-w-2xl leading-relaxed">
-                La obra cuenta con material visual y capítulos publicados, pero el repositorio todavía no incluye un inventario
-                verificable ni sus URLs oficiales.
+                Los capítulos y avances se mostrarán aquí únicamente cuando su título, estado y, cuando corresponda, enlace oficial
+                estén confirmados.
               </p>
             </div>
 
             {yorutsugi.publications.length > 0 ? (
               <ul className="grid gap-4">
                 {yorutsugi.publications.map((publication) => (
-                  <li key={publication.url}>
-                    <a
-                      href={publication.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="akai-card flex min-w-0 items-center justify-between gap-4 p-5 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                      aria-label={`${publication.label}: ${publication.title}. Abre en una pestaña nueva`}
-                    >
-                      <span className="min-w-0">
-                        <span className="block text-xs font-semibold uppercase tracking-[0.18em] text-red-300">{publication.label}</span>
-                        <span className="mt-2 block break-words font-semibold text-white">{publication.title}</span>
-                      </span>
-                      <ExternalLink className="h-4 w-4 shrink-0 text-red-200" aria-hidden="true" />
-                    </a>
+                  <li key={`${publication.label}-${publication.title}`}>
+                    <PublicationCard publication={publication} />
                   </li>
                 ))}
               </ul>
@@ -181,10 +241,10 @@ const Yorutsugi: React.FC = () => {
                     <Clock3 className="h-5 w-5" aria-hidden="true" />
                   </span>
                   <div className="min-w-0">
-                    <h3 className="text-xl font-semibold text-white">Referencias oficiales pendientes de integración.</h3>
+                    <h3 className="text-xl font-semibold text-white">Aún no hay publicaciones verificadas para mostrar.</h3>
                     <p className="mt-3 text-sm leading-relaxed text-zinc-300 sm:text-base">
-                      No mostramos títulos, cantidades, fechas ni enlaces hasta contar con una lista confirmada de los capítulos y
-                      plataformas ya publicados.
+                      Esta sección está preparada para incorporar capítulos y avances sin presentar material pendiente como si ya
+                      estuviera publicado.
                     </p>
                   </div>
                 </div>
@@ -192,23 +252,44 @@ const Yorutsugi: React.FC = () => {
             )}
           </div>
 
-          {yorutsugi.officialLinks.length > 0 ? (
-            <div className="mt-8 flex flex-wrap gap-3">
-              {yorutsugi.officialLinks.map((link) => (
-                <a
-                  key={link.url}
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="akai-btn-secondary gap-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-                  aria-label={`${link.label}. Abre en una pestaña nueva`}
-                >
-                  {link.label}
-                  <ExternalLink className="h-4 w-4" aria-hidden="true" />
-                </a>
-              ))}
+          <section aria-labelledby="official-reading-title" className="akai-panel mt-8 p-6 sm:p-8">
+            <div className="flex items-start gap-4">
+              <span className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl border border-red-500/35 bg-red-950/35 text-red-100">
+                <Link2 className="h-5 w-5" aria-hidden="true" />
+              </span>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-red-300">LECTURA OFICIAL</p>
+                <h3 id="official-reading-title" className="mt-2 text-xl font-semibold text-white">
+                  {yorutsugi.officialLinks.length > 0
+                    ? 'Plataformas oficiales disponibles.'
+                    : 'Enlaces oficiales pendientes de confirmación.'}
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-zinc-300 sm:text-base">
+                  {yorutsugi.officialLinks.length > 0
+                    ? 'Accede únicamente mediante los canales verificados de la obra.'
+                    : 'Cuando las plataformas de lectura estén verificadas, sus accesos aparecerán en este espacio.'}
+                </p>
+              </div>
             </div>
-          ) : null}
+
+            {yorutsugi.officialLinks.length > 0 ? (
+              <div className="mt-6 flex flex-wrap gap-3">
+                {yorutsugi.officialLinks.map((link) => (
+                  <a
+                    key={link.url}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="akai-btn-secondary gap-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
+                    aria-label={`${link.label}. Abre en una pestaña nueva`}
+                  >
+                    {link.label}
+                    <ExternalLink className="h-4 w-4" aria-hidden="true" />
+                  </a>
+                ))}
+              </div>
+            ) : null}
+          </section>
         </section>
 
         <section aria-labelledby="yorutsugi-follow-title" className="mx-auto w-full max-w-7xl px-4 pb-20 sm:px-6 lg:px-8 lg:pb-24">
