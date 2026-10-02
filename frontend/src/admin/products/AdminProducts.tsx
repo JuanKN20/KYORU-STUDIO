@@ -43,11 +43,20 @@ function statusClass(status: ProductItem['status']): string {
   return 'border-amber-500/50 bg-amber-950/35 text-amber-200';
 }
 
+const statusLabels: Record<ProductItem['status'], string> = {
+  draft: 'Borrador',
+  published: 'Publicado',
+  archived: 'Archivado',
+  coming_soon: 'Próximamente',
+};
+
 const AdminProducts: React.FC = () => {
   const [products, setProducts] = useState<ProductItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
   const [editorTarget, setEditorTarget] = useState<ProductItem | null>(null);
+  const [formRevision, setFormRevision] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [formError, setFormError] = useState('');
@@ -67,13 +76,13 @@ const AdminProducts: React.FC = () => {
 
   const loadProducts = async () => {
     setLoading(true);
-    setError('');
+    setLoadError('');
 
     try {
       const data = await getAdminProducts();
       setProducts(data);
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : 'No se pudieron cargar los productos.');
+      setLoadError(loadError instanceof Error ? loadError.message : 'No se pudieron cargar los productos.');
     } finally {
       setLoading(false);
     }
@@ -85,17 +94,22 @@ const AdminProducts: React.FC = () => {
 
   const openCreate = () => {
     setFormError('');
+    setActionError('');
+    setFormRevision((value) => value + 1);
     setEditorTarget(null);
   };
 
   const openEdit = (product: ProductItem) => {
     setFormError('');
+    setActionError('');
+    setFormRevision((value) => value + 1);
     setEditorTarget(product);
   };
 
   const closeForm = () => {
     setEditorTarget(null);
     setFormError('');
+    setFormRevision((value) => value + 1);
   };
 
   const handleSubmit = async (values: ProductFormValues) => {
@@ -104,10 +118,10 @@ const AdminProducts: React.FC = () => {
       slug: values.slug.trim() || undefined,
       type: values.type.trim(),
       short_description: values.shortDescription.trim(),
-      long_description: values.longDescription.trim() || undefined,
-      price_label: values.priceLabel.trim() || undefined,
+      long_description: values.longDescription.trim() || null,
+      price_label: values.priceLabel.trim() || null,
       status: values.status,
-      cover_image_url: values.coverImageUrl.trim() || undefined,
+      cover_image_url: values.coverImageUrl.trim() || null,
       gallery_urls: splitByCommaOrLine(values.galleryUrlsText),
       tags: splitByCommaOrLine(values.tagsText),
       featured: values.featured,
@@ -139,13 +153,13 @@ const AdminProducts: React.FC = () => {
     if (!confirmed) return;
 
     setDeletingId(product.id);
-    setError('');
+    setActionError('');
 
     try {
       await deleteProduct(product.id);
       await loadProducts();
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : 'No se pudo eliminar el producto.');
+      setActionError(deleteError instanceof Error ? deleteError.message : 'No se pudo eliminar el producto.');
     } finally {
       setDeletingId(null);
     }
@@ -167,6 +181,7 @@ const AdminProducts: React.FC = () => {
       <div className="admin-surface p-4 sm:p-5">
         <h2 className="mb-3 text-sm font-semibold text-red-200">{isEditing ? 'Editar producto' : 'Crear producto'}</h2>
         <ProductForm
+          key={`${editorTarget?.id ?? 'new'}-${formRevision}`}
           initialValues={editorTarget ? toFormValues(editorTarget) : undefined}
           onSubmit={handleSubmit}
           onCancel={closeForm}
@@ -175,20 +190,35 @@ const AdminProducts: React.FC = () => {
         {formError ? <p className="mt-3 text-sm text-red-200">{formError}</p> : null}
       </div>
 
-      {error ? <div className="rounded-xl border border-red-700/60 bg-red-950/35 px-4 py-3 text-sm text-red-100">{error}</div> : null}
+      {loadError ? (
+        <div role="alert" className="rounded-xl border border-red-700/60 bg-red-950/35 px-4 py-3 text-sm text-red-100">
+          <p>{loadError}</p>
+          <button type="button" onClick={() => void loadProducts()} className="admin-btn-secondary mt-3 px-3 py-2 text-xs">
+            Reintentar
+          </button>
+        </div>
+      ) : null}
+
+      {actionError ? (
+        <div role="alert" className="rounded-xl border border-amber-700/60 bg-amber-950/30 px-4 py-3 text-sm text-amber-100">
+          {actionError}
+        </div>
+      ) : null}
 
       {loading ? <div className="admin-surface p-4 text-sm text-zinc-300">Cargando productos...</div> : null}
 
-      {!loading && !error ? (
+      {!loading && !loadError ? (
         <div className="grid gap-3">
-          {sortedProducts.map((product) => (
+          {sortedProducts.length === 0 ? (
+            <div className="admin-surface p-5 text-sm text-zinc-300">Todavía no hay productos registrados.</div>
+          ) : sortedProducts.map((product) => (
             <article key={product.id} className="akai-card p-4 sm:p-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-lg font-semibold text-white">{product.title}</h3>
                     <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${statusClass(product.status)}`}>
-                      {product.status}
+                      {statusLabels[product.status]}
                     </span>
                     {product.featured ? <span className="akai-chip border-red-500/70 text-red-100">featured</span> : null}
                   </div>
@@ -205,7 +235,7 @@ const AdminProducts: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    disabled={deletingId === product.id}
+                    disabled={deletingId !== null}
                     onClick={() => void handleDelete(product)}
                     className="admin-btn-danger px-3 py-2 text-xs"
                   >

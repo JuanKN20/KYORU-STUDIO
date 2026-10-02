@@ -31,13 +31,13 @@ export type AdminContactItem = {
 export type ProjectPayload = {
   title: string;
   slug?: string;
-  category?: string;
+  category?: string | null;
   short_description: string;
-  long_description?: string;
+  long_description?: string | null;
   status?: ContentStatus;
-  cover_image_url?: string;
-  demo_url?: string;
-  repository_url?: string;
+  cover_image_url?: string | null;
+  demo_url?: string | null;
+  repository_url?: string | null;
   technologies?: string[];
   featured?: boolean;
   sort_order?: number;
@@ -49,7 +49,7 @@ export type ServicePayload = {
   slug?: string;
   description: string;
   deliverables?: string[];
-  icon_name?: string;
+  icon_name?: string | null;
   is_active?: boolean;
   sort_order?: number;
 };
@@ -59,10 +59,10 @@ export type ProductPayload = {
   slug?: string;
   type: string;
   short_description: string;
-  long_description?: string;
-  price_label?: string;
+  long_description?: string | null;
+  price_label?: string | null;
   status?: ContentStatus;
-  cover_image_url?: string;
+  cover_image_url?: string | null;
   gallery_urls?: string[];
   tags?: string[];
   featured?: boolean;
@@ -73,24 +73,30 @@ export type ProductPayload = {
 export type UploadFolder = 'projects' | 'products' | 'general';
 
 const ADMIN_TOKEN_STORAGE_KEY = 'yorurei_admin_token';
+export const ADMIN_AUTH_REJECTED_EVENT = 'kyoru:admin-auth-rejected';
+export const ADMIN_IMAGE_ACCEPT = 'image/jpeg,image/png,image/webp';
+export const ADMIN_UPLOAD_MAX_BYTES = 5 * 1024 * 1024;
 
-function toApiErrorMessage(status: number, payload: unknown): string {
-  if (status === 401) {
-    return 'Token admin inválido o expirado. Inicia sesión de nuevo.';
+const ADMIN_IMAGE_MIME_TYPES = new Set(ADMIN_IMAGE_ACCEPT.split(','));
+
+function toApiErrorMessage(status: number, context: 'request' | 'upload' = 'request'): string {
+  if (status === 400) {
+    return context === 'upload'
+      ? 'La imagen no es válida. Usa un archivo JPEG, PNG o WebP de hasta 5 MiB.'
+      : 'La solicitud contiene datos inválidos. Revisa los campos e inténtalo de nuevo.';
   }
-
-  if (payload && typeof payload === 'object' && 'error' in payload) {
-    const value = payload.error;
-    if (typeof value === 'string' && value.trim()) {
-      return value;
-    }
+  if (status === 401) return 'El token de administración no es válido. Inicia sesión de nuevo.';
+  if (status === 403) return 'No tienes permiso para realizar esta acción.';
+  if (status === 404) return 'El registro solicitado ya no existe.';
+  if (status === 409) return 'Ya existe un registro con esos datos únicos. Revisa el slug.';
+  if (status === 413) {
+    return context === 'upload'
+      ? 'La imagen supera el límite máximo de 5 MiB.'
+      : 'La solicitud es demasiado grande. Reduce el contenido e inténtalo de nuevo.';
   }
-
-  if (status >= 500) {
-    return 'Error interno del backend. Revisa los logs del servidor.';
-  }
-
-  return `La solicitud falló con estado ${status}.`;
+  if (status === 429) return 'Hay demasiadas solicitudes. Espera unos minutos antes de reintentar.';
+  if (status >= 500) return 'El servidor no pudo completar la operación. Inténtalo de nuevo más tarde.';
+  return 'No fue posible completar la solicitud.';
 }
 
 function compactPayload<T extends Record<string, unknown>>(payload: T): Partial<T> {
@@ -124,21 +130,54 @@ export function hasAdminToken(): boolean {
 }
 
 export function saveAdminToken(token: string): void {
-  localStorage.setItem(ADMIN_TOKEN_STORAGE_KEY, token);
+  try {
+    localStorage.setItem(ADMIN_TOKEN_STORAGE_KEY, token);
+  } catch {
+    throw new Error('El navegador no permitió guardar la sesión administrativa.');
+  }
+}
+
+function normalizeNullableText(value: string | null | undefined): string | null | undefined {
+  if (value === undefined || value === null) return value;
+  const trimmed = value.trim();
+  return trimmed || null;
 }
 
 export function clearAdminToken(): void {
-  localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY);
+  try {
+    localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY);
+  } catch {
+    // The UI still returns to login even if storage is unavailable.
+  }
 }
 
-async function adminRequest<T>(
+function invalidateRejectedToken(rejectedToken: string): void {
+  if (getStoredAdminToken() !== rejectedToken) return;
+
+  clearAdminToken();
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(ADMIN_AUTH_REJECTED_EVENT));
+  }
+}
+
+function notifyMissingAdminSession(): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new Event(ADMIN_AUTH_REJECTED_EVENT));
+  }
+}
+
+async function authorizedAdminFetch(
   path: string,
   options: RequestInit = {},
   tokenOverride?: string,
-): Promise<T> {
+  context: 'request' | 'upload' = 'request',
+): Promise<unknown> {
   const token = tokenOverride || getStoredAdminToken();
 
   if (!token) {
+    if (tokenOverride === undefined) {
+      notifyMissingAdminSession();
+    }
     throw new Error('No se encontró token admin. Inicia sesión para continuar.');
   }
 
@@ -157,7 +196,7 @@ async function adminRequest<T>(
       headers,
     });
   } catch {
-    throw new Error('No se pudo conectar con el backend. Verifica la URL del backend y tu conexión.');
+    throw new Error('No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.');
   }
 
   let payload: unknown = null;
@@ -168,19 +207,43 @@ async function adminRequest<T>(
   }
 
   if (!response.ok) {
-    throw new Error(toApiErrorMessage(response.status, payload));
+    if (response.status === 401) {
+      invalidateRejectedToken(token);
+    }
+    throw new Error(toApiErrorMessage(response.status, context));
   }
 
   if (!payload || typeof payload !== 'object' || !('ok' in payload)) {
     throw new Error('Respuesta inesperada del backend.');
   }
 
+  return payload;
+}
+
+async function adminRequest<T>(
+  path: string,
+  options: RequestInit = {},
+  tokenOverride?: string,
+): Promise<T> {
+  const payload = await authorizedAdminFetch(path, options, tokenOverride);
+
   const normalized = payload as ApiResponse<T>;
-  if (!normalized.ok) {
-    throw new Error(normalized.error || 'Error no controlado del backend.');
+  if (normalized.ok !== true) {
+    throw new Error('El backend rechazó la operación. Revisa los datos enviados.');
+  }
+
+  if (!('data' in normalized)) {
+    throw new Error('Respuesta inesperada del backend.');
   }
 
   return normalized.data;
+}
+
+async function adminCommand(path: string, options: RequestInit): Promise<void> {
+  const payload = (await authorizedAdminFetch(path, options)) as { ok?: unknown };
+  if (payload.ok !== true) {
+    throw new Error('El backend rechazó la operación. Revisa los datos enviados.');
+  }
 }
 
 export async function validateAdminToken(token: string): Promise<void> {
@@ -203,11 +266,11 @@ export function createProject(payload: ProjectPayload) {
       compactPayload({
         ...payload,
         slug: normalizeText(payload.slug),
-        category: normalizeText(payload.category),
-        long_description: normalizeText(payload.long_description),
-        cover_image_url: normalizeText(payload.cover_image_url),
-        demo_url: normalizeText(payload.demo_url),
-        repository_url: normalizeText(payload.repository_url),
+        category: normalizeNullableText(payload.category),
+        long_description: normalizeNullableText(payload.long_description),
+        cover_image_url: normalizeNullableText(payload.cover_image_url),
+        demo_url: normalizeNullableText(payload.demo_url),
+        repository_url: normalizeNullableText(payload.repository_url),
       }),
     ),
   });
@@ -220,18 +283,18 @@ export function updateProject(id: number, payload: Partial<ProjectPayload>) {
       compactPayload({
         ...payload,
         slug: normalizeText(payload.slug),
-        category: normalizeText(payload.category),
-        long_description: normalizeText(payload.long_description),
-        cover_image_url: normalizeText(payload.cover_image_url),
-        demo_url: normalizeText(payload.demo_url),
-        repository_url: normalizeText(payload.repository_url),
+        category: normalizeNullableText(payload.category),
+        long_description: normalizeNullableText(payload.long_description),
+        cover_image_url: normalizeNullableText(payload.cover_image_url),
+        demo_url: normalizeNullableText(payload.demo_url),
+        repository_url: normalizeNullableText(payload.repository_url),
       }),
     ),
   });
 }
 
 export function deleteProject(id: number) {
-  return adminRequest<{ message: string }>(`/api/admin/projects/${id}`, {
+  return adminCommand(`/api/admin/projects/${id}`, {
     method: 'DELETE',
   });
 }
@@ -247,7 +310,7 @@ export function createService(payload: ServicePayload) {
       compactPayload({
         ...payload,
         slug: normalizeText(payload.slug),
-        icon_name: normalizeText(payload.icon_name),
+        icon_name: normalizeNullableText(payload.icon_name),
       }),
     ),
   });
@@ -260,14 +323,14 @@ export function updateService(id: number, payload: Partial<ServicePayload>) {
       compactPayload({
         ...payload,
         slug: normalizeText(payload.slug),
-        icon_name: normalizeText(payload.icon_name),
+        icon_name: normalizeNullableText(payload.icon_name),
       }),
     ),
   });
 }
 
 export function deleteService(id: number) {
-  return adminRequest<{ message: string }>(`/api/admin/services/${id}`, {
+  return adminCommand(`/api/admin/services/${id}`, {
     method: 'DELETE',
   });
 }
@@ -283,9 +346,9 @@ export function createProduct(payload: ProductPayload) {
       compactPayload({
         ...payload,
         slug: normalizeText(payload.slug),
-        long_description: normalizeText(payload.long_description),
-        price_label: normalizeText(payload.price_label),
-        cover_image_url: normalizeText(payload.cover_image_url),
+        long_description: normalizeNullableText(payload.long_description),
+        price_label: normalizeNullableText(payload.price_label),
+        cover_image_url: normalizeNullableText(payload.cover_image_url),
       }),
     ),
   });
@@ -298,16 +361,16 @@ export function updateProduct(id: number, payload: Partial<ProductPayload>) {
       compactPayload({
         ...payload,
         slug: normalizeText(payload.slug),
-        long_description: normalizeText(payload.long_description),
-        price_label: normalizeText(payload.price_label),
-        cover_image_url: normalizeText(payload.cover_image_url),
+        long_description: normalizeNullableText(payload.long_description),
+        price_label: normalizeNullableText(payload.price_label),
+        cover_image_url: normalizeNullableText(payload.cover_image_url),
       }),
     ),
   });
 }
 
 export function deleteProduct(id: number) {
-  return adminRequest<{ message: string }>(`/api/admin/products/${id}`, {
+  return adminCommand(`/api/admin/products/${id}`, {
     method: 'DELETE',
   });
 }
@@ -334,48 +397,36 @@ type UploadResponse =
       error: string;
     };
 
-export async function uploadAdminImage(file: File, folder: UploadFolder = 'general'): Promise<{ url: string; path: string }> {
-  const token = getStoredAdminToken();
-  if (!token) {
-    throw new Error('No se encontró token admin. Inicia sesión para continuar.');
+export function validateAdminImageFile(file: File): void {
+  if (!ADMIN_IMAGE_MIME_TYPES.has(file.type)) {
+    throw new Error('Formato no permitido. Selecciona una imagen JPEG, PNG o WebP.');
   }
+
+  if (file.size > ADMIN_UPLOAD_MAX_BYTES) {
+    throw new Error('La imagen supera el límite máximo de 5 MiB.');
+  }
+}
+
+export async function uploadAdminImage(file: File, folder: UploadFolder = 'general'): Promise<{ url: string; path: string }> {
+  validateAdminImageFile(file);
 
   const formData = new FormData();
   formData.append('file', file);
   formData.append('folder', folder);
 
-  let response: Response;
-
-  try {
-    response = await fetch(`${API_BASE_URL}/api/admin/uploads/image`, {
+  const payload = await authorizedAdminFetch(
+    '/api/admin/uploads/image',
+    {
       method: 'POST',
-      headers: {
-        'x-admin-token': token,
-      },
       body: formData,
-    });
-  } catch {
-    throw new Error('No se pudo conectar con el backend. Verifica la URL del backend y tu conexión.');
-  }
-
-  let payload: unknown = null;
-  try {
-    payload = await response.json();
-  } catch {
-    payload = null;
-  }
-
-  if (!response.ok) {
-    throw new Error(toApiErrorMessage(response.status, payload));
-  }
-
-  if (!payload || typeof payload !== 'object' || !('ok' in payload)) {
-    throw new Error('Respuesta inesperada del backend.');
-  }
+    },
+    undefined,
+    'upload',
+  );
 
   const uploadPayload = payload as UploadResponse;
   if (!uploadPayload.ok) {
-    throw new Error(uploadPayload.error || 'No se pudo subir la imagen.');
+    throw new Error('El backend rechazó la imagen. Revisa el formato y el tamaño.');
   }
 
   if (!uploadPayload.url || !uploadPayload.path) {

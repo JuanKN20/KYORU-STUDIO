@@ -25,8 +25,10 @@ function toFormValues(item: ServiceItem): ServiceFormValues {
 const AdminServices: React.FC = () => {
   const [services, setServices] = useState<ServiceItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
   const [editorTarget, setEditorTarget] = useState<ServiceItem | null>(null);
+  const [formRevision, setFormRevision] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [formError, setFormError] = useState('');
@@ -46,13 +48,13 @@ const AdminServices: React.FC = () => {
 
   const loadServices = async () => {
     setLoading(true);
-    setError('');
+    setLoadError('');
 
     try {
       const data = await getAdminServices();
       setServices(data);
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : 'No se pudieron cargar los servicios.');
+      setLoadError(loadError instanceof Error ? loadError.message : 'No se pudieron cargar los servicios.');
     } finally {
       setLoading(false);
     }
@@ -64,17 +66,22 @@ const AdminServices: React.FC = () => {
 
   const openCreate = () => {
     setFormError('');
+    setActionError('');
+    setFormRevision((value) => value + 1);
     setEditorTarget(null);
   };
 
   const openEdit = (service: ServiceItem) => {
     setFormError('');
+    setActionError('');
+    setFormRevision((value) => value + 1);
     setEditorTarget(service);
   };
 
   const closeForm = () => {
     setEditorTarget(null);
     setFormError('');
+    setFormRevision((value) => value + 1);
   };
 
   const handleSubmit = async (values: ServiceFormValues) => {
@@ -83,7 +90,7 @@ const AdminServices: React.FC = () => {
       slug: values.slug.trim() || undefined,
       description: values.description.trim(),
       deliverables: splitList(values.deliverablesText),
-      icon_name: values.iconName.trim() || undefined,
+      icon_name: values.iconName.trim() || null,
       is_active: values.isActive,
       sort_order: values.sortOrder,
     };
@@ -112,13 +119,13 @@ const AdminServices: React.FC = () => {
     if (!confirmed) return;
 
     setDeletingId(service.id);
-    setError('');
+    setActionError('');
 
     try {
       await deleteService(service.id);
       await loadServices();
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : 'No se pudo eliminar el servicio.');
+      setActionError(deleteError instanceof Error ? deleteError.message : 'No se pudo eliminar el servicio.');
     } finally {
       setDeletingId(null);
     }
@@ -137,9 +144,15 @@ const AdminServices: React.FC = () => {
         </button>
       </header>
 
+      <div className="rounded-xl border border-amber-700/45 bg-amber-950/20 px-4 py-3 text-sm text-amber-100">
+        Este panel conserva el catálogo legacy existente en la base de datos. La web empresarial presenta, por ahora,
+        tres categorías editoriales estáticas; no son una correspondencia uno a uno.
+      </div>
+
       <div className="admin-surface p-4 sm:p-5">
         <h2 className="mb-3 text-sm font-semibold text-red-200">{isEditing ? 'Editar servicio' : 'Crear servicio'}</h2>
         <ServiceForm
+          key={`${editorTarget?.id ?? 'new'}-${formRevision}`}
           initialValues={editorTarget ? toFormValues(editorTarget) : undefined}
           onSubmit={handleSubmit}
           onCancel={closeForm}
@@ -148,13 +161,28 @@ const AdminServices: React.FC = () => {
         {formError ? <p className="mt-3 text-sm text-red-200">{formError}</p> : null}
       </div>
 
-      {error ? <div className="rounded-xl border border-red-700/60 bg-red-950/35 px-4 py-3 text-sm text-red-100">{error}</div> : null}
+      {loadError ? (
+        <div role="alert" className="rounded-xl border border-red-700/60 bg-red-950/35 px-4 py-3 text-sm text-red-100">
+          <p>{loadError}</p>
+          <button type="button" onClick={() => void loadServices()} className="admin-btn-secondary mt-3 px-3 py-2 text-xs">
+            Reintentar
+          </button>
+        </div>
+      ) : null}
+
+      {actionError ? (
+        <div role="alert" className="rounded-xl border border-amber-700/60 bg-amber-950/30 px-4 py-3 text-sm text-amber-100">
+          {actionError}
+        </div>
+      ) : null}
 
       {loading ? <div className="admin-surface p-4 text-sm text-zinc-300">Cargando servicios...</div> : null}
 
-      {!loading && !error ? (
+      {!loading && !loadError ? (
         <div className="grid gap-3">
-          {sortedServices.map((service) => (
+          {sortedServices.length === 0 ? (
+            <div className="admin-surface p-5 text-sm text-zinc-300">Todavía no hay servicios registrados.</div>
+          ) : sortedServices.map((service) => (
             <article key={service.id} className="akai-card p-4 sm:p-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="min-w-0">
@@ -167,7 +195,7 @@ const AdminServices: React.FC = () => {
                           : 'border-zinc-500/45 bg-zinc-950/35 text-zinc-300'
                       }`}
                     >
-                      {service.is_active ? 'active' : 'inactive'}
+                      {service.is_active ? 'activo' : 'inactivo'}
                     </span>
                   </div>
                   <p className="mt-1 text-xs text-zinc-400">
@@ -185,7 +213,7 @@ const AdminServices: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    disabled={deletingId === service.id}
+                    disabled={deletingId !== null}
                     onClick={() => void handleDelete(service)}
                     className="admin-btn-danger px-3 py-2 text-xs"
                   >

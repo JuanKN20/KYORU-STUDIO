@@ -155,7 +155,7 @@
   }
 
   .admin-input {
-    @apply w-full rounded-xl border border-red-900/40 bg-black/50 px-3 py-2.5 text-sm text-zinc-100 outline-none transition;
+    @apply w-full rounded-xl border border-red-900/40 bg-black/50 px-3 py-2.5 text-sm text-zinc-100 outline-none transition motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black;
   }
 
   .admin-input:focus {
@@ -171,19 +171,29 @@
   }
 
   .admin-btn-primary {
-    @apply inline-flex items-center justify-center rounded-xl border border-red-500/55 bg-red-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-red-600 disabled:cursor-not-allowed disabled:opacity-70;
+    @apply inline-flex items-center justify-center rounded-xl border border-red-500/55 bg-red-700 px-4 py-2.5 text-sm font-semibold text-white transition motion-reduce:transition-none hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-70;
   }
 
   .admin-btn-secondary {
-    @apply inline-flex items-center justify-center rounded-xl border border-red-700/45 bg-black/35 px-4 py-2.5 text-sm text-zinc-100 transition hover:border-red-500/70 hover:bg-red-950/40 disabled:cursor-not-allowed disabled:opacity-70;
+    @apply inline-flex items-center justify-center rounded-xl border border-red-700/45 bg-black/35 px-4 py-2.5 text-sm text-zinc-100 transition motion-reduce:transition-none hover:border-red-500/70 hover:bg-red-950/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-70;
   }
 
   .admin-btn-danger {
-    @apply inline-flex items-center justify-center rounded-xl border border-red-700/55 bg-red-950/35 px-4 py-2.5 text-sm text-red-100 transition hover:border-red-500/70 hover:bg-red-900/35 disabled:cursor-not-allowed disabled:opacity-70;
+    @apply inline-flex items-center justify-center rounded-xl border border-red-700/55 bg-red-950/35 px-4 py-2.5 text-sm text-red-100 transition motion-reduce:transition-none hover:border-red-500/70 hover:bg-red-900/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-70;
   }
 
   .admin-note {
     @apply text-xs leading-relaxed text-zinc-400;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-shell .akai-card {
+      transition: none;
+    }
+
+    .admin-shell .akai-card:hover {
+      transform: none;
+    }
   }
 }
 

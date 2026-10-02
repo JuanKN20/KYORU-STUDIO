@@ -55,8 +55,8 @@ const AdminLogin: React.FC<AdminLoginProps> = ({ showInternalRoutes }) => {
       await validateAdminToken(cleanToken);
       saveAdminToken(cleanToken);
       navigate(targetPath, { replace: true });
-    } catch {
-      setError(TOKEN_ERROR_MESSAGE);
+    } catch (loginError) {
+      setError(loginError instanceof Error ? loginError.message : TOKEN_ERROR_MESSAGE);
     } finally {
       setLoading(false);
     }

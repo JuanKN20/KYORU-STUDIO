@@ -43,11 +43,20 @@ function statusClass(status: ProjectItem['status']): string {
   return 'border-amber-500/50 bg-amber-950/35 text-amber-200';
 }
 
+const statusLabels: Record<ProjectItem['status'], string> = {
+  draft: 'Borrador',
+  published: 'Publicado',
+  archived: 'Archivado',
+  coming_soon: 'Próximamente',
+};
+
 const AdminProjects: React.FC = () => {
   const [projects, setProjects] = useState<ProjectItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [loadError, setLoadError] = useState('');
+  const [actionError, setActionError] = useState('');
   const [editorTarget, setEditorTarget] = useState<ProjectItem | null>(null);
+  const [formRevision, setFormRevision] = useState(0);
   const [submitting, setSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<number | null>(null);
   const [formError, setFormError] = useState('');
@@ -67,13 +76,13 @@ const AdminProjects: React.FC = () => {
 
   const loadProjects = async () => {
     setLoading(true);
-    setError('');
+    setLoadError('');
 
     try {
       const data = await getAdminProjects();
       setProjects(data);
     } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : 'No se pudieron cargar los proyectos.');
+      setLoadError(loadError instanceof Error ? loadError.message : 'No se pudieron cargar los proyectos.');
     } finally {
       setLoading(false);
     }
@@ -85,30 +94,35 @@ const AdminProjects: React.FC = () => {
 
   const openCreate = () => {
     setFormError('');
+    setActionError('');
+    setFormRevision((value) => value + 1);
     setEditorTarget(null);
   };
 
   const openEdit = (project: ProjectItem) => {
     setFormError('');
+    setActionError('');
+    setFormRevision((value) => value + 1);
     setEditorTarget(project);
   };
 
   const closeForm = () => {
     setEditorTarget(null);
     setFormError('');
+    setFormRevision((value) => value + 1);
   };
 
   const handleSubmit = async (values: ProjectFormValues) => {
     const payload: ProjectPayload = {
       title: values.title.trim(),
       slug: values.slug.trim() || undefined,
-      category: values.category.trim() || undefined,
+      category: values.category.trim() || null,
       short_description: values.shortDescription.trim(),
-      long_description: values.longDescription.trim() || undefined,
+      long_description: values.longDescription.trim() || null,
       status: values.status,
-      cover_image_url: values.coverImageUrl.trim() || undefined,
-      demo_url: values.demoUrl.trim() || undefined,
-      repository_url: values.repositoryUrl.trim() || undefined,
+      cover_image_url: values.coverImageUrl.trim() || null,
+      demo_url: values.demoUrl.trim() || null,
+      repository_url: values.repositoryUrl.trim() || null,
       technologies: splitCsv(values.technologiesText),
       featured: values.featured,
       sort_order: values.sortOrder,
@@ -139,13 +153,13 @@ const AdminProjects: React.FC = () => {
     if (!confirmed) return;
 
     setDeletingId(project.id);
-    setError('');
+    setActionError('');
 
     try {
       await deleteProject(project.id);
       await loadProjects();
     } catch (deleteError) {
-      setError(deleteError instanceof Error ? deleteError.message : 'No se pudo eliminar el proyecto.');
+      setActionError(deleteError instanceof Error ? deleteError.message : 'No se pudo eliminar el proyecto.');
     } finally {
       setDeletingId(null);
     }
@@ -167,6 +181,7 @@ const AdminProjects: React.FC = () => {
       <div className="admin-surface p-4 sm:p-5">
         <h2 className="mb-3 text-sm font-semibold text-red-200">{isEditing ? 'Editar proyecto' : 'Crear proyecto'}</h2>
         <ProjectForm
+          key={`${editorTarget?.id ?? 'new'}-${formRevision}`}
           initialValues={editorTarget ? toFormValues(editorTarget) : undefined}
           onSubmit={handleSubmit}
           onCancel={closeForm}
@@ -175,20 +190,35 @@ const AdminProjects: React.FC = () => {
         {formError ? <p className="mt-3 text-sm text-red-200">{formError}</p> : null}
       </div>
 
-      {error ? <div className="rounded-xl border border-red-700/60 bg-red-950/35 px-4 py-3 text-sm text-red-100">{error}</div> : null}
+      {loadError ? (
+        <div role="alert" className="rounded-xl border border-red-700/60 bg-red-950/35 px-4 py-3 text-sm text-red-100">
+          <p>{loadError}</p>
+          <button type="button" onClick={() => void loadProjects()} className="admin-btn-secondary mt-3 px-3 py-2 text-xs">
+            Reintentar
+          </button>
+        </div>
+      ) : null}
+
+      {actionError ? (
+        <div role="alert" className="rounded-xl border border-amber-700/60 bg-amber-950/30 px-4 py-3 text-sm text-amber-100">
+          {actionError}
+        </div>
+      ) : null}
 
       {loading ? <div className="admin-surface p-4 text-sm text-zinc-300">Cargando proyectos...</div> : null}
 
-      {!loading && !error ? (
+      {!loading && !loadError ? (
         <div className="grid gap-3">
-          {sortedProjects.map((project) => (
+          {sortedProjects.length === 0 ? (
+            <div className="admin-surface p-5 text-sm text-zinc-300">Todavía no hay proyectos registrados.</div>
+          ) : sortedProjects.map((project) => (
             <article key={project.id} className="akai-card p-4 sm:p-5">
               <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
                     <h3 className="text-lg font-semibold text-white">{project.title}</h3>
                     <span className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wide ${statusClass(project.status)}`}>
-                      {project.status}
+                      {statusLabels[project.status]}
                     </span>
                     {project.featured ? <span className="akai-chip border-red-500/70 text-red-100">featured</span> : null}
                   </div>
@@ -207,7 +237,7 @@ const AdminProjects: React.FC = () => {
                   </button>
                   <button
                     type="button"
-                    disabled={deletingId === project.id}
+                    disabled={deletingId !== null}
                     onClick={() => void handleDelete(project)}
                     className="admin-btn-danger px-3 py-2 text-xs"
                   >

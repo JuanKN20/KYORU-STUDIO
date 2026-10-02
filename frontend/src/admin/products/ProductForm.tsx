@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ContentStatus, uploadAdminImage } from '../adminApi';
+import React, { useEffect, useRef, useState } from 'react';
+import { ADMIN_IMAGE_ACCEPT, ContentStatus, uploadAdminImage, validateAdminImageFile } from '../adminApi';
 
 export type ProductFormValues = {
   title: string;
@@ -48,6 +48,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
   const [uploadingGallery, setUploadingGallery] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState('');
   const [uploadError, setUploadError] = useState('');
+  const coverFileInputRef = useRef<HTMLInputElement>(null);
+  const galleryFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setForm(initialValues || defaultValues);
@@ -57,6 +59,8 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
     setUploadingGallery(false);
     setUploadSuccess('');
     setUploadError('');
+    if (coverFileInputRef.current) coverFileInputRef.current.value = '';
+    if (galleryFileInputRef.current) galleryFileInputRef.current.value = '';
   }, [initialValues]);
 
   const handleChange = (field: keyof ProductFormValues, value: string | number | boolean) => {
@@ -64,6 +68,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
       ...previous,
       [field]: value,
     }));
+  };
+
+  const appendGalleryUrls = (uploadedUrls: string[]) => {
+    setForm((previous) => {
+      const currentUrls = previous.galleryUrlsText
+        .split(/[\n,]+/)
+        .map((item) => item.trim())
+        .filter(Boolean);
+      const merged = Array.from(new Set([...currentUrls, ...uploadedUrls]));
+
+      return {
+        ...previous,
+        galleryUrlsText: merged.join('\n'),
+      };
+    });
   };
 
   const submit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -83,10 +102,12 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
     setUploadSuccess('');
 
     try {
+      validateAdminImageFile(coverFile);
       const { url } = await uploadAdminImage(coverFile, 'products');
       handleChange('coverImageUrl', url);
       setUploadSuccess('Imagen de portada subida correctamente.');
       setCoverFile(null);
+      if (coverFileInputRef.current) coverFileInputRef.current.value = '';
     } catch (error) {
       setUploadError(error instanceof Error ? error.message : 'Error al subir imagen.');
     } finally {
@@ -104,19 +125,31 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
     setUploadingGallery(true);
     setUploadError('');
     setUploadSuccess('');
+    const uploadedUrls: string[] = [];
 
     try {
-      const uploaded = await Promise.all(galleryFiles.map((file) => uploadAdminImage(file, 'products')));
-      const currentUrls = form.galleryUrlsText
-        .split(/[\n,]+/)
-        .map((item) => item.trim())
-        .filter(Boolean);
-      const merged = Array.from(new Set([...currentUrls, ...uploaded.map((item) => item.url)]));
-      handleChange('galleryUrlsText', merged.join('\n'));
+      galleryFiles.forEach(validateAdminImageFile);
+      for (const file of galleryFiles) {
+        const uploaded = await uploadAdminImage(file, 'products');
+        uploadedUrls.push(uploaded.url);
+      }
+      appendGalleryUrls(uploadedUrls);
       setUploadSuccess('Imágenes de galería subidas correctamente.');
       setGalleryFiles([]);
+      if (galleryFileInputRef.current) galleryFileInputRef.current.value = '';
     } catch (error) {
-      setUploadError(error instanceof Error ? error.message : 'Error al subir imágenes de galería.');
+      const message = error instanceof Error ? error.message : 'Error al subir imágenes de galería.';
+
+      if (uploadedUrls.length > 0) {
+        appendGalleryUrls(uploadedUrls);
+        setGalleryFiles([]);
+        if (galleryFileInputRef.current) galleryFileInputRef.current.value = '';
+        setUploadError(
+          `${uploadedUrls.length} ${uploadedUrls.length === 1 ? 'imagen quedó conservada' : 'imágenes quedaron conservadas'} en el formulario. ${message}`,
+        );
+      } else {
+        setUploadError(message);
+      }
     } finally {
       setUploadingGallery(false);
     }
@@ -212,11 +245,14 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
             onChange={(event) => handleChange('status', event.target.value as ContentStatus)}
             className="admin-select"
           >
-            <option value="draft">draft</option>
-            <option value="published">published</option>
-            <option value="archived">archived</option>
-            <option value="coming_soon">coming_soon</option>
+            <option value="draft">Borrador</option>
+            <option value="published">Publicado</option>
+            <option value="archived">Archivado</option>
+            <option value="coming_soon">Próximamente</option>
           </select>
+          <p className="admin-note mt-1.5">
+            Solo «Publicado» es visible mediante la API pública. Los demás estados permanecen internos.
+          </p>
         </div>
 
         <div className="md:col-span-2">
@@ -229,12 +265,21 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
             onChange={(event) => handleChange('coverImageUrl', event.target.value)}
             className="admin-input"
           />
+          <label htmlFor="product-cover-image-file" className="admin-label mt-3">
+            Archivo de portada
+          </label>
           <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto]">
             <input
               id="product-cover-image-file"
+              ref={coverFileInputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/svg+xml"
-              onChange={(event) => setCoverFile(event.target.files?.[0] || null)}
+              accept={ADMIN_IMAGE_ACCEPT}
+              aria-describedby="product-cover-image-help"
+              onChange={(event) => {
+                setCoverFile(event.target.files?.[0] || null);
+                setUploadError('');
+                setUploadSuccess('');
+              }}
               className="admin-input file:mr-3 file:rounded-lg file:border-0 file:bg-red-900/45 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-red-100"
             />
             <button
@@ -246,6 +291,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
               {uploadingCover ? 'Subiendo...' : 'Subir imagen'}
             </button>
           </div>
+          <p id="product-cover-image-help" className="admin-note mt-2">
+            JPEG, PNG o WebP · máximo 5 MiB.
+          </p>
           {form.coverImageUrl ? (
             <img
               src={form.coverImageUrl}
@@ -279,13 +327,22 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
             onChange={(event) => handleChange('galleryUrlsText', event.target.value)}
             className="admin-textarea"
           />
+          <label htmlFor="product-gallery-files" className="admin-label mt-3">
+            Archivos de galería
+          </label>
           <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto]">
             <input
               id="product-gallery-files"
+              ref={galleryFileInputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/svg+xml"
+              accept={ADMIN_IMAGE_ACCEPT}
+              aria-describedby="product-gallery-files-help"
               multiple
-              onChange={(event) => setGalleryFiles(Array.from(event.target.files || []))}
+              onChange={(event) => {
+                setGalleryFiles(Array.from(event.target.files || []));
+                setUploadError('');
+                setUploadSuccess('');
+              }}
               className="admin-input file:mr-3 file:rounded-lg file:border-0 file:bg-red-900/45 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-red-100"
             />
             <button
@@ -297,6 +354,9 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
               {uploadingGallery ? 'Subiendo...' : 'Subir a galería'}
             </button>
           </div>
+          <p id="product-gallery-files-help" className="admin-note mt-2">
+            JPEG, PNG o WebP · máximo 5 MiB por imagen.
+          </p>
         </div>
 
         <div>
@@ -322,11 +382,20 @@ const ProductForm: React.FC<ProductFormProps> = ({ initialValues, onSubmit, onCa
             onChange={(event) => handleChange('publishedAt', event.target.value)}
             className="admin-input"
           />
+          <p className="admin-note mt-1.5">Esta fecha es metadata; no programa automáticamente la publicación.</p>
         </div>
       </div>
 
-      {uploadSuccess ? <p className="text-xs text-emerald-300">{uploadSuccess}</p> : null}
-      {uploadError ? <p className="text-xs text-red-300">{uploadError}</p> : null}
+      {uploadSuccess ? (
+        <p role="status" aria-live="polite" className="text-xs text-emerald-300">
+          {uploadSuccess}
+        </p>
+      ) : null}
+      {uploadError ? (
+        <p role="alert" className="text-xs text-red-300">
+          {uploadError}
+        </p>
+      ) : null}
 
       <label htmlFor="product-featured" className="inline-flex items-center gap-2 text-sm text-zinc-200">
         <input

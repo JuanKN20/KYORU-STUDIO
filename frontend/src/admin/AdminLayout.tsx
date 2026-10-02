@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import { Link, NavLink, Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { Briefcase, Boxes, ClipboardList, LayoutDashboard, LogOut, Menu, Settings, X } from 'lucide-react';
-import { clearAdminToken } from './adminApi';
+import { ADMIN_AUTH_REJECTED_EVENT, clearAdminToken } from './adminApi';
+
+const DESKTOP_MEDIA_QUERY = '(min-width: 1024px)';
 
 const adminLinks = [
   { to: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -22,10 +24,61 @@ const AdminLayout: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [open, setOpen] = useState(false);
+  const drawerId = useId();
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
+  const previousPathnameRef = useRef(location.pathname);
+
+  const closeMenu = useCallback((restoreFocus = true) => {
+    if (dialogRef.current?.open) dialogRef.current.close();
+    setOpen(false);
+    if (restoreFocus) {
+      window.requestAnimationFrame(() => menuButtonRef.current?.focus());
+    }
+  }, []);
 
   useEffect(() => {
-    setOpen(false);
-  }, [location.pathname]);
+    if (previousPathnameRef.current === location.pathname) return;
+    previousPathnameRef.current = location.pathname;
+    if (open) closeMenu(false);
+  }, [closeMenu, location.pathname, open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const dialog = dialogRef.current;
+    if (!dialog) return;
+
+    const previousOverflow = document.body.style.overflow;
+    const desktopQuery = window.matchMedia(DESKTOP_MEDIA_QUERY);
+    const closeAtDesktop = () => {
+      if (desktopQuery.matches) closeMenu(false);
+    };
+
+    if (!dialog.open) dialog.showModal();
+    document.body.style.overflow = 'hidden';
+    closeButtonRef.current?.focus();
+    desktopQuery.addEventListener('change', closeAtDesktop);
+
+    return () => {
+      desktopQuery.removeEventListener('change', closeAtDesktop);
+      document.body.style.overflow = previousOverflow;
+      if (dialog.open) dialog.close();
+    };
+  }, [closeMenu, open]);
+
+  useEffect(() => {
+    const handleRejectedToken = () => {
+      navigate('/admin/login', {
+        replace: true,
+        state: { from: location.pathname },
+      });
+    };
+
+    window.addEventListener(ADMIN_AUTH_REJECTED_EVENT, handleRejectedToken);
+    return () => window.removeEventListener(ADMIN_AUTH_REJECTED_EVENT, handleRejectedToken);
+  }, [location.pathname, navigate]);
 
   const handleLogout = () => {
     clearAdminToken();
@@ -70,10 +123,14 @@ const AdminLayout: React.FC = () => {
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="admin-surface mb-4 flex items-center justify-between gap-3 p-3 lg:hidden">
             <button
+              ref={menuButtonRef}
               type="button"
               onClick={() => setOpen(true)}
               className="admin-btn-secondary h-10 w-10 p-0"
               aria-label="Abrir menú admin"
+              aria-controls={drawerId}
+              aria-expanded={open}
+              aria-haspopup="dialog"
             >
               <Menu className="h-5 w-5" />
             </button>
@@ -94,49 +151,68 @@ const AdminLayout: React.FC = () => {
         </div>
       </div>
 
-      <div
-        className={`fixed inset-0 z-50 bg-black/70 transition ${open ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'} lg:hidden`}
-        onClick={() => setOpen(false)}
-        aria-hidden={!open}
-      />
-
-      <aside
-        className={`fixed left-0 top-0 z-[60] h-dvh w-80 max-w-[88vw] border-r border-red-900/45 bg-akai-dark/95 p-4 backdrop-blur-xl transition-transform ${
-          open ? 'translate-x-0' : '-translate-x-full'
-        } lg:hidden`}
-      >
-        <div className="mb-4 flex items-center justify-between border-b border-red-900/40 pb-3">
-          <div>
-            <p className="admin-kicker">Kyoru Studio</p>
-            <p className="text-sm font-semibold text-zinc-100">Panel interno</p>
+      {open ? (
+        <dialog
+          ref={dialogRef}
+          id={drawerId}
+          aria-labelledby={`${drawerId}-title`}
+          className="fixed inset-y-0 left-0 z-[60] m-0 h-dvh max-h-none w-80 max-w-[88vw] overflow-y-auto border-0 border-r border-red-900/45 bg-akai-dark/95 p-4 text-zinc-100 shadow-2xl outline-none backdrop:bg-black/70 backdrop:backdrop-blur-sm lg:hidden"
+          onCancel={(event) => {
+            event.preventDefault();
+            closeMenu(true);
+          }}
+          onPointerDown={(event) => {
+            if (event.target !== event.currentTarget) return;
+            const bounds = event.currentTarget.getBoundingClientRect();
+            const clickedInside =
+              event.clientX >= bounds.left &&
+              event.clientX <= bounds.right &&
+              event.clientY >= bounds.top &&
+              event.clientY <= bounds.bottom;
+            if (!clickedInside) closeMenu(true);
+          }}
+        >
+          <div className="mb-4 flex items-center justify-between border-b border-red-900/40 pb-3">
+            <div>
+              <p className="admin-kicker">Kyoru Studio</p>
+              <p id={`${drawerId}-title`} className="text-sm font-semibold text-zinc-100">
+                Panel interno
+              </p>
+            </div>
+            <button
+              ref={closeButtonRef}
+              type="button"
+              onClick={() => closeMenu(true)}
+              className="admin-btn-secondary h-9 w-9 p-0"
+              aria-label="Cerrar menú admin"
+            >
+              <X className="h-4 w-4" />
+            </button>
           </div>
-          <button type="button" onClick={() => setOpen(false)} className="admin-btn-secondary h-9 w-9 p-0" aria-label="Cerrar menú admin">
-            <X className="h-4 w-4" />
-          </button>
-        </div>
 
-        <nav aria-label="Navegación de administración móvil" className="space-y-2">
-          {adminLinks.map((item) => {
-            const Icon = item.icon;
-            return (
-              <NavLink key={item.to} to={item.to} className={navClass}>
-                <Icon className="h-4 w-4 shrink-0" />
-                <span>{item.label}</span>
-              </NavLink>
-            );
-          })}
-        </nav>
+          <nav aria-label="Navegación de administración móvil" className="space-y-2">
+            {adminLinks.map((item) => {
+              const Icon = item.icon;
+              return (
+                <NavLink key={item.to} to={item.to} className={navClass} onClick={() => closeMenu(true)}>
+                  <Icon className="h-4 w-4 shrink-0" />
+                  <span>{item.label}</span>
+                </NavLink>
+              );
+            })}
+          </nav>
 
-        <div className="mt-6 space-y-2 border-t border-red-900/40 pt-4">
-          <Link to="/" className="admin-btn-secondary w-full">
-            Ver sitio
-          </Link>
-          <button type="button" onClick={handleLogout} className="admin-btn-danger w-full gap-2">
-            <LogOut className="h-4 w-4" />
-            Cerrar sesión
-          </button>
-        </div>
-      </aside>
+          <div className="mt-6 space-y-2 border-t border-red-900/40 pt-4">
+            <Link to="/" className="admin-btn-secondary w-full">
+              Ver sitio
+            </Link>
+            <button type="button" onClick={handleLogout} className="admin-btn-danger w-full gap-2">
+              <LogOut className="h-4 w-4" />
+              Cerrar sesión
+            </button>
+          </div>
+        </dialog>
+      ) : null}
     </div>
   );
 };

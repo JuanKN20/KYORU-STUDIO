@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ContentStatus, uploadAdminImage } from '../adminApi';
+import React, { useEffect, useRef, useState } from 'react';
+import { ADMIN_IMAGE_ACCEPT, ContentStatus, uploadAdminImage, validateAdminImageFile } from '../adminApi';
 
 export type ProjectFormValues = {
   title: string;
@@ -46,6 +46,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialValues, onSubmit, onCa
   const [uploadingCover, setUploadingCover] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState('');
   const [uploadError, setUploadError] = useState('');
+  const coverFileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setForm(initialValues || defaultValues);
@@ -53,6 +54,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialValues, onSubmit, onCa
     setUploadingCover(false);
     setUploadSuccess('');
     setUploadError('');
+    if (coverFileInputRef.current) coverFileInputRef.current.value = '';
   }, [initialValues]);
 
   const handleChange = (field: keyof ProjectFormValues, value: string | number | boolean) => {
@@ -79,10 +81,12 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialValues, onSubmit, onCa
     setUploadSuccess('');
 
     try {
+      validateAdminImageFile(coverFile);
       const { url } = await uploadAdminImage(coverFile, 'projects');
       handleChange('coverImageUrl', url);
       setUploadSuccess('Imagen subida correctamente.');
       setCoverFile(null);
+      if (coverFileInputRef.current) coverFileInputRef.current.value = '';
     } catch (error) {
       setUploadError(error instanceof Error ? error.message : 'Error al subir imagen.');
     } finally {
@@ -167,11 +171,14 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialValues, onSubmit, onCa
             onChange={(event) => handleChange('status', event.target.value as ContentStatus)}
             className="admin-select"
           >
-            <option value="draft">draft</option>
-            <option value="published">published</option>
-            <option value="archived">archived</option>
-            <option value="coming_soon">coming_soon</option>
+            <option value="draft">Borrador</option>
+            <option value="published">Publicado</option>
+            <option value="archived">Archivado</option>
+            <option value="coming_soon">Próximamente</option>
           </select>
+          <p className="admin-note mt-1.5">
+            Solo «Publicado» es visible mediante la API pública. Los demás estados permanecen internos.
+          </p>
         </div>
 
         <div>
@@ -210,12 +217,21 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialValues, onSubmit, onCa
             onChange={(event) => handleChange('coverImageUrl', event.target.value)}
             className="admin-input"
           />
+          <label htmlFor="project-cover-image-file" className="admin-label mt-3">
+            Archivo de portada
+          </label>
           <div className="mt-3 grid gap-2 sm:grid-cols-[1fr_auto]">
             <input
               id="project-cover-image-file"
+              ref={coverFileInputRef}
               type="file"
-              accept="image/jpeg,image/png,image/webp,image/svg+xml"
-              onChange={(event) => setCoverFile(event.target.files?.[0] || null)}
+              accept={ADMIN_IMAGE_ACCEPT}
+              aria-describedby="project-cover-image-help"
+              onChange={(event) => {
+                setCoverFile(event.target.files?.[0] || null);
+                setUploadError('');
+                setUploadSuccess('');
+              }}
               className="admin-input file:mr-3 file:rounded-lg file:border-0 file:bg-red-900/45 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-red-100"
             />
             <button
@@ -227,8 +243,19 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialValues, onSubmit, onCa
               {uploadingCover ? 'Subiendo...' : 'Subir imagen'}
             </button>
           </div>
-          {uploadSuccess ? <p className="mt-2 text-xs text-emerald-300">{uploadSuccess}</p> : null}
-          {uploadError ? <p className="mt-2 text-xs text-red-300">{uploadError}</p> : null}
+          <p id="project-cover-image-help" className="admin-note mt-2">
+            JPEG, PNG o WebP · máximo 5 MiB.
+          </p>
+          {uploadSuccess ? (
+            <p role="status" aria-live="polite" className="mt-2 text-xs text-emerald-300">
+              {uploadSuccess}
+            </p>
+          ) : null}
+          {uploadError ? (
+            <p role="alert" className="mt-2 text-xs text-red-300">
+              {uploadError}
+            </p>
+          ) : null}
           {form.coverImageUrl ? (
             <img
               src={form.coverImageUrl}
@@ -273,6 +300,7 @@ const ProjectForm: React.FC<ProjectFormProps> = ({ initialValues, onSubmit, onCa
             onChange={(event) => handleChange('publishedAt', event.target.value)}
             className="admin-input"
           />
+          <p className="admin-note mt-1.5">Esta fecha es metadata; no programa automáticamente la publicación.</p>
         </div>
       </div>
 
