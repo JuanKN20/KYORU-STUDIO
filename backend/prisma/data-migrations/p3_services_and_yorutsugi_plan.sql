@@ -1,0 +1,123 @@
+-- =============================================================================
+-- REVIEW ONLY — DO NOT EXECUTE AUTOMATICALLY
+-- P3 service alignment and YORUTSUGI data plan
+-- =============================================================================
+--
+-- This file is intentionally non-executable: every line is a SQL comment.
+-- It records the approved production inventory and the future data operations
+-- that must be reviewed, backed up, and executed manually in a later phase.
+--
+-- Before converting any template below into executable SQL:
+-- 1. Take and verify a production backup.
+-- 2. Apply and verify the additive schema migration first.
+-- 3. Re-run a read-only inventory and confirm every ID/slug precondition.
+-- 4. Execute the data changes in one explicit transaction.
+-- 5. Require every Service UPDATE to affect exactly one row; otherwise ROLLBACK.
+-- 6. Do not run backend/prisma/seed.js before or after this operation.
+--
+-- =============================================================================
+-- A. SERVICES — FUTURE REVIEWED UPDATES
+-- =============================================================================
+--
+-- Preserve every existing Service ID and slug.
+-- Do not update description, deliverables, or iconName until their final copy
+-- has been approved separately.
+--
+-- Proposed future transaction template (kept commented on purpose):
+--
+-- BEGIN;
+--
+-- UPDATE "Service"
+-- SET "title" = 'Desarrollo Web',
+--     "isActive" = TRUE,
+--     "sortOrder" = 1
+-- WHERE "id" = 1
+--   AND "slug" = 'desarrollo-web';
+--
+-- UPDATE "Service"
+-- SET "title" = 'Modelado y Experiencias 3D',
+--     "isActive" = TRUE,
+--     "sortOrder" = 2
+-- WHERE "id" = 4
+--   AND "slug" = 'modelado-3d';
+--
+-- UPDATE "Service"
+-- SET "title" = 'Animación y Contenido Digital',
+--     "isActive" = TRUE,
+--     "sortOrder" = 3
+-- WHERE "id" = 3
+--   AND "slug" = 'animacion-2d-3d';
+--
+-- UPDATE "Service"
+-- SET "isActive" = FALSE
+-- WHERE "id" = 2
+--   AND "slug" = 'videojuegos';
+--
+-- UPDATE "Service"
+-- SET "isActive" = FALSE
+-- WHERE "id" = 5
+--   AND "slug" = 'inteligencia-artificial';
+--
+-- UPDATE "Service"
+-- SET "isActive" = FALSE
+-- WHERE "id" = 6
+--   AND "slug" = 'branding-contenido-digital';
+--
+-- Before COMMIT, verify the six rows and confirm that only IDs 1, 4, and 3
+-- remain active, with sortOrder 1, 2, and 3 respectively.
+--
+-- COMMIT;
+--
+-- =============================================================================
+-- B. EXISTING PROJECTS — NO AUTOMATIC CLASSIFICATION
+-- =============================================================================
+--
+-- The following production Projects require explicit human classification:
+--
+-- ID 6 — proyecto-prueba-yorurei — Proyecto prueba Yorurei
+-- ID 1 — yorurei-studio-web     — Yorurei Studio Web
+-- ID 2 — kaleido-lab            — Kaleido Lab
+-- ID 3 — dissau-wallet          — DISSAU Wallet
+-- ID 4 — emcali-cms             — EMCALI CMS
+-- ID 5 — conceptos-videojuegos  — Conceptos de videojuegos
+--
+-- Do not run UPDATE statements for these records in the first migration.
+-- projectType must remain NULL until ownership, attribution, publication
+-- permission, client identity, and Kyoru's contribution are approved per row.
+-- projectStage, clientName, and contribution also remain NULL.
+--
+-- yorurei-studio-web exists; kyoru-studio-web does not exist. There is no
+-- current duplicate to merge, rename, or delete.
+--
+-- =============================================================================
+-- C. YORUTSUGI — FUTURE CREATION PLAN, NO INSERTS
+-- =============================================================================
+--
+-- YORUTSUGI does not exist in Project and must not be created in this phase.
+-- Known, approved values for its future Project row:
+--
+-- title:        YORUTSUGI
+-- slug:         yorutsugi
+-- projectType:  ORIGINAL_PRODUCTION
+-- projectStage: IN_DEVELOPMENT
+-- status:       draft
+-- format:       Manga original
+-- genres:       Fantasía, Acción
+--
+-- Required decisions before preparing an INSERT:
+-- - Approve shortDescription, which is mandatory in Project.
+-- - Approve longDescription/synopsis, if any.
+-- - Approve featured and sortOrder.
+-- - Approve character slugs required by ProjectCharacter.
+-- - Keep coverImageUrl, URLs, publications, and links empty until verified.
+--
+-- Approved protagonist list for future ProjectCharacter rows, in order:
+-- 1. Kaena Homusaki
+-- 2. Haruki Fujinori
+-- 3. Rinka Mikazari — alias: Rin
+-- 4. Daichi Gebara
+-- 5. Mizuki Yemari
+--
+-- Do not add any character outside the five-name canonical list above.
+-- No Project, ProjectCharacter, ProjectPublication, or ProjectLink INSERT is
+-- included in this review-only plan.

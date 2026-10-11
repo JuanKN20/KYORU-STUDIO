@@ -8,6 +8,33 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
+enum ProjectType {
+  ORIGINAL_PRODUCTION
+  COMMERCIAL
+  COLLABORATION
+  INTERNAL_EXPERIMENT
+}
+
+enum ProjectStage {
+  IN_DEVELOPMENT
+  ACTIVE
+  COMPLETED
+  PAUSED
+}
+
+enum PublicationKind {
+  CHAPTER
+  PREVIEW
+  UPDATE
+}
+
+enum PublicationStatus {
+  DRAFT
+  ANNOUNCED
+  PUBLISHED
+  ARCHIVED
+}
+
 model Category {
   id          Int      @id @default(autoincrement())
   name        String
@@ -18,22 +45,34 @@ model Category {
 }
 
 model Project {
-  id               Int       @id @default(autoincrement())
+  id               Int                  @id @default(autoincrement())
   title            String
-  slug             String    @unique
+  slug             String               @unique
   category         String?
   shortDescription String
   longDescription  String?
-  status           String    @default("draft")
+  status           String               @default("draft")
   coverImageUrl    String?
   demoUrl          String?
   repositoryUrl    String?
-  technologies     String[]  @default([])
-  featured         Boolean   @default(false)
-  sortOrder        Int       @default(0)
+  technologies     String[]             @default([])
+  featured         Boolean              @default(false)
+  sortOrder        Int                  @default(0)
   publishedAt      DateTime?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  projectType      ProjectType?
+  projectStage     ProjectStage?
+  format           String?
+  genres           String[]             @default([])
+  clientName       String?
+  contribution     String?
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+  characters       ProjectCharacter[]
+  publications     ProjectPublication[]
+  officialLinks    ProjectLink[]
+
+  @@index([status, sortOrder, createdAt])
+  @@index([projectType, status])
 }
 
 model Service {
@@ -47,6 +86,8 @@ model Service {
   sortOrder    Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([isActive, sortOrder])
 }
 
 model Product {
@@ -66,6 +107,8 @@ model Product {
   publishedAt      DateTime?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt
+
+  @@index([status, sortOrder])
 }
 
 model Contact {
@@ -78,4 +121,56 @@ model Contact {
   status    String   @default("new")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([status, createdAt])
+}
+
+model ProjectCharacter {
+  id               Int      @id @default(autoincrement())
+  projectId        Int
+  name             String
+  slug             String
+  alias            String?
+  shortDescription String?
+  imageUrl         String?
+  sortOrder        Int      @default(0)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  project          Project  @relation(fields: [projectId], references: [id], onDelete: Restrict)
+
+  @@unique([projectId, slug])
+  @@index([projectId, sortOrder])
+}
+
+model ProjectPublication {
+  id           Int               @id @default(autoincrement())
+  projectId    Int
+  kind         PublicationKind
+  number       Int?
+  title        String
+  status       PublicationStatus @default(DRAFT)
+  description  String?
+  publishedAt  DateTime?
+  officialUrl  String?
+  thumbnailUrl String?
+  sortOrder    Int               @default(0)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+  project      Project           @relation(fields: [projectId], references: [id], onDelete: Restrict)
+
+  @@index([projectId, status, sortOrder])
+}
+
+model ProjectLink {
+  id        Int      @id @default(autoincrement())
+  projectId Int
+  label     String
+  url       String
+  sortOrder Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Restrict)
+
+  @@index([projectId, isActive, sortOrder])
 }
