@@ -80,6 +80,12 @@ CREATE INDEX "ProjectPublication_projectId_status_sortOrder_idx" ON "ProjectPubl
 CREATE INDEX "ProjectLink_projectId_isActive_sortOrder_idx" ON "ProjectLink"("projectId", "isActive", "sortOrder");
 
 -- CreateIndex
+CREATE INDEX "Contact_status_createdAt_idx" ON "Contact"("status", "createdAt");
+
+-- CreateIndex
+CREATE INDEX "Product_status_sortOrder_idx" ON "Product"("status", "sortOrder");
+
+-- CreateIndex
 CREATE INDEX "Project_status_sortOrder_createdAt_idx" ON "Project"("status", "sortOrder", "createdAt");
 
 -- CreateIndex
@@ -87,12 +93,6 @@ CREATE INDEX "Project_projectType_status_idx" ON "Project"("projectType", "statu
 
 -- CreateIndex
 CREATE INDEX "Service_isActive_sortOrder_idx" ON "Service"("isActive", "sortOrder");
-
--- CreateIndex
-CREATE INDEX "Product_status_sortOrder_idx" ON "Product"("status", "sortOrder");
-
--- CreateIndex
-CREATE INDEX "Contact_status_createdAt_idx" ON "Contact"("status", "createdAt");
 
 -- AddForeignKey
 ALTER TABLE "ProjectCharacter" ADD CONSTRAINT "ProjectCharacter_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "Project"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
