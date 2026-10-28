@@ -108,15 +108,15 @@
 -- - Approve shortDescription, which is mandatory in Project.
 -- - Approve longDescription/synopsis, if any.
 -- - Approve featured and sortOrder.
--- - Approve character slugs required by ProjectCharacter.
+-- - Preserve the approved character slugs and NULL aliases listed below.
 -- - Keep coverImageUrl, URLs, publications, and links empty until verified.
 --
 -- Approved protagonist list for future ProjectCharacter rows, in order:
--- 1. Kaena Homusaki
--- 2. Haruki Fujinori
--- 3. Rinka Mikazari — alias: Rin
--- 4. Daichi Gebara
--- 5. Mizuki Yemari
+-- 1. Kaena Homusaki — slug: kaena-homusaki — alias: NULL
+-- 2. Haruki Shinamori — slug: haruki-shinamori — alias: NULL
+-- 3. Rinka — slug: rinka — alias: NULL
+-- 4. Daichi — slug: daichi — alias: NULL
+-- 5. Mizuki Yemari — slug: mizuki-yemari — alias: NULL
 --
 -- Do not add any character outside the five-name canonical list above.
 -- No Project, ProjectCharacter, ProjectPublication, or ProjectLink INSERT is

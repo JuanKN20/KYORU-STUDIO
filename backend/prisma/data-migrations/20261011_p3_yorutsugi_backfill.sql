@@ -108,9 +108,9 @@ BEGIN
     FROM public."ProjectCharacter" AS actual
     LEFT JOIN (VALUES
         ('kaena-homusaki', 'Kaena Homusaki', NULL::TEXT, 1),
-        ('haruki-fujinori', 'Haruki Fujinori', NULL::TEXT, 2),
-        ('rinka-mikazari', 'Rinka Mikazari', 'Rin'::TEXT, 3),
-        ('daichi-gebara', 'Daichi Gebara', NULL::TEXT, 4),
+        ('haruki-shinamori', 'Haruki Shinamori', NULL::TEXT, 2),
+        ('rinka', 'Rinka', NULL::TEXT, 3),
+        ('daichi', 'Daichi', NULL::TEXT, 4),
         ('mizuki-yemari', 'Mizuki Yemari', NULL::TEXT, 5)
     ) AS expected(slug, name, alias, sort_order)
       ON expected.slug = actual."slug"
@@ -153,9 +153,9 @@ SELECT
 FROM public."Project" AS project
 CROSS JOIN (VALUES
     ('kaena-homusaki', 'Kaena Homusaki', NULL::TEXT, 1),
-    ('haruki-fujinori', 'Haruki Fujinori', NULL::TEXT, 2),
-    ('rinka-mikazari', 'Rinka Mikazari', 'Rin'::TEXT, 3),
-    ('daichi-gebara', 'Daichi Gebara', NULL::TEXT, 4),
+    ('haruki-shinamori', 'Haruki Shinamori', NULL::TEXT, 2),
+    ('rinka', 'Rinka', NULL::TEXT, 3),
+    ('daichi', 'Daichi', NULL::TEXT, 4),
     ('mizuki-yemari', 'Mizuki Yemari', NULL::TEXT, 5)
 ) AS expected(slug, name, alias, sort_order)
 WHERE project."slug" = 'yorutsugi'
@@ -191,9 +191,9 @@ BEGIN
     FROM public."ProjectCharacter" AS actual
     LEFT JOIN (VALUES
         ('kaena-homusaki', 'Kaena Homusaki', NULL::TEXT, 1),
-        ('haruki-fujinori', 'Haruki Fujinori', NULL::TEXT, 2),
-        ('rinka-mikazari', 'Rinka Mikazari', 'Rin'::TEXT, 3),
-        ('daichi-gebara', 'Daichi Gebara', NULL::TEXT, 4),
+        ('haruki-shinamori', 'Haruki Shinamori', NULL::TEXT, 2),
+        ('rinka', 'Rinka', NULL::TEXT, 3),
+        ('daichi', 'Daichi', NULL::TEXT, 4),
         ('mizuki-yemari', 'Mizuki Yemari', NULL::TEXT, 5)
     ) AS expected(slug, name, alias, sort_order)
       ON expected.slug = actual."slug"
