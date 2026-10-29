@@ -48,6 +48,18 @@ const capabilities = [
   },
 ];
 
+const creationProcess = [
+  { index: '00', title: 'THE UNKNOWN', description: 'Toda creación empieza antes de tener forma.' },
+  { index: '01', title: 'IMAGINE', description: 'Definimos una posibilidad y una dirección.' },
+  { index: '02', title: 'DESIGN', description: 'Convertimos la idea en estructura, lenguaje y experiencia.' },
+  { index: '03', title: 'BUILD', description: 'La hacemos funcional, tangible y técnicamente sólida.' },
+  {
+    index: '04',
+    title: 'BRING IT TO LIFE',
+    description: 'El concepto deja de ser una posibilidad y se convierte en algo real.',
+  },
+];
+
 const KYORU_INTRO_SESSION_KEY = 'kyoru-intro-seen-v1';
 
 const shouldPlayKyoruIntro = () => {
@@ -236,6 +248,41 @@ const Home: React.FC = () => {
               </Link>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="kyoru-process" aria-labelledby="home-process-title">
+        <div className="kyoru-process__inner">
+          <header className="kyoru-process__header">
+            <div className="kyoru-section-index">
+              <span>05</span>
+              <span>PROCESS</span>
+            </div>
+            <h2 id="home-process-title" className="kyoru-process__title">
+              <span>FROM NOTHING</span>
+              <span>TO SOMETHING.</span>
+            </h2>
+            <p className="kyoru-process__intro">Una señal se convierte en dirección, estructura y finalmente en algo real.</p>
+          </header>
+
+          <ol className="kyoru-process__sequence">
+            {creationProcess.map((step, stage) => (
+              <li key={step.index} className="kyoru-process__step" data-stage={stage}>
+                <div className="kyoru-process__entity" aria-hidden="true">
+                  <span className="kyoru-process__entity-point" />
+                  <span className="kyoru-process__entity-signal" />
+                  <span className="kyoru-process__entity-frame" />
+                  <span className="kyoru-process__entity-plane" />
+                  <span className="kyoru-process__entity-result">REAL</span>
+                </div>
+                <div className="kyoru-process__step-copy">
+                  <span className="kyoru-process__step-index">{step.index}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
