@@ -1479,6 +1479,285 @@
     writing-mode: vertical-rl;
   }
 
+  .kyoru-contact-finale {
+    position: relative;
+    overflow: hidden;
+    border-top: 1px solid rgba(245, 247, 250, 0.12);
+    background: #050506;
+    color: #f5f7fa;
+  }
+
+  .kyoru-contact-finale::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: clamp(1.25rem, 6vw, 6rem);
+    width: min(24vw, 22rem);
+    height: 1px;
+    background: #b3172f;
+    transform: rotate(-8deg);
+    transform-origin: right;
+  }
+
+  .kyoru-contact-finale__inner {
+    position: relative;
+    width: min(100%, 100rem);
+    margin: 0 auto;
+    padding: clamp(5rem, 9vw, 9rem) clamp(1.25rem, 5vw, 5.5rem) clamp(4.5rem, 8vw, 7.5rem);
+  }
+
+  .kyoru-contact-finale__statement {
+    display: grid;
+    grid-template-columns: minmax(0, 2.4fr) minmax(16rem, 0.7fr);
+    gap: clamp(2rem, 5vw, 6rem);
+    align-items: end;
+    margin-top: clamp(2.75rem, 6vw, 6rem);
+  }
+
+  .kyoru-contact-finale__statement h2 {
+    margin: 0;
+    font-size: clamp(4.5rem, 9.8vw, 9.75rem);
+    font-weight: 950;
+    line-height: 0.8;
+    letter-spacing: -0.075em;
+    text-wrap: balance;
+  }
+
+  .kyoru-contact-finale__statement h2 span {
+    display: block;
+  }
+
+  .kyoru-contact-finale__statement h2 span:last-child {
+    color: #b3172f;
+  }
+
+  .kyoru-contact-finale__statement p {
+    max-width: 28rem;
+    margin: 0;
+    padding-bottom: 0.35rem;
+    color: rgba(245, 247, 250, 0.66);
+    font-size: clamp(0.95rem, 1.25vw, 1.125rem);
+    line-height: 1.75;
+  }
+
+  .kyoru-contact-finale__action {
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: auto minmax(2rem, 1fr) auto;
+    gap: clamp(1rem, 3vw, 3rem);
+    align-items: center;
+    min-height: clamp(6rem, 9vw, 8rem);
+    margin-top: clamp(3rem, 7vw, 7rem);
+    border-top: 1px solid rgba(245, 247, 250, 0.4);
+    border-bottom: 1px solid rgba(245, 247, 250, 0.4);
+    color: #f5f7fa;
+    font-size: clamp(1rem, 1.55vw, 1.35rem);
+    font-weight: 900;
+    letter-spacing: 0.16em;
+    text-decoration: none;
+    transition: color 220ms ease, padding 220ms ease;
+  }
+
+  .kyoru-contact-finale__action::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    background: #b3172f;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .kyoru-contact-finale__action-line {
+    height: 1px;
+    background: currentColor;
+    opacity: 0.38;
+  }
+
+  .kyoru-contact-finale__action:hover {
+    padding-inline: clamp(1rem, 2vw, 2rem);
+  }
+
+  .kyoru-contact-finale__action:hover::before {
+    transform: scaleX(1);
+    transform-origin: left;
+  }
+
+  .kyoru-contact-finale__action:active {
+    color: rgba(245, 247, 250, 0.72);
+  }
+
+  .kyoru-contact-finale__action:focus-visible {
+    outline: 2px solid #f5f7fa;
+    outline-offset: 5px;
+  }
+
+  .kyoru-contact-finale__signal {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1rem;
+    color: rgba(245, 247, 250, 0.22);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.22em;
+  }
+
+  .kyoru-footer {
+    position: relative;
+    border-top: 1px solid rgba(245, 247, 250, 0.16);
+    background: #020203;
+    color: #f5f7fa;
+  }
+
+  .kyoru-footer__inner {
+    width: min(100%, 100rem);
+    margin: 0 auto;
+    padding: clamp(3.5rem, 7vw, 7rem) clamp(1.25rem, 5vw, 5.5rem) clamp(1.75rem, 3vw, 2.75rem);
+  }
+
+  .kyoru-footer__brand {
+    display: grid;
+    grid-template-columns: minmax(0, 1.65fr) minmax(16rem, 0.55fr);
+    gap: clamp(2rem, 6vw, 7rem);
+    align-items: end;
+  }
+
+  .kyoru-footer__wordmark {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.22em;
+    color: #f5f7fa;
+    font-size: clamp(3.75rem, 9vw, 9rem);
+    font-weight: 950;
+    line-height: 0.78;
+    letter-spacing: -0.075em;
+    text-decoration: none;
+  }
+
+  .kyoru-footer__wordmark span {
+    color: rgba(245, 247, 250, 0.25);
+    transition: color 180ms ease;
+  }
+
+  .kyoru-footer__wordmark:hover span {
+    color: #b3172f;
+  }
+
+  .kyoru-footer__wordmark:focus-visible,
+  .kyoru-footer__nav a:focus-visible,
+  .kyoru-footer__original a:focus-visible {
+    outline: 2px solid #f5f7fa;
+    outline-offset: 5px;
+  }
+
+  .kyoru-footer__brand > p {
+    max-width: 27rem;
+    margin: 0;
+    color: rgba(245, 247, 250, 0.52);
+    font-size: 0.875rem;
+    line-height: 1.75;
+  }
+
+  .kyoru-footer__columns {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.75fr) minmax(18rem, 1.25fr);
+    gap: clamp(3rem, 8vw, 9rem);
+    margin-top: clamp(3.5rem, 7vw, 7rem);
+    padding-top: clamp(2rem, 3vw, 3rem);
+    border-top: 1px solid rgba(245, 247, 250, 0.16);
+  }
+
+  .kyoru-footer__nav h2,
+  .kyoru-footer__original h2 {
+    margin: 0 0 1.25rem;
+    color: rgba(245, 247, 250, 0.36);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.2em;
+  }
+
+  .kyoru-footer__nav ul {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .kyoru-footer__nav li {
+    border-bottom: 1px solid rgba(245, 247, 250, 0.12);
+  }
+
+  .kyoru-footer__nav a {
+    display: flex;
+    align-items: center;
+    min-height: 3.25rem;
+    color: rgba(245, 247, 250, 0.72);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: color 180ms ease, padding 180ms ease;
+  }
+
+  .kyoru-footer__nav a:hover {
+    padding-left: 0.5rem;
+    color: #f5f7fa;
+  }
+
+  .kyoru-footer__original > a {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 1.5rem;
+    align-items: center;
+    min-height: 5rem;
+    border-top: 1px solid rgba(245, 247, 250, 0.38);
+    border-bottom: 1px solid rgba(245, 247, 250, 0.38);
+    color: #f5f7fa;
+    text-decoration: none;
+    transition: border-color 180ms ease, color 180ms ease, padding 180ms ease;
+  }
+
+  .kyoru-footer__original strong,
+  .kyoru-footer__original small {
+    display: block;
+  }
+
+  .kyoru-footer__original strong {
+    font-size: clamp(1.25rem, 2vw, 1.75rem);
+    letter-spacing: 0.12em;
+  }
+
+  .kyoru-footer__original small {
+    margin-top: 0.3rem;
+    color: rgba(245, 247, 250, 0.42);
+    font-size: 0.6875rem;
+    letter-spacing: 0.08em;
+  }
+
+  .kyoru-footer__original > a:hover {
+    padding-inline: 0.75rem;
+    border-color: #b3172f;
+    color: #d72b46;
+  }
+
+  .kyoru-footer__bottom {
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+    margin-top: clamp(3rem, 6vw, 6rem);
+    padding-top: 1.25rem;
+    border-top: 1px solid rgba(245, 247, 250, 0.1);
+    color: rgba(245, 247, 250, 0.32);
+    font-size: 0.625rem;
+    line-height: 1.6;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
   .kyoru-intro {
     position: absolute;
     inset: 0;
@@ -2076,6 +2355,78 @@
     .kyoru-showreel__word {
       font-size: clamp(6.5rem, 30vw, 9rem);
     }
+
+    .kyoru-contact-finale__inner {
+      padding: 4.5rem 1rem 4rem;
+    }
+
+    .kyoru-contact-finale__statement {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+      margin-top: 3rem;
+    }
+
+    .kyoru-contact-finale__statement h2 {
+      font-size: clamp(3.35rem, 16vw, 5.25rem);
+      line-height: 0.84;
+      letter-spacing: -0.065em;
+    }
+
+    .kyoru-contact-finale__statement p {
+      max-width: 31rem;
+      padding-bottom: 0;
+    }
+
+    .kyoru-contact-finale__action {
+      grid-template-columns: auto minmax(1.5rem, 1fr) auto;
+      gap: 0.8rem;
+      min-height: 5.5rem;
+      margin-top: 3.5rem;
+      font-size: 0.8125rem;
+      letter-spacing: 0.11em;
+    }
+
+    .kyoru-contact-finale__action:hover {
+      padding-inline: 0.75rem;
+    }
+
+    .kyoru-contact-finale__signal {
+      letter-spacing: 0.16em;
+    }
+
+    .kyoru-footer__inner {
+      padding: 4rem 1rem 1.75rem;
+    }
+
+    .kyoru-footer__brand {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.25rem;
+    }
+
+    .kyoru-footer__wordmark {
+      font-size: clamp(3.7rem, 18.5vw, 6rem);
+      line-height: 0.82;
+    }
+
+    .kyoru-footer__brand > p {
+      max-width: 31rem;
+    }
+
+    .kyoru-footer__columns {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 3rem;
+      margin-top: 4rem;
+    }
+
+    .kyoru-footer__nav ul {
+      gap: 0 1rem;
+    }
+
+    .kyoru-footer__bottom {
+      flex-direction: column;
+      gap: 0.65rem;
+      margin-top: 4rem;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
@@ -2102,7 +2453,12 @@
     .kyoru-capability,
     .kyoru-capability::before,
     .kyoru-capability__description,
-    .kyoru-capability__arrow {
+    .kyoru-capability__arrow,
+    .kyoru-contact-finale__action,
+    .kyoru-contact-finale__action::before,
+    .kyoru-footer__wordmark span,
+    .kyoru-footer__nav a,
+    .kyoru-footer__original > a {
       transition: none;
     }
 

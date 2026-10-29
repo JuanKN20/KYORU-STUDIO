@@ -1,31 +1,8 @@
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Cpu, Sparkles, Target, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import KyoruIntro from '../components/KyoruIntro';
 import { yorutsugi } from '../data/yorutsugi';
-
-const differentiators = [
-  {
-    title: 'Creatividad con enfoque técnico',
-    description: 'Diseñamos soluciones visuales con base sólida en arquitectura y desarrollo.',
-    icon: Zap,
-  },
-  {
-    title: 'Experiencias visualmente impactantes',
-    description: 'Construimos productos con identidad estética fuerte y coherencia de marca.',
-    icon: Sparkles,
-  },
-  {
-    title: 'Soluciones adaptadas a cada proyecto',
-    description: 'Cada propuesta se ajusta a objetivos reales, alcance y tipo de audiencia.',
-    icon: Target,
-  },
-  {
-    title: 'Integración de arte, tecnología e innovación',
-    description: 'Unimos dirección creativa y ejecución técnica para producir experiencias premium.',
-    icon: Cpu,
-  },
-];
 
 const capabilities = [
   {
@@ -341,40 +318,30 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      <section className="akai-page pt-2 md:pt-6">
-        <div className="flex items-center gap-3">
-          <div className="akai-hud-line" />
-          <p className="text-xs uppercase tracking-[0.24em] text-red-300">Diferenciales</p>
-        </div>
-        <h2 className="akai-section-title mt-3">Por qué Kyoru Studio</h2>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {differentiators.map((item) => (
-            <article key={item.title} className="akai-card p-6">
-              <div className="inline-flex rounded-xl border border-red-500/35 bg-red-950/40 p-2 text-red-200">
-                <item.icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-white">{item.title}</h3>
-              <p className="mt-2 text-sm text-zinc-300">{item.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+      <section className="kyoru-contact-finale" aria-labelledby="home-contact-title">
+        <div className="kyoru-contact-finale__inner">
+          <div className="kyoru-section-index">
+            <span>08</span>
+            <span>START A PROJECT</span>
+          </div>
 
-      <section className="akai-page pb-20 pt-2 md:pt-4">
-        <div className="akai-panel p-6 text-center md:p-8">
-          <p className="text-xs uppercase tracking-[0.24em] text-red-300">Siguiente paso</p>
-          <h2 className="mt-3 text-2xl font-bold text-white md:text-3xl">Hablemos de tu proyecto</h2>
-          <p className="mx-auto mt-3 max-w-3xl text-sm text-zinc-300 md:text-base">
-            Si estás construyendo una marca, producto o experiencia digital, en Kyoru Studio podemos ayudarte a diseñarlo y
-            desarrollarlo con un enfoque creativo y tecnológico.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link to="/contact" className="akai-btn-primary">
-              Iniciar conversación
-            </Link>
-            <Link to="/services" className="akai-btn-secondary">
-              Revisar servicios
-            </Link>
+          <div className="kyoru-contact-finale__statement">
+            <h2 id="home-contact-title">
+              <span>WHAT SHOULD</span>
+              <span>EXIST NEXT?</span>
+            </h2>
+            <p>Cuéntanos qué estás imaginando. Podemos convertir esa posibilidad en una experiencia, producto o mundo real.</p>
+          </div>
+
+          <Link to="/contact" className="kyoru-contact-finale__action">
+            <span>START A PROJECT</span>
+            <span className="kyoru-contact-finale__action-line" aria-hidden="true" />
+            <ArrowUpRight className="h-7 w-7" aria-hidden="true" />
+          </Link>
+
+          <div className="kyoru-contact-finale__signal" aria-hidden="true">
+            <span>UNKNOWN</span>
+            <span>NEXT</span>
           </div>
         </div>
       </section>
