@@ -286,6 +286,61 @@ const Home: React.FC = () => {
         </div>
       </section>
 
+      <section className="kyoru-studio" aria-labelledby="home-studio-title">
+        <div className="kyoru-studio__inner">
+          <div className="kyoru-section-index">
+            <span>06</span>
+            <span>STUDIO</span>
+          </div>
+
+          <div className="kyoru-studio__statement">
+            <h2 id="home-studio-title">
+              <span>WE DON'T WORK</span>
+              <span>IN ONE MEDIUM.</span>
+            </h2>
+            <p>
+              Kyoru Studio es un estudio creativo y tecnológico que construye experiencias, productos y mundos combinando dirección
+              artística, desarrollo y producción multimedia.
+            </p>
+          </div>
+
+          <div className="kyoru-studio__territories" aria-label="Territorios creativos de Kyoru Studio">
+            <p>ART <span aria-hidden="true">×</span> TECHNOLOGY <span aria-hidden="true">×</span> STORY</p>
+            <ul>
+              {['DIGITAL', 'MOTION', 'WORLDS'].map((territory, index) => (
+                <li key={territory}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{territory}</strong>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="kyoru-showreel" aria-labelledby="home-showreel-title">
+        <div className="kyoru-showreel__inner">
+          <div className="kyoru-showreel__header">
+            <div className="kyoru-section-index">
+              <span>07</span>
+              <span>MOTION / SHOWREEL</span>
+            </div>
+            <div>
+              <h2 id="home-showreel-title">KYORU IN MOTION</h2>
+              <p>Imagen, sonido y movimiento reunidos como una sola experiencia.</p>
+            </div>
+          </div>
+
+          <div className="kyoru-showreel__stage" aria-hidden="true" data-kyoru-media-slot="showreel">
+            <span className="kyoru-showreel__word">MOTION</span>
+            <span className="kyoru-showreel__signal" />
+            <span className="kyoru-showreel__frame kyoru-showreel__frame--primary" />
+            <span className="kyoru-showreel__frame kyoru-showreel__frame--secondary" />
+            <span className="kyoru-showreel__label">KYORU / MOVING IMAGE</span>
+          </div>
+        </div>
+      </section>
+
       <section className="akai-page pt-2 md:pt-6">
         <div className="flex items-center gap-3">
           <div className="akai-hud-line" />

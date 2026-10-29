@@ -1240,6 +1240,245 @@
     }
   }
 
+  .kyoru-studio {
+    position: relative;
+    overflow: hidden;
+    background: #e8e9eb;
+    color: #09090c;
+  }
+
+  .kyoru-studio::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(9, 9, 12, 0.2), rgba(179, 23, 47, 0.82) 76%, transparent);
+  }
+
+  .kyoru-studio__inner {
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: clamp(4.5rem, 9vw, 7.5rem) 1rem clamp(5.5rem, 11vw, 9rem);
+  }
+
+  .kyoru-studio .kyoru-section-index {
+    color: rgba(9, 9, 12, 0.58);
+  }
+
+  .kyoru-studio .kyoru-section-index span:first-child {
+    color: #09090c;
+  }
+
+  .kyoru-studio__statement {
+    display: grid;
+    margin-top: clamp(3.5rem, 8vw, 7rem);
+    grid-template-columns: minmax(0, 1.35fr) minmax(19rem, 0.65fr);
+    gap: clamp(2.5rem, 8vw, 7rem);
+    align-items: end;
+  }
+
+  .kyoru-studio__statement h2 {
+    margin: 0;
+    font-size: clamp(4rem, 9vw, 8.75rem);
+    font-weight: 900;
+    letter-spacing: -0.075em;
+    line-height: 0.78;
+    text-transform: uppercase;
+  }
+
+  .kyoru-studio__statement h2 span {
+    display: block;
+  }
+
+  .kyoru-studio__statement h2 span:last-child {
+    margin-top: 0.14em;
+    color: transparent;
+    -webkit-text-stroke: 1.5px rgba(9, 9, 12, 0.48);
+  }
+
+  .kyoru-studio__statement > p {
+    margin: 0 0 0.35rem;
+    padding-top: 1.4rem;
+    border-top: 1px solid rgba(179, 23, 47, 0.75);
+    color: rgba(9, 9, 12, 0.7);
+    font-size: clamp(0.95rem, 1.35vw, 1.1rem);
+    line-height: 1.7;
+  }
+
+  .kyoru-studio__territories {
+    margin-top: clamp(5rem, 11vw, 9rem);
+  }
+
+  .kyoru-studio__territories > p {
+    margin: 0;
+    color: #09090c;
+    font-size: clamp(2.4rem, 6.8vw, 6.5rem);
+    font-weight: 900;
+    letter-spacing: -0.065em;
+    line-height: 0.88;
+    text-transform: uppercase;
+  }
+
+  .kyoru-studio__territories > p span {
+    color: #b3172f;
+    font-weight: 500;
+  }
+
+  .kyoru-studio__territories ul {
+    display: grid;
+    margin: clamp(2.75rem, 6vw, 5rem) 0 0;
+    padding: 0;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    list-style: none;
+    border-top: 1px solid rgba(9, 9, 12, 0.24);
+  }
+
+  .kyoru-studio__territories li {
+    display: flex;
+    min-height: 7rem;
+    align-items: center;
+    gap: 1.25rem;
+    border-bottom: 1px solid rgba(9, 9, 12, 0.24);
+  }
+
+  .kyoru-studio__territories li + li {
+    padding-left: 1.5rem;
+    border-left: 1px solid rgba(9, 9, 12, 0.18);
+  }
+
+  .kyoru-studio__territories li span {
+    color: #b3172f;
+    font-size: 0.625rem;
+    font-weight: 900;
+  }
+
+  .kyoru-studio__territories li strong {
+    font-size: clamp(1.5rem, 3vw, 3rem);
+    font-weight: 900;
+    letter-spacing: -0.05em;
+  }
+
+  .kyoru-showreel {
+    position: relative;
+    overflow: hidden;
+    background: #050506;
+    color: #f5f7fa;
+  }
+
+  .kyoru-showreel::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(179, 23, 47, 0.9) 22%, rgba(245, 247, 250, 0.14) 72%, transparent);
+  }
+
+  .kyoru-showreel__inner {
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: clamp(4.75rem, 10vw, 8rem) 1rem clamp(5rem, 10vw, 8rem);
+  }
+
+  .kyoru-showreel__header {
+    display: grid;
+    grid-template-columns: minmax(14rem, 0.55fr) minmax(0, 1fr);
+    gap: 2rem;
+    align-items: end;
+  }
+
+  .kyoru-showreel__header > div:last-child {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 0.55fr);
+    gap: 2rem;
+    align-items: end;
+  }
+
+  .kyoru-showreel__header h2 {
+    margin: 0;
+    font-size: clamp(3rem, 7vw, 7rem);
+    font-weight: 900;
+    letter-spacing: -0.07em;
+    line-height: 0.8;
+    text-transform: uppercase;
+  }
+
+  .kyoru-showreel__header p {
+    margin: 0;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(179, 23, 47, 0.8);
+    color: rgba(245, 247, 250, 0.67);
+    font-size: 0.9rem;
+    line-height: 1.6;
+  }
+
+  .kyoru-showreel__stage {
+    position: relative;
+    aspect-ratio: 16 / 7;
+    min-height: 24rem;
+    margin-top: clamp(3rem, 7vw, 6rem);
+    overflow: hidden;
+    border-top: 1px solid rgba(245, 247, 250, 0.16);
+    border-bottom: 1px solid rgba(245, 247, 250, 0.12);
+    background:
+      linear-gradient(118deg, transparent 0 37%, rgba(245, 247, 250, 0.035) 37% 52%, transparent 52%),
+      linear-gradient(105deg, transparent 0 67%, rgba(179, 23, 47, 0.1) 67% 80%, transparent 80%),
+      #09090c;
+  }
+
+  .kyoru-showreel__word {
+    position: absolute;
+    right: -0.035em;
+    bottom: 2%;
+    color: rgba(245, 247, 250, 0.055);
+    font-size: clamp(8rem, 21vw, 18rem);
+    font-weight: 900;
+    letter-spacing: -0.08em;
+    line-height: 0.74;
+  }
+
+  .kyoru-showreel__signal {
+    position: absolute;
+    top: 52%;
+    left: 7%;
+    width: 87%;
+    height: 2px;
+    background: #b3172f;
+    transform: rotate(-5deg);
+  }
+
+  .kyoru-showreel__frame {
+    position: absolute;
+    border-color: rgba(245, 247, 250, 0.15);
+  }
+
+  .kyoru-showreel__frame--primary {
+    inset: 8% 7% 11% 13%;
+    border: 1px solid rgba(245, 247, 250, 0.09);
+    clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+  }
+
+  .kyoru-showreel__frame--secondary {
+    top: 25%;
+    left: 7%;
+    width: 22%;
+    height: 38%;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+
+  .kyoru-showreel__label {
+    position: absolute;
+    right: 1.25rem;
+    bottom: 1.25rem;
+    color: rgba(245, 247, 250, 0.48);
+    font-size: 0.625rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    writing-mode: vertical-rl;
+  }
+
   .kyoru-intro {
     position: absolute;
     inset: 0;
@@ -1569,6 +1808,20 @@
     .kyoru-process__title {
       max-width: 10ch;
     }
+
+    .kyoru-studio__statement {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2.5rem;
+    }
+
+    .kyoru-studio__statement > p {
+      max-width: 36rem;
+      justify-self: end;
+    }
+
+    .kyoru-showreel__header {
+      grid-template-columns: minmax(11rem, 0.45fr) minmax(0, 1fr);
+    }
   }
 
   @media (max-width: 767px) {
@@ -1752,6 +2005,76 @@
 
     .kyoru-process__step p {
       font-size: 0.8125rem;
+    }
+
+    .kyoru-studio__inner,
+    .kyoru-showreel__inner {
+      padding-right: 1rem;
+      padding-left: 1rem;
+    }
+
+    .kyoru-studio__statement {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 2rem;
+    }
+
+    .kyoru-studio__statement h2 {
+      font-size: clamp(3.2rem, 15vw, 5rem);
+    }
+
+    .kyoru-studio__statement > p {
+      max-width: 34rem;
+    }
+
+    .kyoru-studio__territories {
+      margin-top: 4.5rem;
+    }
+
+    .kyoru-studio__territories > p {
+      font-size: clamp(2.65rem, 13vw, 4.5rem);
+    }
+
+    .kyoru-studio__territories ul {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .kyoru-studio__territories li {
+      min-height: 5rem;
+    }
+
+    .kyoru-studio__territories li + li {
+      padding-left: 0;
+      border-left: 0;
+    }
+
+    .kyoru-showreel__header,
+    .kyoru-showreel__header > div:last-child {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .kyoru-showreel__header {
+      gap: 2.75rem;
+    }
+
+    .kyoru-showreel__header > div:last-child {
+      gap: 1.75rem;
+    }
+
+    .kyoru-showreel__header h2 {
+      font-size: clamp(3.25rem, 15vw, 5rem);
+    }
+
+    .kyoru-showreel__header p {
+      max-width: 28rem;
+    }
+
+    .kyoru-showreel__stage {
+      min-height: 20rem;
+      aspect-ratio: 4 / 5;
+    }
+
+    .kyoru-showreel__word {
+      font-size: clamp(6.5rem, 30vw, 9rem);
     }
   }
 
