@@ -8,6 +8,12 @@
     --akai-red: #b3172f;
     --akai-red-glow: #ff3b5c;
     --akai-white: #f5f7fa;
+    --kyoru-motion-instant: 120ms;
+    --kyoru-motion-fast: 180ms;
+    --kyoru-motion-standard: 420ms;
+    --kyoru-motion-deliberate: 720ms;
+    --kyoru-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --kyoru-ease-cut: cubic-bezier(0.76, 0, 0.24, 1);
   }
 
   * {
@@ -165,7 +171,7 @@
     overflow: hidden;
     border: 1px solid rgba(245, 247, 250, 0.16);
     background: #050506;
-    transition: border-color 180ms ease;
+    transition: none;
   }
 
   .kyoru-navbar__mark::before {
@@ -181,11 +187,6 @@
   .kyoru-navbar__mark img {
     width: 100%;
     height: 100%;
-  }
-
-  .kyoru-navbar__brand:hover .kyoru-navbar__mark,
-  .kyoru-menu__brand:hover .kyoru-navbar__mark {
-    border-color: rgba(179, 23, 47, 0.76);
   }
 
   .kyoru-navbar__brand-copy {
@@ -232,7 +233,7 @@
     align-content: center;
     color: rgba(245, 247, 250, 0.68);
     text-decoration: none;
-    transition: color 180ms ease;
+    transition: none;
   }
 
   .kyoru-navbar__link::after {
@@ -245,7 +246,7 @@
     background: #b3172f;
     transform: scaleX(0);
     transform-origin: right;
-    transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-navbar__link > span:first-child {
@@ -253,7 +254,7 @@
     font-size: 0.5rem;
     font-weight: 800;
     letter-spacing: 0.18em;
-    transition: color 180ms ease;
+    transition: none;
   }
 
   .kyoru-navbar__link > span:last-child {
@@ -263,12 +264,10 @@
     letter-spacing: 0.06em;
   }
 
-  .kyoru-navbar__link:hover,
   .kyoru-navbar__link.is-active {
     color: #f5f7fa;
   }
 
-  .kyoru-navbar__link:hover::after,
   .kyoru-navbar__link.is-active::after {
     transform: scaleX(1);
     transform-origin: left;
@@ -296,7 +295,7 @@
     font-weight: 850;
     letter-spacing: 0.08em;
     text-decoration: none;
-    transition: color 200ms ease, border-color 200ms ease;
+    transition: none;
   }
 
   .kyoru-navbar__cta::before {
@@ -306,21 +305,19 @@
     inset: 0;
     background: #b3172f;
     transform: translateY(calc(100% - 2px));
-    transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-navbar__cta svg {
     width: 1rem;
     height: 1rem;
-    transition: transform 200ms ease;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
-  .kyoru-navbar__cta:hover::before,
   .kyoru-navbar__cta.is-active::before {
     transform: translateY(0);
   }
 
-  .kyoru-navbar__cta:hover svg,
   .kyoru-navbar__cta.is-active svg {
     transform: translateX(0.2rem);
   }
@@ -364,20 +361,12 @@
     display: block;
     height: 1px;
     background: currentColor;
-    transition: transform 180ms ease;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-navbar__menu-lines i:last-child {
     width: 70%;
     justify-self: end;
-  }
-
-  .kyoru-navbar__menu-trigger:hover .kyoru-navbar__menu-lines i:first-child {
-    transform: translateX(0.2rem);
-  }
-
-  .kyoru-navbar__menu-trigger:hover .kyoru-navbar__menu-lines i:last-child {
-    transform: translateX(-0.2rem);
   }
 
   .kyoru-menu {
@@ -401,9 +390,9 @@
     transform: translateY(-1rem);
     clip-path: inset(0 0 100% 0);
     transition:
-      clip-path 320ms cubic-bezier(0.76, 0, 0.24, 1),
-      opacity 180ms ease,
-      transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
+      clip-path 280ms var(--kyoru-ease-cut),
+      opacity var(--kyoru-motion-fast) var(--kyoru-ease-out),
+      transform 260ms var(--kyoru-ease-out);
   }
 
   .kyoru-menu::before {
@@ -480,7 +469,7 @@
     min-height: clamp(3.8rem, 8vh, 5rem);
     color: rgba(245, 247, 250, 0.56);
     text-decoration: none;
-    transition: color 180ms ease, padding 220ms ease;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-menu__link::before {
@@ -488,10 +477,12 @@
     position: absolute;
     top: 50%;
     left: 0;
-    width: 0;
+    width: 0.55rem;
     height: 1px;
     background: #b3172f;
-    transition: width 220ms cubic-bezier(0.16, 1, 0.3, 1);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-menu__link > span {
@@ -514,21 +505,20 @@
     height: 1.1rem;
     opacity: 0;
     transform: translateX(-0.4rem);
-    transition: opacity 180ms ease, transform 180ms ease;
+    transition:
+      opacity var(--kyoru-motion-fast) var(--kyoru-ease-out),
+      transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
-  .kyoru-menu__link:hover,
   .kyoru-menu__link.is-active {
-    padding-left: 1rem;
     color: #f5f7fa;
+    transform: translateX(0.6rem);
   }
 
-  .kyoru-menu__link:hover::before,
   .kyoru-menu__link.is-active::before {
-    width: 0.55rem;
+    transform: scaleX(1);
   }
 
-  .kyoru-menu__link:hover svg,
   .kyoru-menu__link.is-active svg {
     opacity: 1;
     transform: translateX(0);
@@ -578,11 +568,7 @@
     width: 1rem;
     height: 1rem;
     align-self: center;
-    transition: transform 180ms ease;
-  }
-
-  .kyoru-menu__original:hover svg {
-    transform: translateX(0.3rem);
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   @media (min-width: 1024px) {
@@ -709,7 +695,7 @@
     letter-spacing: 0.18em;
     line-height: 1.4;
     text-transform: uppercase;
-    animation: kyoru-hero-detail-in 620ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--kyoru-hero-delay) + 140ms) both;
+    animation: kyoru-hero-detail-in var(--kyoru-motion-standard) var(--kyoru-ease-out) calc(var(--kyoru-hero-delay) + 120ms) both;
   }
 
   .kyoru-hero__title {
@@ -732,7 +718,7 @@
     max-width: 100%;
     overflow: hidden;
     padding-bottom: 0.08em;
-    animation: kyoru-hero-line-in 860ms cubic-bezier(0.16, 1, 0.3, 1) var(--kyoru-hero-delay) both;
+    animation: kyoru-hero-line-in var(--kyoru-motion-deliberate) var(--kyoru-ease-out) var(--kyoru-hero-delay) both;
   }
 
   .kyoru-hero__title-line > span {
@@ -757,7 +743,7 @@
     font-size: clamp(0.95rem, 1.4vw, 1.125rem);
     line-height: 1.65;
     overflow-wrap: anywhere;
-    animation: kyoru-hero-detail-in 680ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--kyoru-hero-delay) + 260ms) both;
+    animation: kyoru-hero-copy-in var(--kyoru-motion-standard) var(--kyoru-ease-out) calc(var(--kyoru-hero-delay) + 250ms) both;
   }
 
   .kyoru-hero__copy::before {
@@ -767,6 +753,8 @@
     height: 1px;
     margin-bottom: 1.25rem;
     background: linear-gradient(90deg, rgba(179, 23, 47, 0.8), rgba(245, 247, 250, 0.12) 58%, transparent);
+    transform-origin: left;
+    animation: kyoru-signal-in var(--kyoru-motion-standard) var(--kyoru-ease-out) calc(var(--kyoru-hero-delay) + 310ms) both;
   }
 
   .kyoru-hero__footer {
@@ -778,7 +766,7 @@
     gap: 2rem;
     align-self: end;
     margin-top: clamp(2.25rem, 5vh, 4rem);
-    animation: kyoru-hero-detail-in 680ms cubic-bezier(0.22, 1, 0.36, 1) calc(var(--kyoru-hero-delay) + 360ms) both;
+    animation: kyoru-hero-detail-in var(--kyoru-motion-standard) var(--kyoru-ease-out) calc(var(--kyoru-hero-delay) + 390ms) both;
   }
 
   .kyoru-hero__actions {
@@ -811,16 +799,11 @@
     height: 1px;
     background: rgba(245, 247, 250, 0.7);
     transform-origin: left;
-    transition: transform 300ms ease, background-color 300ms ease;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-action--explore svg {
-    transition: transform 300ms ease;
-  }
-
-  .kyoru-action--explore:hover .kyoru-action__line {
-    background: #b3172f;
-    transform: scaleX(1.08);
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-action--explore:focus-visible .kyoru-action__line {
@@ -832,22 +815,16 @@
     transform: translateX(0.25rem);
   }
 
-  .kyoru-action--explore:hover svg {
-    transform: translateX(0.25rem);
-  }
-
   .kyoru-action--commercial {
     border: 1px solid rgba(179, 23, 47, 0.72);
     background: #b3172f;
     padding: 0.95rem 1.15rem;
     color: #ffffff;
-    transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease;
+    transition: transform var(--kyoru-motion-instant) var(--kyoru-ease-out);
   }
 
-  .kyoru-action--commercial:hover {
-    border-color: rgba(245, 247, 250, 0.76);
-    background: #f5f7fa;
-    color: #050506;
+  .kyoru-action--commercial:active {
+    transform: scale(0.98);
   }
 
   .kyoru-action:focus-visible {
@@ -894,7 +871,7 @@
       linear-gradient(102deg, transparent 0 62%, rgba(179, 23, 47, 0.038) 62% 76%, transparent 76%),
       linear-gradient(180deg, rgba(18, 18, 22, 0.76), rgba(5, 5, 6, 0.12));
     clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
-    animation: kyoru-media-reveal 960ms cubic-bezier(0.16, 1, 0.3, 1) calc(var(--kyoru-hero-delay) + 80ms) both;
+    animation: kyoru-media-reveal var(--kyoru-motion-deliberate) var(--kyoru-ease-cut) calc(var(--kyoru-hero-delay) + 70ms) both;
   }
 
   .kyoru-hero__media-word {
@@ -976,6 +953,7 @@
     box-shadow: 0 0 12px rgba(179, 23, 47, 0.24);
     transform: rotate(-6deg);
     transform-origin: right;
+    animation: kyoru-hero-signal-in var(--kyoru-motion-standard) var(--kyoru-ease-out) calc(var(--kyoru-hero-delay) + 180ms) both;
   }
 
   .kyoru-hero__media-cut {
@@ -1181,6 +1159,7 @@
     font-weight: 800;
     letter-spacing: 0.14em;
     text-transform: uppercase;
+    transition: transform var(--kyoru-motion-instant) var(--kyoru-ease-out);
   }
 
   .kyoru-inline-action__line {
@@ -1188,22 +1167,24 @@
     height: 1px;
     background: rgba(245, 247, 250, 0.62);
     transform-origin: left;
-    transition: transform 280ms ease, background-color 280ms ease;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-inline-action svg {
-    transition: transform 280ms ease;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
-  .kyoru-inline-action:hover .kyoru-inline-action__line,
   .kyoru-inline-action:focus-visible .kyoru-inline-action__line {
     background: #b3172f;
     transform: scaleX(1.08);
   }
 
-  .kyoru-inline-action:hover svg,
   .kyoru-inline-action:focus-visible svg {
     transform: translateX(0.25rem);
+  }
+
+  .kyoru-inline-action:active {
+    transform: scale(0.98);
   }
 
   .kyoru-inline-action:focus-visible,
@@ -1263,7 +1244,7 @@
     overflow: hidden;
     border-bottom: 1px solid rgba(9, 9, 12, 0.24);
     color: #09090c;
-    transition: color 260ms ease;
+    transition: transform var(--kyoru-motion-instant) var(--kyoru-ease-out);
   }
 
   .kyoru-capability::before {
@@ -1274,15 +1255,13 @@
     background: #09090c;
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 380ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 240ms var(--kyoru-ease-out);
   }
 
-  .kyoru-capability:hover,
   .kyoru-capability:focus-visible {
     color: #f5f7fa;
   }
 
-  .kyoru-capability:hover::before,
   .kyoru-capability:focus-visible::before {
     transform: scaleX(1);
   }
@@ -1306,6 +1285,7 @@
     font-weight: 900;
     letter-spacing: -0.065em;
     line-height: 0.85;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-capability__detail {
@@ -1319,22 +1299,28 @@
     font-weight: 600;
     letter-spacing: 0.04em;
     text-transform: none;
-    transition: color 260ms ease;
+    transition: none;
   }
 
-  .kyoru-capability:hover .kyoru-capability__description,
   .kyoru-capability:focus-visible .kyoru-capability__description {
     color: rgba(245, 247, 250, 0.68);
   }
 
   .kyoru-capability__arrow {
     justify-self: end;
-    transition: transform 260ms ease;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
-  .kyoru-capability:hover .kyoru-capability__arrow,
   .kyoru-capability:focus-visible .kyoru-capability__arrow {
     transform: translate(0.2rem, -0.2rem);
+  }
+
+  .kyoru-capability:focus-visible .kyoru-capability__title {
+    transform: translateX(0.35rem);
+  }
+
+  .kyoru-capability:active {
+    transform: scale(0.995);
   }
 
   .kyoru-original {
@@ -2093,7 +2079,7 @@
     font-weight: 900;
     letter-spacing: 0.16em;
     text-decoration: none;
-    transition: color 220ms ease, padding 220ms ease;
+    transition: transform var(--kyoru-motion-instant) var(--kyoru-ease-out);
   }
 
   .kyoru-contact-finale__action::before {
@@ -2104,7 +2090,7 @@
     background: #b3172f;
     transform: scaleX(0);
     transform-origin: right;
-    transition: transform 280ms cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-contact-finale__action-line {
@@ -2113,17 +2099,17 @@
     opacity: 0.38;
   }
 
-  .kyoru-contact-finale__action:hover {
-    padding-inline: clamp(1rem, 2vw, 2rem);
-  }
-
-  .kyoru-contact-finale__action:hover::before {
-    transform: scaleX(1);
-    transform-origin: left;
-  }
-
   .kyoru-contact-finale__action:active {
     color: rgba(245, 247, 250, 0.72);
+    transform: scale(0.995);
+  }
+
+  .kyoru-contact-finale__action svg {
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
+  }
+
+  .kyoru-contact-finale__action:focus-visible svg {
+    transform: translate(0.25rem, -0.25rem);
   }
 
   .kyoru-contact-finale__action:focus-visible {
@@ -2175,11 +2161,7 @@
 
   .kyoru-footer__wordmark span {
     color: rgba(245, 247, 250, 0.25);
-    transition: color 180ms ease;
-  }
-
-  .kyoru-footer__wordmark:hover span {
-    color: #b3172f;
+    transition: none;
   }
 
   .kyoru-footer__wordmark:focus-visible,
@@ -2237,12 +2219,7 @@
     font-weight: 750;
     letter-spacing: 0.08em;
     text-decoration: none;
-    transition: color 180ms ease, padding 180ms ease;
-  }
-
-  .kyoru-footer__nav a:hover {
-    padding-left: 0.5rem;
-    color: #f5f7fa;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-footer__original > a {
@@ -2255,7 +2232,7 @@
     border-bottom: 1px solid rgba(245, 247, 250, 0.38);
     color: #f5f7fa;
     text-decoration: none;
-    transition: border-color 180ms ease, color 180ms ease, padding 180ms ease;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-footer__original strong,
@@ -2273,12 +2250,6 @@
     color: rgba(245, 247, 250, 0.42);
     font-size: 0.6875rem;
     letter-spacing: 0.08em;
-  }
-
-  .kyoru-footer__original > a:hover {
-    padding-inline: 0.75rem;
-    border-color: #b3172f;
-    color: #d72b46;
   }
 
   .kyoru-footer__bottom {
@@ -2436,6 +2407,21 @@
   @keyframes kyoru-hero-detail-in {
     0% { opacity: 0; transform: translateY(0.75rem); }
     100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes kyoru-hero-copy-in {
+    0% { opacity: 0.35; clip-path: inset(0 100% 0 0); transform: translateX(-0.75rem); }
+    100% { opacity: 1; clip-path: inset(0); transform: translateX(0); }
+  }
+
+  @keyframes kyoru-signal-in {
+    0% { transform: scaleX(0); }
+    100% { transform: scaleX(1); }
+  }
+
+  @keyframes kyoru-hero-signal-in {
+    0% { transform: rotate(-6deg) scaleX(0); }
+    100% { transform: rotate(-6deg) scaleX(1); }
   }
 
   @keyframes kyoru-media-reveal {
@@ -2923,10 +2909,6 @@
       letter-spacing: 0.11em;
     }
 
-    .kyoru-contact-finale__action:hover {
-      padding-inline: 0.75rem;
-    }
-
     .kyoru-contact-finale__signal {
       letter-spacing: 0.16em;
     }
@@ -2966,6 +2948,283 @@
     }
   }
 
+  @keyframes kyoru-view-signal {
+    from { transform: scaleX(0); }
+    to { transform: scaleX(1); }
+  }
+
+  @keyframes kyoru-view-angled-signal {
+    from { transform: rotate(var(--kyoru-view-signal-angle)) scaleX(0); }
+    to { transform: rotate(var(--kyoru-view-signal-angle)) scaleX(1); }
+  }
+
+  @keyframes kyoru-view-cut-up {
+    from {
+      opacity: 0.35;
+      clip-path: inset(0 0 42% 0);
+      transform: translateY(1.2rem);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes kyoru-view-cut-side {
+    from {
+      opacity: 0.35;
+      clip-path: inset(0 32% 0 0);
+      transform: translateX(-1.1rem);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes kyoru-view-depth {
+    from {
+      opacity: 0.5;
+      clip-path: inset(0 8% 8% 0);
+      transform: scale(1.025);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: scale(1);
+    }
+  }
+
+  @keyframes kyoru-view-depth-mobile {
+    from {
+      opacity: 0.65;
+      clip-path: inset(0 4% 5% 0);
+      transform: scale(1.012);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: scale(1);
+    }
+  }
+
+  @keyframes kyoru-contact-signal-view {
+    from { transform: rotate(-8deg) scaleX(0); }
+    to { transform: rotate(-8deg) scaleX(1); }
+  }
+
+  @supports (animation-timeline: view()) {
+    .kyoru-selected-work::before,
+    .kyoru-original::before,
+    .kyoru-process::before,
+    .kyoru-studio::before,
+    .kyoru-showreel::before {
+      transform-origin: left;
+      animation: kyoru-view-signal 1ms linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% cover 22%;
+    }
+
+    .kyoru-contact-finale::before {
+      transform-origin: right;
+      animation: kyoru-contact-signal-view 1ms linear both;
+      animation-timeline: view(block);
+      animation-range: entry 0% cover 24%;
+    }
+
+    .kyoru-selected-work__field,
+    .kyoru-original__visual,
+    .kyoru-showreel__stage {
+      animation: kyoru-view-depth 1ms var(--kyoru-ease-out) both;
+      animation-timeline: view(block);
+      animation-range: entry 4% cover 38%;
+    }
+
+    .kyoru-selected-work__content,
+    .kyoru-capabilities__heading h2,
+    .kyoru-original__title,
+    .kyoru-process__step-copy,
+    .kyoru-studio__statement h2,
+    .kyoru-studio__territories > p,
+    .kyoru-showreel__header h2 {
+      animation: kyoru-view-cut-up 1ms var(--kyoru-ease-out) both;
+      animation-timeline: view(block);
+      animation-range: entry 10% cover 34%;
+    }
+
+    .kyoru-capabilities__list,
+    .kyoru-contact-finale__action {
+      animation: kyoru-view-cut-side 1ms var(--kyoru-ease-out) both;
+      animation-timeline: view(block);
+      animation-range: entry 8% cover 30%;
+    }
+
+    .kyoru-selected-work__field-signal,
+    .kyoru-original__visual-signal,
+    .kyoru-showreel__signal {
+      transform-origin: left;
+      animation: kyoru-view-angled-signal 1ms linear both;
+      animation-timeline: view(block);
+      animation-range: entry 20% cover 48%;
+    }
+
+    .kyoru-selected-work__field-signal { --kyoru-view-signal-angle: -8deg; }
+    .kyoru-original__visual-signal { --kyoru-view-signal-angle: -7deg; }
+    .kyoru-showreel__signal { --kyoru-view-signal-angle: -5deg; }
+
+    .kyoru-original__disciplines li {
+      animation: kyoru-view-cut-side 1ms var(--kyoru-ease-out) both;
+      animation-timeline: view(block);
+    }
+
+    .kyoru-original__disciplines li:nth-child(1) { animation-range: entry 10% cover 24%; }
+    .kyoru-original__disciplines li:nth-child(2) { animation-range: entry 13% cover 27%; }
+    .kyoru-original__disciplines li:nth-child(3) { animation-range: entry 16% cover 30%; }
+    .kyoru-original__disciplines li:nth-child(4) { animation-range: entry 19% cover 33%; }
+
+    .kyoru-contact-finale__statement h2 span {
+      animation: kyoru-view-cut-up 1ms var(--kyoru-ease-out) both;
+      animation-timeline: view(block);
+    }
+
+    .kyoru-contact-finale__statement h2 span:first-child { animation-range: entry 8% cover 25%; }
+    .kyoru-contact-finale__statement h2 span:last-child { animation-range: entry 13% cover 31%; }
+  }
+
+  @media (max-width: 767px) {
+    @supports (animation-timeline: view()) {
+      .kyoru-selected-work__field,
+      .kyoru-original__visual,
+      .kyoru-showreel__stage {
+        animation-name: kyoru-view-depth-mobile;
+        animation-range: entry 6% cover 28%;
+      }
+
+      .kyoru-selected-work__content,
+      .kyoru-capabilities__heading h2,
+      .kyoru-original__title,
+      .kyoru-process__step-copy,
+      .kyoru-studio__statement h2,
+      .kyoru-studio__territories > p,
+      .kyoru-showreel__header h2,
+      .kyoru-contact-finale__statement h2 span,
+      .kyoru-contact-finale__action {
+        animation-range: entry 5% cover 24%;
+      }
+
+      .kyoru-original__disciplines li {
+        animation: none;
+      }
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    .kyoru-navbar__brand:hover .kyoru-navbar__mark,
+    .kyoru-menu__brand:hover .kyoru-navbar__mark {
+      border-color: rgba(179, 23, 47, 0.76);
+    }
+
+    .kyoru-navbar__link:hover {
+      color: #f5f7fa;
+    }
+
+    .kyoru-navbar__link:hover::after,
+    .kyoru-navbar__cta:hover::before {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .kyoru-navbar__cta:hover svg,
+    .kyoru-menu__original:hover svg {
+      transform: translateX(0.3rem);
+    }
+
+    .kyoru-navbar__menu-trigger:hover .kyoru-navbar__menu-lines i:first-child {
+      transform: translateX(0.2rem);
+    }
+
+    .kyoru-navbar__menu-trigger:hover .kyoru-navbar__menu-lines i:last-child {
+      transform: translateX(-0.2rem);
+    }
+
+    .kyoru-menu__link:hover {
+      color: #f5f7fa;
+      transform: translateX(0.6rem);
+    }
+
+    .kyoru-menu__link:hover::before {
+      transform: scaleX(1);
+    }
+
+    .kyoru-menu__link:hover svg {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    .kyoru-action--explore:hover .kyoru-action__line,
+    .kyoru-inline-action:hover .kyoru-inline-action__line {
+      background: #b3172f;
+      transform: scaleX(1.08);
+    }
+
+    .kyoru-action--explore:hover svg,
+    .kyoru-inline-action:hover svg {
+      transform: translateX(0.25rem);
+    }
+
+    .kyoru-action--commercial:hover {
+      border-color: rgba(245, 247, 250, 0.76);
+      background: #f5f7fa;
+      color: #050506;
+    }
+
+    .kyoru-capability:hover {
+      color: #f5f7fa;
+    }
+
+    .kyoru-capability:hover::before {
+      transform: scaleX(1);
+    }
+
+    .kyoru-capability:hover .kyoru-capability__title {
+      transform: translateX(0.35rem);
+    }
+
+    .kyoru-capability:hover .kyoru-capability__description {
+      color: rgba(245, 247, 250, 0.68);
+    }
+
+    .kyoru-capability:hover .kyoru-capability__arrow {
+      transform: translate(0.2rem, -0.2rem);
+    }
+
+    .kyoru-contact-finale__action:hover::before {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .kyoru-contact-finale__action:hover svg {
+      transform: translate(0.25rem, -0.25rem);
+    }
+
+    .kyoru-footer__wordmark:hover span {
+      color: #b3172f;
+    }
+
+    .kyoru-footer__nav a:hover {
+      color: #f5f7fa;
+      transform: translateX(0.5rem);
+    }
+
+    .kyoru-footer__original > a:hover {
+      border-color: #b3172f;
+      color: #d72b46;
+      transform: translateX(0.5rem);
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .kyoru-intro {
       display: none;
@@ -2974,12 +3233,35 @@
     .kyoru-hero__meta,
     .kyoru-hero__title-line,
     .kyoru-hero__copy,
+    .kyoru-hero__copy::before,
     .kyoru-hero__footer,
-    .kyoru-hero__media-plane {
+    .kyoru-hero__media-plane,
+    .kyoru-hero__media-signal,
+    .kyoru-selected-work::before,
+    .kyoru-selected-work__field,
+    .kyoru-selected-work__field-signal,
+    .kyoru-selected-work__content,
+    .kyoru-capabilities__heading h2,
+    .kyoru-capabilities__list,
+    .kyoru-original::before,
+    .kyoru-original__title,
+    .kyoru-original__visual,
+    .kyoru-original__visual-signal,
+    .kyoru-original__disciplines li,
+    .kyoru-process::before,
+    .kyoru-process__step-copy,
+    .kyoru-studio::before,
+    .kyoru-studio__statement h2,
+    .kyoru-studio__territories > p,
+    .kyoru-showreel::before,
+    .kyoru-showreel__header h2,
+    .kyoru-showreel__stage,
+    .kyoru-showreel__signal,
+    .kyoru-contact-finale::before,
+    .kyoru-contact-finale__statement h2 span,
+    .kyoru-contact-finale__action {
       animation: none;
-      clip-path: none;
       opacity: 1;
-      transform: none;
     }
 
     .kyoru-action__line,
