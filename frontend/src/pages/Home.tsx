@@ -1,9 +1,7 @@
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ArrowUpRight, Boxes, Clapperboard, Code2, Cpu, Sparkles, Target, Zap } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Cpu, Sparkles, Target, Zap } from 'lucide-react';
 import KyoruIntro from '../components/KyoruIntro';
-import ServicesCarousel from '../components/ServicesCarousel';
-import YorutsugiArtwork from '../components/YorutsugiArtwork';
 import { yorutsugi } from '../data/yorutsugi';
 
 const differentiators = [
@@ -29,21 +27,24 @@ const differentiators = [
   },
 ];
 
-const businessServices = [
+const capabilities = [
   {
-    title: 'Desarrollo Web',
-    description: 'Diseñamos y desarrollamos sitios web, plataformas y aplicaciones digitales adaptadas a las necesidades de cada proyecto.',
-    icon: Code2,
+    index: '01',
+    title: 'DIGITAL',
+    detail: 'Development / Web / Interactive',
+    description: 'Desarrollo web e interfaces para experiencias digitales con intención y claridad.',
   },
   {
-    title: 'Modelado y Experiencias 3D',
-    description: 'Creamos modelos, entornos y experiencias tridimensionales para productos, espacios y proyectos digitales.',
-    icon: Boxes,
+    index: '02',
+    title: '3D',
+    detail: 'Modeling / Experiences',
+    description: 'Modelado, visualización y experiencias tridimensionales para ideas y entornos.',
   },
   {
-    title: 'Animación y Contenido Digital',
-    description: 'Desarrollamos animaciones 2D y 3D, piezas audiovisuales y contenido visual para marcas, productos y proyectos creativos.',
-    icon: Clapperboard,
+    index: '03',
+    title: 'MOTION',
+    detail: 'Animation / Digital Content',
+    description: 'Animación y contenido digital para comunicar, expandir y dar movimiento a una historia.',
   },
 ];
 
@@ -123,87 +124,119 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      <section className="akai-page pt-8 md:pt-10">
-        <div className="flex items-center gap-3">
-          <div className="akai-hud-line" />
-          <p className="text-xs uppercase tracking-[0.24em] text-red-300">Qué hacemos</p>
-        </div>
-        <h2 className="akai-section-title mt-3">Líneas de negocio de Kyoru Studio</h2>
-        <p className="akai-section-subtitle">
-          Integramos tecnología, creatividad y producción multimedia para construir soluciones digitales con identidad y alto impacto
-          visual.
-        </p>
+      <section className="kyoru-selected-work" aria-labelledby="selected-work-title">
+        <div className="kyoru-selected-work__inner">
+          <div className="kyoru-section-index">
+            <span>02</span>
+            <span>SELECTED WORK</span>
+          </div>
 
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {businessServices.map((service) => {
-            const Icon = service.icon;
-            return (
-              <Link key={service.title} to="/services" className="akai-card block p-6" aria-label={`Ver servicios de ${service.title}`}>
-                <div className="inline-flex rounded-xl border border-red-500/35 bg-red-950/40 p-2 text-red-200">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-white">{service.title}</h3>
-                <p className="mt-2 text-sm text-zinc-300">{service.description}</p>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-red-200">Ver servicios</p>
+          <article className="kyoru-selected-work__feature">
+            <div className="kyoru-selected-work__field" aria-hidden="true" data-kyoru-media-slot="yorutsugi-artwork">
+              <span className="kyoru-selected-work__field-index">01 / KYORU ORIGINAL</span>
+              <span className="kyoru-selected-work__field-title">YORUTSUGI</span>
+              <span className="kyoru-selected-work__field-signal" />
+              <span className="kyoru-selected-work__field-frame kyoru-selected-work__field-frame--one" />
+              <span className="kyoru-selected-work__field-frame kyoru-selected-work__field-frame--two" />
+              <span className="kyoru-selected-work__field-caption">ARTWORK / PENDING</span>
+            </div>
+
+            <div className="kyoru-selected-work__content">
+              <p className="kyoru-selected-work__eyebrow">01 / KYORU ORIGINAL</p>
+              <h2 id="selected-work-title" className="kyoru-selected-work__title">YORUTSUGI</h2>
+              <p className="kyoru-selected-work__type">Original Manga / Animation / Worldbuilding</p>
+              <p className="kyoru-selected-work__description">{yorutsugi.description}</p>
+              <Link to={yorutsugi.route} className="kyoru-inline-action">
+                <span>EXPLORE YORUTSUGI</span>
+                <span className="kyoru-inline-action__line" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-            );
-          })}
+            </div>
+          </article>
         </div>
       </section>
 
-      <section className="akai-page pt-2 md:pt-2" aria-labelledby="home-original-title">
-        <div className="max-w-3xl">
-          <div className="flex items-center gap-3">
-            <div aria-hidden="true" className="akai-hud-line" />
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-300">PRODUCCIÓN ORIGINAL</p>
+      <section className="kyoru-capabilities" aria-labelledby="capabilities-title">
+        <div className="kyoru-capabilities__inner">
+          <div className="kyoru-capabilities__heading">
+            <div className="kyoru-section-index">
+              <span>03</span>
+              <span>CAPABILITIES</span>
+            </div>
+            <h2 id="capabilities-title">Craft across digital worlds.</h2>
           </div>
-          <h2 id="home-original-title" className="akai-section-title mt-3">
-            Nuestra primera obra original.
-          </h2>
-          <p className="akai-section-subtitle leading-relaxed">
-            YORUTSUGI es la primera producción original de Kyoru Studio: un manga de fantasía y acción actualmente en desarrollo.
-          </p>
+
+          <div className="kyoru-capabilities__list">
+            {capabilities.map((capability) => (
+              <Link key={capability.title} to="/services" className="kyoru-capability" aria-label={`Explorar ${capability.title}`}>
+                <span className="kyoru-capability__index">{capability.index}</span>
+                <span className="kyoru-capability__title">{capability.title}</span>
+                <span className="kyoru-capability__detail">{capability.detail}</span>
+                <span className="kyoru-capability__description">{capability.description}</span>
+                <ArrowUpRight className="kyoru-capability__arrow h-5 w-5" aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
         </div>
+      </section>
 
-        <article
-          aria-labelledby="home-yorutsugi-title"
-          className="akai-panel mt-8 overflow-hidden p-4 sm:p-6 lg:p-8"
-        >
-          <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:items-center lg:gap-12">
-            <YorutsugiArtwork className="min-h-[22rem] sm:min-h-[26rem]" />
+      <section className="kyoru-original" aria-labelledby="home-original-title">
+        <div className="kyoru-original__inner">
+          <div className="kyoru-original__intro">
+            <div className="kyoru-section-index">
+              <span>04</span>
+              <span>KYORU ORIGINAL</span>
+            </div>
+            <p className="kyoru-original__status">A WORLD IN DEVELOPMENT</p>
+            <h2 id="home-original-title" className="kyoru-original__title">{yorutsugi.title}</h2>
+            <p className="kyoru-original__copy">
+              YORUTSUGI es la primera producción original de Kyoru Studio: un manga de fantasía y acción actualmente en desarrollo.
+            </p>
+          </div>
 
-            <div className="min-w-0 px-1 pb-2 sm:px-2 lg:px-0">
-              <div className="flex flex-wrap gap-2">
-                <span className="akai-chip">{yorutsugi.label}</span>
-                <span className="akai-chip">{yorutsugi.editorialStatus}</span>
-              </div>
+          <div className="kyoru-original__composition">
+            <div className="kyoru-original__visual" aria-hidden="true" data-kyoru-media-slot="yorutsugi-world">
+              <span className="kyoru-original__visual-word">WORLD</span>
+              <span className="kyoru-original__visual-signal" />
+              <span className="kyoru-original__visual-panel kyoru-original__visual-panel--world" />
+              <span className="kyoru-original__visual-panel kyoru-original__visual-panel--manga" />
+              <span className="kyoru-original__visual-panel kyoru-original__visual-panel--motion" />
+              <span className="kyoru-original__visual-index">ORIGINAL / 001</span>
+            </div>
 
-              <h3 id="home-yorutsugi-title" className="mt-6 break-words text-3xl font-black tracking-tight text-white sm:text-4xl">
-                {yorutsugi.title}
-              </h3>
-              <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:text-base">{yorutsugi.description}</p>
+            <div className="kyoru-original__details">
+              <ul className="kyoru-original__disciplines" aria-label="Disciplinas de YORUTSUGI">
+                {['MANGA', 'ANIMATION', 'WORLD', 'CHARACTERS'].map((discipline, index) => (
+                  <li key={discipline}>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{discipline}</strong>
+                  </li>
+                ))}
+              </ul>
 
-              <dl className="mt-6 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
-                  <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-red-300">Formato</dt>
-                  <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.format}</dd>
+              <dl className="kyoru-original__metadata">
+                <div>
+                  <dt>FORMAT</dt>
+                  <dd>ORIGINAL MANGA</dd>
                 </div>
-                <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
-                  <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-red-300">Género</dt>
-                  <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.genres.join(' y ')}</dd>
+                <div>
+                  <dt>GENRE</dt>
+                  <dd>FANTASY / ACTION</dd>
+                </div>
+                <div>
+                  <dt>STATUS</dt>
+                  <dd>IN DEVELOPMENT</dd>
                 </div>
               </dl>
 
-              <Link
-                to={yorutsugi.route}
-                className="akai-btn-primary mt-7 gap-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-              >
-                Descubrir {yorutsugi.title}
+              <Link to={yorutsugi.route} className="kyoru-inline-action kyoru-original__action">
+                <span>EXPLORE THE WORLD</span>
+                <span className="kyoru-inline-action__line" aria-hidden="true" />
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
           </div>
-        </article>
+        </div>
       </section>
 
       <section className="akai-page pt-2 md:pt-6">
@@ -224,8 +257,6 @@ const Home: React.FC = () => {
           ))}
         </div>
       </section>
-
-      <ServicesCarousel />
 
       <section className="akai-page pb-20 pt-2 md:pt-4">
         <div className="akai-panel p-6 text-center md:p-8">
