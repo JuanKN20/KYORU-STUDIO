@@ -9,31 +9,31 @@ const capabilities = [
     index: '01',
     title: 'DIGITAL',
     detail: 'Development / Web / Interactive',
-    description: 'Desarrollo web e interfaces para experiencias digitales con intención y claridad.',
+    description: 'Web development and interface design for digital experiences with clarity and purpose.',
   },
   {
     index: '02',
     title: '3D',
     detail: 'Modeling / Experiences',
-    description: 'Modelado, visualización y experiencias tridimensionales para ideas y entornos.',
+    description: '3D modeling, visualization and immersive experiences for ideas and environments.',
   },
   {
     index: '03',
     title: 'MOTION',
     detail: 'Animation / Digital Content',
-    description: 'Animación y contenido digital para comunicar, expandir y dar movimiento a una historia.',
+    description: 'Animation and digital content that brings stories into motion.',
   },
 ];
 
 const creationProcess = [
-  { index: '00', title: 'THE UNKNOWN', description: 'Toda creación empieza antes de tener forma.' },
-  { index: '01', title: 'IMAGINE', description: 'Definimos una posibilidad y una dirección.' },
-  { index: '02', title: 'DESIGN', description: 'Convertimos la idea en estructura, lenguaje y experiencia.' },
-  { index: '03', title: 'BUILD', description: 'La hacemos funcional, tangible y técnicamente sólida.' },
+  { index: '00', title: 'THE UNKNOWN', description: 'The unknown is where every act of creation begins.' },
+  { index: '01', title: 'IMAGINE', description: 'Shaping a possibility into a direction.' },
+  { index: '02', title: 'DESIGN', description: 'Turning an idea into structure, language and experience.' },
+  { index: '03', title: 'BUILD', description: 'Making it functional, tangible and technically sound.' },
   {
     index: '04',
     title: 'BRING IT TO LIFE',
-    description: 'El concepto deja de ser una posibilidad y se convierte en algo real.',
+    description: 'Taking a concept from possibility to something real.',
   },
 ];
 
@@ -59,23 +59,9 @@ const Home: React.FC = () => {
       <section className={`kyoru-hero ${introActive ? 'kyoru-hero--intro' : ''}`} aria-labelledby="home-hero-title">
         <KyoruIntro active={introActive} sessionKey={KYORU_INTRO_SESSION_KEY} onStorageUnavailable={disableIntro} />
 
-        <div className="kyoru-hero__media" aria-hidden="true">
-          <div className="kyoru-hero__media-plane" data-kyoru-media-slot="future-master-media">
-            <span className="kyoru-hero__media-word kyoru-hero__media-word--unknown">UNKNOWN</span>
-            <span className="kyoru-hero__media-word kyoru-hero__media-word--real">REAL</span>
-            <span className="kyoru-hero__media-origin" />
-            <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--one" />
-            <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--two" />
-            <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--three" />
-            <span className="kyoru-hero__media-signal" />
-            <span className="kyoru-hero__media-cut" />
-          </div>
-        </div>
-
         <div className="kyoru-hero__inner">
           <div className="kyoru-hero__meta">
-            <span>KYORU STUDIO / CREATIVE &amp; TECHNOLOGY</span>
-            <span aria-hidden="true">CREATIVE / 001</span>
+            <span>KYORU STUDIO / ART × TECHNOLOGY × STORY</span>
           </div>
 
           <h1 id="home-hero-title" className="kyoru-hero__title">
@@ -88,9 +74,26 @@ const Home: React.FC = () => {
           </h1>
 
           <p className="kyoru-hero__copy">
-            Kyoru Studio transforma ideas en experiencias digitales, mundos visuales y producciones originales donde creatividad y
-            tecnología trabajan como una sola disciplina.
+            Kyoru Studio creates digital experiences, visual productions and original worlds where art, technology and storytelling
+            become one.
           </p>
+
+          <div className="kyoru-hero__media" aria-hidden="true">
+            <div className="kyoru-hero__media-plane" data-kyoru-media-stage="home-master">
+              <div className="kyoru-hero__media-source" data-kyoru-media-slot="future-home-video" />
+              <div className="kyoru-hero__media-overlay" />
+              <div className="kyoru-hero__media-framing">
+                <span className="kyoru-hero__media-word kyoru-hero__media-word--unknown">UNKNOWN</span>
+                <span className="kyoru-hero__media-word kyoru-hero__media-word--real">REAL</span>
+                <span className="kyoru-hero__media-origin" />
+                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--one" />
+                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--two" />
+                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--three" />
+                <span className="kyoru-hero__media-signal" />
+                <span className="kyoru-hero__media-cut" />
+              </div>
+            </div>
+          </div>
 
           <div className="kyoru-hero__footer">
             <div className="kyoru-hero__actions">
@@ -103,11 +106,6 @@ const Home: React.FC = () => {
                 <span>START A PROJECT</span>
                 <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
               </Link>
-            </div>
-
-            <div className="kyoru-hero__scroll" aria-hidden="true">
-              <span>SCROLL</span>
-              <span className="kyoru-hero__scroll-line" />
             </div>
           </div>
         </div>
@@ -134,7 +132,9 @@ const Home: React.FC = () => {
               <p className="kyoru-selected-work__eyebrow">01 / KYORU ORIGINAL</p>
               <h2 id="selected-work-title" className="kyoru-selected-work__title">YORUTSUGI</h2>
               <p className="kyoru-selected-work__type">Original Manga / Animation / Worldbuilding</p>
-              <p className="kyoru-selected-work__description">{yorutsugi.description}</p>
+              <p className="kyoru-selected-work__description">
+                YORUTSUGI is an original fantasy-action manga produced by Kyoru Studio and currently in development.
+              </p>
               <Link to={yorutsugi.route} className="kyoru-inline-action">
                 <span>EXPLORE YORUTSUGI</span>
                 <span className="kyoru-inline-action__line" aria-hidden="true" />
@@ -157,7 +157,7 @@ const Home: React.FC = () => {
 
           <div className="kyoru-capabilities__list">
             {capabilities.map((capability) => (
-              <Link key={capability.title} to="/services" className="kyoru-capability" aria-label={`Explorar ${capability.title}`}>
+              <Link key={capability.title} to="/services" className="kyoru-capability" aria-label={`Explore ${capability.title}`}>
                 <span className="kyoru-capability__index">{capability.index}</span>
                 <span className="kyoru-capability__title">{capability.title}</span>
                 <span className="kyoru-capability__detail">{capability.detail}</span>
@@ -179,7 +179,7 @@ const Home: React.FC = () => {
             <p className="kyoru-original__status">A WORLD IN DEVELOPMENT</p>
             <h2 id="home-original-title" className="kyoru-original__title">{yorutsugi.title}</h2>
             <p className="kyoru-original__copy">
-              YORUTSUGI es la primera producción original de Kyoru Studio: un manga de fantasía y acción actualmente en desarrollo.
+              YORUTSUGI is Kyoru Studio&apos;s first original production: a fantasy-action manga currently in development.
             </p>
           </div>
 
@@ -194,7 +194,7 @@ const Home: React.FC = () => {
             </div>
 
             <div className="kyoru-original__details">
-              <ul className="kyoru-original__disciplines" aria-label="Disciplinas de YORUTSUGI">
+              <ul className="kyoru-original__disciplines" aria-label="YORUTSUGI disciplines">
                 {['MANGA', 'ANIMATION', 'WORLD', 'CHARACTERS'].map((discipline, index) => (
                   <li key={discipline}>
                     <span>{String(index + 1).padStart(2, '0')}</span>
@@ -239,7 +239,7 @@ const Home: React.FC = () => {
               <span>FROM NOTHING</span>
               <span>TO SOMETHING.</span>
             </h2>
-            <p className="kyoru-process__intro">Una señal se convierte en dirección, estructura y finalmente en algo real.</p>
+            <p className="kyoru-process__intro">A signal becomes direction, structure and, ultimately, something real.</p>
           </header>
 
           <ol className="kyoru-process__sequence">
@@ -276,12 +276,12 @@ const Home: React.FC = () => {
               <span>IN ONE MEDIUM.</span>
             </h2>
             <p>
-              Kyoru Studio es un estudio creativo y tecnológico que construye experiencias, productos y mundos combinando dirección
-              artística, desarrollo y producción multimedia.
+              Kyoru Studio is a creative and technology studio building experiences, products and worlds through art direction,
+              development and multimedia production.
             </p>
           </div>
 
-          <div className="kyoru-studio__territories" aria-label="Territorios creativos de Kyoru Studio">
+          <div className="kyoru-studio__territories" aria-label="Kyoru Studio creative territories">
             <p>ART <span aria-hidden="true">×</span> TECHNOLOGY <span aria-hidden="true">×</span> STORY</p>
             <ul>
               {['DIGITAL', 'MOTION', 'WORLDS'].map((territory, index) => (
@@ -304,7 +304,7 @@ const Home: React.FC = () => {
             </div>
             <div>
               <h2 id="home-showreel-title">KYORU IN MOTION</h2>
-              <p>Imagen, sonido y movimiento reunidos como una sola experiencia.</p>
+              <p>Image, sound and motion brought together as a single experience.</p>
             </div>
           </div>
 
@@ -330,7 +330,7 @@ const Home: React.FC = () => {
               <span>WHAT SHOULD</span>
               <span>EXIST NEXT?</span>
             </h2>
-            <p>Cuéntanos qué estás imaginando. Podemos convertir esa posibilidad en una experiencia, producto o mundo real.</p>
+            <p>Tell us what you&apos;re imagining. We can help turn that possibility into an experience, production or original world.</p>
           </div>
 
           <Link to="/contact" className="kyoru-contact-finale__action">

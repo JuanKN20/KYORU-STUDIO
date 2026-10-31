@@ -8,12 +8,23 @@
     --akai-red: #b3172f;
     --akai-red-glow: #ff3b5c;
     --akai-white: #f5f7fa;
+    --kyoru-font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    --kyoru-font-sans: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     --kyoru-motion-instant: 120ms;
     --kyoru-motion-fast: 180ms;
     --kyoru-motion-standard: 420ms;
     --kyoru-motion-deliberate: 720ms;
     --kyoru-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
     --kyoru-ease-cut: cubic-bezier(0.76, 0, 0.24, 1);
+    --kyoru-page-gutter: clamp(1rem, 4vw, 7rem);
+    --kyoru-content-max: 80rem;
+    --kyoru-content-wide-max: calc(var(--kyoru-content-max) * 2);
+    --kyoru-section-space-compact: clamp(3.5rem, 7vw, 7rem);
+    --kyoru-section-space: clamp(4.5rem, 9vw, 8rem);
+    --kyoru-section-space-major: clamp(5rem, 10vw, 9rem);
+    --kyoru-chapter-gap: clamp(3rem, 7vw, 6rem);
+    --kyoru-navbar-height: 5rem;
+    --kyoru-navbar-height-mobile: 4.5rem;
   }
 
   * {
@@ -29,7 +40,7 @@
 
   body {
     margin: 0;
-    font-family: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    font-family: var(--kyoru-font-sans);
     color: var(--akai-white);
     background-color: var(--akai-black);
     overflow-x: hidden;
@@ -133,10 +144,10 @@
     display: flex;
     align-items: stretch;
     justify-content: space-between;
-    width: min(100%, 80rem);
-    height: 5rem;
+    width: 100%;
+    height: var(--kyoru-navbar-height);
     margin: 0 auto;
-    padding: 0 1.5rem;
+    padding: 0 var(--kyoru-page-gutter);
   }
 
   .kyoru-navbar__brand,
@@ -144,7 +155,7 @@
     display: flex;
     min-width: 0;
     align-items: center;
-    gap: 0.8rem;
+    gap: 0.7rem;
     color: #f5f7fa;
     text-decoration: none;
   }
@@ -162,31 +173,18 @@
   }
 
   .kyoru-navbar__mark {
-    position: relative;
-    display: grid;
-    width: 2.75rem;
-    height: 2.75rem;
+    display: block;
+    width: 3.875rem;
+    height: 3.875rem;
     flex: 0 0 auto;
-    place-items: center;
-    overflow: hidden;
-    border: 1px solid rgba(245, 247, 250, 0.16);
-    background: #050506;
-    transition: none;
-  }
-
-  .kyoru-navbar__mark::before {
-    content: "";
-    position: absolute;
-    top: -1px;
-    left: -1px;
-    width: 58%;
-    height: 1px;
-    background: #b3172f;
+    transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
   .kyoru-navbar__mark img {
+    display: block;
     width: 100%;
     height: 100%;
+    object-fit: contain;
   }
 
   .kyoru-navbar__brand-copy {
@@ -203,9 +201,10 @@
 
   .kyoru-navbar__brand-copy p:first-child {
     color: #f5f7fa;
-    font-size: 0.875rem;
-    font-weight: 900;
-    letter-spacing: 0.2em;
+    font-family: var(--kyoru-font-display);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
   }
 
   .kyoru-navbar__brand-copy p:last-child {
@@ -217,7 +216,7 @@
   }
 
   .kyoru-navbar__brand-copy--compact p:first-child {
-    font-size: 0.75rem;
+    font-size: 0.8125rem;
   }
 
   .kyoru-navbar__desktop {
@@ -227,10 +226,9 @@
 
   .kyoru-navbar__link {
     position: relative;
-    display: grid;
-    min-width: 6.75rem;
+    display: flex;
     padding: 0 1.1rem;
-    align-content: center;
+    align-items: center;
     color: rgba(245, 247, 250, 0.68);
     text-decoration: none;
     transition: none;
@@ -249,16 +247,7 @@
     transition: transform var(--kyoru-motion-fast) var(--kyoru-ease-out);
   }
 
-  .kyoru-navbar__link > span:first-child {
-    color: rgba(245, 247, 250, 0.28);
-    font-size: 0.5rem;
-    font-weight: 800;
-    letter-spacing: 0.18em;
-    transition: none;
-  }
-
-  .kyoru-navbar__link > span:last-child {
-    margin-top: 0.2rem;
+  .kyoru-navbar__link > span {
     font-size: 0.75rem;
     font-weight: 750;
     letter-spacing: 0.06em;
@@ -271,10 +260,6 @@
   .kyoru-navbar__link.is-active::after {
     transform: scaleX(1);
     transform-origin: left;
-  }
-
-  .kyoru-navbar__link.is-active > span:first-child {
-    color: #d72b46;
   }
 
   .kyoru-navbar__cta {
@@ -572,6 +557,11 @@
   }
 
   @media (min-width: 1024px) {
+    .kyoru-navbar__mark {
+      width: 4.25rem;
+      height: 4.25rem;
+    }
+
     .kyoru-navbar__desktop {
       display: flex;
     }
@@ -584,13 +574,13 @@
 
   @media (max-width: 639px) {
     .kyoru-navbar__inner {
-      height: 4.5rem;
-      padding: 0 1rem;
+      height: var(--kyoru-navbar-height-mobile);
+      padding: 0 var(--kyoru-page-gutter);
     }
 
     .kyoru-navbar__brand-copy p:first-child {
-      font-size: 0.75rem;
-      letter-spacing: 0.17em;
+      font-size: 0.8125rem;
+      letter-spacing: 0.13em;
     }
 
     .kyoru-navbar__brand-copy p:last-child {
@@ -601,6 +591,15 @@
     .kyoru-navbar__menu-trigger {
       min-width: 4.4rem;
       padding-right: 0;
+    }
+
+    .kyoru-navbar__mark {
+      width: 3rem;
+      height: 3rem;
+    }
+
+    .kyoru-hero__title-line--offset {
+      font-size: 0.82em;
     }
 
     .kyoru-menu__brand .kyoru-navbar__brand-copy p:last-child {
@@ -642,7 +641,7 @@
     min-height: max(44rem, 100svh);
     overflow: hidden;
     background: #050506;
-    padding: clamp(7.5rem, 14vh, 10rem) 0 clamp(2rem, 6vh, 4rem);
+    padding: clamp(7rem, 12vh, 9rem) 0 clamp(2rem, 4vh, 3rem);
   }
 
   .kyoru-hero--intro {
@@ -670,24 +669,28 @@
   }
 
   .kyoru-hero__inner {
+    --kyoru-hero-gap: clamp(2rem, 4vw, 7rem);
+    --kyoru-hero-gutter: var(--kyoru-page-gutter);
     position: relative;
     z-index: 2;
     display: grid;
     width: 100%;
-    max-width: 80rem;
-    min-height: calc(max(44rem, 100svh) - clamp(9.5rem, 20vh, 14rem));
+    max-width: none;
+    min-height: calc(max(44rem, 100svh) - clamp(9rem, 16vh, 12rem));
     margin: 0 auto;
-    padding: 0 1rem;
-    grid-template-columns: repeat(12, minmax(0, 1fr));
-    grid-template-rows: auto auto auto 1fr;
-    column-gap: clamp(0.75rem, 2vw, 2rem);
+    padding-inline: var(--kyoru-hero-gutter);
+    grid-template-columns: minmax(0, 48fr) minmax(0, 52fr);
+    grid-template-rows: auto auto auto auto;
+    align-content: center;
+    column-gap: var(--kyoru-hero-gap);
   }
 
   .kyoru-hero__meta {
-    grid-column: 1 / -1;
+    grid-column: 1;
+    grid-row: 1;
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 1rem;
     color: rgba(245, 247, 250, 0.52);
     font-size: 0.625rem;
@@ -700,12 +703,13 @@
 
   .kyoru-hero__title {
     z-index: 2;
-    grid-column: 1 / -1;
+    grid-column: 1;
+    grid-row: 2;
     min-width: 0;
     align-self: start;
-    margin: clamp(2.75rem, 6vh, 4.25rem) 0 clamp(1.75rem, 4vh, 3rem);
+    margin: clamp(2rem, 4vh, 3.25rem) 0 clamp(1.75rem, 3vh, 2.5rem);
     color: #f5f7fa;
-    font-size: clamp(2.45rem, 8.4vw, 6rem);
+    font-size: clamp(3.5rem, 3.9vw, 9rem);
     font-weight: 900;
     letter-spacing: -0.04em;
     line-height: 0.88;
@@ -714,9 +718,9 @@
 
   .kyoru-hero__title-line {
     display: block;
-    width: fit-content;
-    max-width: 100%;
-    overflow: hidden;
+    width: 100%;
+    max-width: none;
+    overflow: visible;
     padding-bottom: 0.08em;
     animation: kyoru-hero-line-in var(--kyoru-motion-deliberate) var(--kyoru-ease-out) var(--kyoru-hero-delay) both;
   }
@@ -727,20 +731,21 @@
 
   .kyoru-hero__title-line--offset {
     margin-top: 0.08em;
-    margin-left: clamp(2rem, 7vw, 7rem);
+    margin-left: 0;
     color: rgba(245, 247, 250, 0.86);
     animation-delay: calc(var(--kyoru-hero-delay) + 110ms);
   }
 
   .kyoru-hero__copy {
     z-index: 2;
-    grid-column: 5 / -1;
+    grid-column: 1;
+    grid-row: 3;
     min-width: 0;
     width: 100%;
-    max-width: 42rem;
+    max-width: 40rem;
     margin: 0;
     color: rgba(245, 247, 250, 0.72);
-    font-size: clamp(0.95rem, 1.4vw, 1.125rem);
+    font-size: clamp(1rem, 0.9vw, 1.25rem);
     line-height: 1.65;
     overflow-wrap: anywhere;
     animation: kyoru-hero-copy-in var(--kyoru-motion-standard) var(--kyoru-ease-out) calc(var(--kyoru-hero-delay) + 250ms) both;
@@ -759,13 +764,14 @@
 
   .kyoru-hero__footer {
     z-index: 3;
-    grid-column: 1 / -1;
+    grid-column: 1;
+    grid-row: 4;
     display: flex;
-    align-items: flex-end;
-    justify-content: space-between;
+    align-items: flex-start;
+    justify-content: flex-start;
     gap: 2rem;
-    align-self: end;
-    margin-top: clamp(2.25rem, 5vh, 4rem);
+    align-self: start;
+    margin-top: clamp(2rem, 4vh, 3.5rem);
     animation: kyoru-hero-detail-in var(--kyoru-motion-standard) var(--kyoru-ease-out) calc(var(--kyoru-hero-delay) + 390ms) both;
   }
 
@@ -832,46 +838,62 @@
     outline-offset: 4px;
   }
 
-  .kyoru-hero__scroll {
-    display: flex;
-    align-items: center;
-    gap: 0.9rem;
-    color: rgba(245, 247, 250, 0.42);
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-  }
-
-  .kyoru-hero__scroll-line {
-    width: 2.75rem;
-    height: 1px;
-    background: linear-gradient(90deg, rgba(245, 247, 250, 0.4), transparent);
-  }
-
   .kyoru-hero__media {
     position: absolute;
-    inset: 0;
-    z-index: 0;
-    overflow: hidden;
+    top: 50%;
+    right: var(--kyoru-hero-gutter);
+    z-index: 1;
+    width: calc((100% - (2 * var(--kyoru-hero-gutter)) - var(--kyoru-hero-gap)) * 0.52);
+    height: clamp(32rem, 68svh, 60rem);
+    min-height: 0;
+    margin-top: 0;
+    overflow: visible;
     pointer-events: none;
+    transform: translateY(-50%);
   }
 
   .kyoru-hero__media-plane {
     position: absolute;
-    top: 17%;
-    right: -6%;
-    width: min(60vw, 52rem);
-    height: 68%;
+    inset: 0;
+    isolation: isolate;
     overflow: hidden;
     border-top: 1px solid rgba(245, 247, 250, 0.1);
     border-bottom: 1px solid rgba(245, 247, 250, 0.08);
-    background:
-      linear-gradient(112deg, transparent 0 32%, rgba(245, 247, 250, 0.024) 32% 52%, transparent 52%),
-      linear-gradient(102deg, transparent 0 62%, rgba(179, 23, 47, 0.038) 62% 76%, transparent 76%),
-      linear-gradient(180deg, rgba(18, 18, 22, 0.76), rgba(5, 5, 6, 0.12));
-    clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%);
+    background: #08090b;
+    clip-path: polygon(7% 0, 100% 0, 92% 100%, 0 100%);
     animation: kyoru-media-reveal var(--kyoru-motion-deliberate) var(--kyoru-ease-cut) calc(var(--kyoru-hero-delay) + 70ms) both;
+  }
+
+  .kyoru-hero__media-source,
+  .kyoru-hero__media-overlay,
+  .kyoru-hero__media-framing {
+    position: absolute;
+    inset: 0;
+  }
+
+  .kyoru-hero__media-source {
+    z-index: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    background:
+      linear-gradient(112deg, transparent 0 30%, rgba(245, 247, 250, 0.052) 30% 51%, transparent 51%),
+      linear-gradient(102deg, transparent 0 60%, rgba(179, 23, 47, 0.075) 60% 77%, transparent 77%),
+      linear-gradient(145deg, #13151a 0%, #090a0d 46%, #030304 100%);
+  }
+
+  .kyoru-hero__media-overlay {
+    z-index: 1;
+    background:
+      linear-gradient(90deg, rgba(5, 5, 6, 0.62), rgba(5, 5, 6, 0.12) 48%, rgba(5, 5, 6, 0.28)),
+      linear-gradient(180deg, rgba(5, 5, 6, 0.22), transparent 38%, rgba(5, 5, 6, 0.56));
+  }
+
+  .kyoru-hero__media-framing {
+    z-index: 2;
+    overflow: hidden;
   }
 
   .kyoru-hero__media-word {
@@ -987,9 +1009,9 @@
   .kyoru-selected-work__inner,
   .kyoru-capabilities__inner {
     width: 100%;
-    max-width: 80rem;
+    max-width: none;
     margin: 0 auto;
-    padding: clamp(4.5rem, 10vw, 8.5rem) 1rem;
+    padding: var(--kyoru-section-space) var(--kyoru-page-gutter);
   }
 
   .kyoru-section-index {
@@ -1199,8 +1221,8 @@
   }
 
   .kyoru-capabilities__inner {
-    padding-top: clamp(4rem, 9vw, 7rem);
-    padding-bottom: clamp(4.75rem, 10vw, 8rem);
+    padding-top: var(--kyoru-section-space-compact);
+    padding-bottom: var(--kyoru-section-space);
   }
 
   .kyoru-capabilities .kyoru-section-index {
@@ -1214,6 +1236,8 @@
 
   .kyoru-capabilities__heading {
     display: grid;
+    width: min(100%, var(--kyoru-content-wide-max));
+    margin-inline: auto;
     grid-template-columns: minmax(0, 0.55fr) minmax(0, 1fr);
     gap: 2rem;
     align-items: end;
@@ -1230,7 +1254,10 @@
   }
 
   .kyoru-capabilities__list {
-    margin-top: clamp(3rem, 7vw, 6rem);
+    width: min(100%, var(--kyoru-content-wide-max));
+    margin-top: var(--kyoru-chapter-gap);
+    margin-right: auto;
+    margin-left: auto;
     border-top: 1px solid rgba(9, 9, 12, 0.24);
   }
 
@@ -1340,9 +1367,9 @@
 
   .kyoru-original__inner {
     width: 100%;
-    max-width: 80rem;
+    max-width: none;
     margin: 0 auto;
-    padding: clamp(4.75rem, 10vw, 8rem) 1rem clamp(5rem, 11vw, 9rem);
+    padding: var(--kyoru-section-space) var(--kyoru-page-gutter) var(--kyoru-section-space-major);
   }
 
   .kyoru-original__intro {
@@ -1559,9 +1586,9 @@
   .kyoru-process__inner {
     display: grid;
     width: 100%;
-    max-width: 80rem;
+    max-width: none;
     margin: 0 auto;
-    padding: clamp(4.75rem, 10vw, 8rem) 1rem clamp(5rem, 10vw, 8rem);
+    padding: var(--kyoru-section-space) var(--kyoru-page-gutter);
     grid-template-columns: minmax(19rem, 0.75fr) minmax(0, 1.25fr);
     gap: clamp(3rem, 8vw, 8rem);
     align-items: start;
@@ -1780,9 +1807,9 @@
 
   .kyoru-studio__inner {
     width: 100%;
-    max-width: 80rem;
+    max-width: none;
     margin: 0 auto;
-    padding: clamp(4.5rem, 9vw, 7.5rem) 1rem clamp(5.5rem, 11vw, 9rem);
+    padding: var(--kyoru-section-space) var(--kyoru-page-gutter) var(--kyoru-section-space-major);
   }
 
   .kyoru-studio .kyoru-section-index {
@@ -1899,13 +1926,15 @@
 
   .kyoru-showreel__inner {
     width: 100%;
-    max-width: 80rem;
+    max-width: none;
     margin: 0 auto;
-    padding: clamp(4.75rem, 10vw, 8rem) 1rem clamp(5rem, 10vw, 8rem);
+    padding: var(--kyoru-section-space) var(--kyoru-page-gutter);
   }
 
   .kyoru-showreel__header {
     display: grid;
+    width: min(100%, var(--kyoru-content-wide-max));
+    margin-inline: auto;
     grid-template-columns: minmax(14rem, 0.55fr) minmax(0, 1fr);
     gap: 2rem;
     align-items: end;
@@ -1938,9 +1967,11 @@
 
   .kyoru-showreel__stage {
     position: relative;
+    width: min(100%, var(--kyoru-content-wide-max));
     aspect-ratio: 16 / 7;
     min-height: 24rem;
-    margin-top: clamp(3rem, 7vw, 6rem);
+    max-height: 75rem;
+    margin: clamp(3rem, 7vw, 6rem) auto 0;
     overflow: hidden;
     border-top: 1px solid rgba(245, 247, 250, 0.16);
     border-bottom: 1px solid rgba(245, 247, 250, 0.12);
@@ -2024,9 +2055,9 @@
 
   .kyoru-contact-finale__inner {
     position: relative;
-    width: min(100%, 100rem);
+    width: 100%;
     margin: 0 auto;
-    padding: clamp(5rem, 9vw, 9rem) clamp(1.25rem, 5vw, 5.5rem) clamp(4.5rem, 8vw, 7.5rem);
+    padding: var(--kyoru-section-space-major) var(--kyoru-page-gutter) var(--kyoru-section-space);
   }
 
   .kyoru-contact-finale__statement {
@@ -2052,6 +2083,28 @@
 
   .kyoru-contact-finale__statement h2 span:last-child {
     color: #b3172f;
+  }
+
+  .kyoru-hero__title-line:first-child,
+  .kyoru-selected-work__title,
+  .kyoru-original__title,
+  .kyoru-process__title span:first-child,
+  .kyoru-studio__statement h2 span:first-child,
+  .kyoru-contact-finale__statement h2 span:first-child {
+    font-family: var(--kyoru-font-display);
+    font-weight: 700;
+  }
+
+  .kyoru-hero__title-line:first-child,
+  .kyoru-process__title span:first-child,
+  .kyoru-studio__statement h2 span:first-child {
+    letter-spacing: -0.03em;
+  }
+
+  .kyoru-selected-work__title,
+  .kyoru-original__title,
+  .kyoru-contact-finale__statement h2 span:first-child {
+    letter-spacing: -0.035em;
   }
 
   .kyoru-contact-finale__statement p {
@@ -2135,9 +2188,9 @@
   }
 
   .kyoru-footer__inner {
-    width: min(100%, 100rem);
+    width: 100%;
     margin: 0 auto;
-    padding: clamp(3.5rem, 7vw, 7rem) clamp(1.25rem, 5vw, 5.5rem) clamp(1.75rem, 3vw, 2.75rem);
+    padding: var(--kyoru-section-space-compact) var(--kyoru-page-gutter) clamp(1.75rem, 3vw, 2.75rem);
   }
 
   .kyoru-footer__brand {
@@ -2426,20 +2479,58 @@
 
   @keyframes kyoru-media-reveal {
     0% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
-    100% { clip-path: polygon(18% 0, 100% 0, 82% 100%, 0 100%); }
+    100% { clip-path: polygon(7% 0, 100% 0, 92% 100%, 0 100%); }
   }
 
-  @media (min-width: 640px) {
-    .kyoru-hero__inner {
-      padding-right: 1.5rem;
-      padding-left: 1.5rem;
+  @media (min-width: 1800px) {
+    .kyoru-hero__title-line {
+      white-space: nowrap;
     }
   }
 
-  @media (min-width: 1024px) {
+  @media (max-width: 1099px) {
     .kyoru-hero__inner {
-      padding-right: 2rem;
-      padding-left: 2rem;
+      max-width: none;
+      padding-inline: var(--kyoru-page-gutter);
+      grid-template-columns: repeat(12, minmax(0, 1fr));
+      grid-template-rows: auto auto auto auto auto;
+      align-content: start;
+      column-gap: clamp(0.75rem, 2vw, 2rem);
+    }
+
+    .kyoru-hero__meta,
+    .kyoru-hero__title,
+    .kyoru-hero__copy,
+    .kyoru-hero__media,
+    .kyoru-hero__footer {
+      grid-column: 1 / -1;
+    }
+
+    .kyoru-hero__title {
+      grid-row: 2;
+    }
+
+    .kyoru-hero__copy {
+      grid-row: 3;
+      max-width: 39rem;
+    }
+
+    .kyoru-hero__media {
+      position: relative;
+      top: auto;
+      right: auto;
+      grid-row: 4;
+      width: auto;
+      height: auto;
+      min-height: 0;
+      margin-top: clamp(1.75rem, 5vw, 3rem);
+      aspect-ratio: 16 / 7.5;
+      transform: none;
+    }
+
+    .kyoru-hero__footer {
+      grid-row: 5;
+      margin-top: 2rem;
     }
   }
 
@@ -2452,11 +2543,7 @@
 
     .kyoru-hero__inner {
       min-height: calc(max(39rem, 92svh) - 8rem);
-      grid-template-rows: auto auto auto 1fr;
-    }
-
-    .kyoru-hero__meta span:last-child {
-      display: none;
+      grid-template-rows: auto auto auto auto auto;
     }
 
     .kyoru-hero__title {
@@ -2485,7 +2572,7 @@
 
     .kyoru-hero__footer {
       align-self: end;
-      margin-top: clamp(4.5rem, 13vh, 6rem);
+      margin-top: 1.5rem;
     }
 
     .kyoru-hero__actions {
@@ -2504,17 +2591,13 @@
       justify-content: flex-start;
     }
 
-    .kyoru-hero__scroll {
-      display: none;
+    .kyoru-hero__media-plane {
+      opacity: 0.88;
+      clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%);
     }
 
-    .kyoru-hero__media-plane {
-      top: 58%;
-      right: -10%;
-      width: 84vw;
-      height: 16%;
-      opacity: 0.88;
-      clip-path: polygon(12% 0, 100% 0, 88% 100%, 0 100%);
+    .kyoru-hero__media {
+      aspect-ratio: 16 / 7.2;
     }
 
     .kyoru-hero__media-word--unknown {
@@ -2562,21 +2645,25 @@
     }
   }
 
+  @media (max-width: 420px) {
+    .kyoru-hero__title {
+      font-size: clamp(2.45rem, 11.5vw, 3rem);
+      line-height: 0.94;
+    }
+  }
+
   @media (min-width: 768px) and (max-width: 1023px) {
+    :root {
+      --kyoru-page-gutter: 1.5rem;
+    }
+
     .kyoru-hero__title {
       margin-top: 3.25rem;
       margin-bottom: 2.25rem;
     }
 
     .kyoru-hero__copy {
-      grid-column: 4 / -1;
-    }
-
-    .kyoru-hero__media-plane {
-      top: 21%;
-      right: -18%;
-      width: 72vw;
-      height: 60%;
+      grid-column: 1 / -1;
     }
 
     .kyoru-selected-work__feature {
@@ -2627,10 +2714,14 @@
   }
 
   @media (max-width: 767px) {
+    :root {
+      --kyoru-page-gutter: 1rem;
+    }
+
     .kyoru-selected-work__inner,
     .kyoru-capabilities__inner {
-      padding-right: 1rem;
-      padding-left: 1rem;
+      padding-right: var(--kyoru-page-gutter);
+      padding-left: var(--kyoru-page-gutter);
     }
 
     .kyoru-selected-work__feature {
@@ -2708,8 +2799,8 @@
     }
 
     .kyoru-original__inner {
-      padding-right: 1rem;
-      padding-left: 1rem;
+      padding-right: var(--kyoru-page-gutter);
+      padding-left: var(--kyoru-page-gutter);
     }
 
     .kyoru-original__intro {
@@ -2773,8 +2864,8 @@
     .kyoru-process__inner {
       grid-template-columns: minmax(0, 1fr);
       gap: 3.5rem;
-      padding-right: 1rem;
-      padding-left: 1rem;
+      padding-right: var(--kyoru-page-gutter);
+      padding-left: var(--kyoru-page-gutter);
     }
 
     .kyoru-process__header {
@@ -2811,8 +2902,8 @@
 
     .kyoru-studio__inner,
     .kyoru-showreel__inner {
-      padding-right: 1rem;
-      padding-left: 1rem;
+      padding-right: var(--kyoru-page-gutter);
+      padding-left: var(--kyoru-page-gutter);
     }
 
     .kyoru-studio__statement {
@@ -2880,7 +2971,7 @@
     }
 
     .kyoru-contact-finale__inner {
-      padding: 4.5rem 1rem 4rem;
+      padding: 4.5rem var(--kyoru-page-gutter) 4rem;
     }
 
     .kyoru-contact-finale__statement {
@@ -2914,7 +3005,7 @@
     }
 
     .kyoru-footer__inner {
-      padding: 4rem 1rem 1.75rem;
+      padding: 4rem var(--kyoru-page-gutter) 1.75rem;
     }
 
     .kyoru-footer__brand {
@@ -3123,7 +3214,7 @@
   @media (hover: hover) and (pointer: fine) {
     .kyoru-navbar__brand:hover .kyoru-navbar__mark,
     .kyoru-menu__brand:hover .kyoru-navbar__mark {
-      border-color: rgba(179, 23, 47, 0.76);
+      transform: scale(1.04);
     }
 
     .kyoru-navbar__link:hover {

@@ -3,11 +3,11 @@ import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 
 const primaryLinks = [
-  { to: '/', label: 'Inicio' },
-  { to: '/services', label: 'Servicios' },
-  { to: '/trabajos', label: 'Proyectos' },
-  { to: '/estudio', label: 'Estudio' },
-  { to: '/contact', label: 'Contacto' },
+  { to: '/', label: 'Home' },
+  { to: '/services', label: 'Services' },
+  { to: '/trabajos', label: 'Projects' },
+  { to: '/estudio', label: 'Studio' },
+  { to: '/contact', label: 'Contact' },
 ];
 
 const Footer: React.FC = () => {
@@ -17,15 +17,15 @@ const Footer: React.FC = () => {
     <footer className="kyoru-footer">
       <div className="kyoru-footer__inner">
         <div className="kyoru-footer__brand">
-          <Link to="/" className="kyoru-footer__wordmark" aria-label="Ir al inicio de Kyoru Studio">
+          <Link to="/" className="kyoru-footer__wordmark" aria-label="Go to the Kyoru Studio homepage">
             KYORU
             <span>STUDIO</span>
           </Link>
-          <p>Estudio creativo y tecnológico que conecta arte, tecnología y producción multimedia.</p>
+          <p>A creative and technology studio connecting art, technology and multimedia production.</p>
         </div>
 
         <div className="kyoru-footer__columns">
-          <nav className="kyoru-footer__nav" aria-label="Navegación del pie de página">
+          <nav className="kyoru-footer__nav" aria-label="Footer navigation">
             <h2>NAVIGATION</h2>
             <ul>
               {primaryLinks.map((item) => (
@@ -41,7 +41,7 @@ const Footer: React.FC = () => {
             <Link to="/trabajos/yorutsugi">
               <span>
                 <strong>YORUTSUGI</strong>
-                <small>Producción original / En desarrollo</small>
+                <small>Original production / In development</small>
               </span>
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
@@ -51,7 +51,7 @@ const Footer: React.FC = () => {
         </div>
 
         <div className="kyoru-footer__bottom">
-          <p>© {year} Kyoru Studio. Todos los derechos reservados.</p>
+          <p>© {year} Kyoru Studio. All rights reserved.</p>
           <p>ART × TECHNOLOGY × STORY</p>
         </div>
       </div>

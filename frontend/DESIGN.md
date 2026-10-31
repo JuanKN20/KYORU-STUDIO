@@ -113,6 +113,13 @@ The exact future semantic palette, contrast pairings, and extended neutral scale
 
 The current body stack is `Inter`, `Segoe UI`, `Tahoma`, `Geneva`, `Verdana`, `sans-serif`. Current headings rely primarily on weight, tight tracking, uppercase kickers, and size rather than a distinct display family.
 
+The current Brand Typography Pass introduces two provisional roles:
+
+- **KYORU DISPLAY** — a temporary system-serif stack (`Iowan Old Style`, `Palatino Linotype`, `Book Antiqua`, `Palatino`, `Georgia`, `serif`) used only for brand identity and selected narrative statements. It represents art, story, mystery, and editorial voice.
+- **KYORU SANS** — the existing sans stack used for navigation, UI, paragraphs, metadata, labels, and functional text. It represents technology, interface, precision, and legibility.
+
+This pairing is an evaluation layer, not a definitive font selection. No font files or external requests are currently added. Display use remains deliberately limited so the site does not become uniformly serif or compromise small-text readability.
+
 Preserve legibility and the existing functional hierarchy while exploring a future direction. The future system should support:
 
 - precise corporate information;
@@ -120,7 +127,7 @@ Preserve legibility and the existing functional hierarchy while exploring a futu
 - editorial/manga moments for original IP;
 - Spanish copy, uppercase labels, numerals, and responsive text without fragile line breaks.
 
-The definitive font family, licensing, loading strategy, type scale, and editorial display treatment are **OPEN DESIGN DECISION**. Do not select or install a new font in documentation alone.
+The definitive display and sans families, licensing, self-hosting/loading strategy, fallback metrics, final type scale, and editorial display treatment remain an **OPEN DESIGN DECISION**. Do not treat the temporary system-serif stack as the final Kyoru typeface.
 
 ## 9. Layout / Grid / Containers
 

@@ -3,21 +3,21 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import { ArrowRight, X } from "lucide-react";
 
 const businessLinks = [
-  { to: "/services", label: "Servicios", index: "01" },
-  { to: "/trabajos", label: "Proyectos", index: "02" },
-  { to: "/estudio", label: "Estudio", index: "03" },
+  { to: "/services", label: "Services" },
+  { to: "/trabajos", label: "Projects" },
+  { to: "/estudio", label: "Studio" },
 ];
 
 const mobileLinks = [
-  { to: "/", label: "Inicio", index: "01" },
-  { to: "/services", label: "Servicios", index: "02" },
-  { to: "/trabajos", label: "Proyectos", index: "03" },
-  { to: "/estudio", label: "Estudio", index: "04" },
-  { to: "/contact", label: "Contacto", index: "05" },
+  { to: "/", label: "Home", index: "01" },
+  { to: "/services", label: "Services", index: "02" },
+  { to: "/trabajos", label: "Projects", index: "03" },
+  { to: "/estudio", label: "Studio", index: "04" },
+  { to: "/contact", label: "Contact", index: "05" },
 ];
 
 const BRAND_NAME = "KYORU STUDIO";
-const BRAND_DESCRIPTOR = "Estudio creativo y tecnológico";
+const BRAND_DESCRIPTOR = "Creative & Technology Studio";
 const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const DRAWER_TRANSITION_MS = 300;
@@ -144,10 +144,10 @@ const Navbar: React.FC = () => {
 
   return (
     <header className="kyoru-navbar">
-      <nav className="kyoru-navbar__inner" aria-label="Navegación principal">
-        <Link to="/" className="kyoru-navbar__brand" aria-label="Ir al inicio de Kyoru Studio">
+      <nav className="kyoru-navbar__inner" aria-label="Primary navigation">
+        <Link to="/" className="kyoru-navbar__brand" aria-label="Go to the Kyoru Studio homepage">
           <span className="kyoru-navbar__mark">
-            <img src="/favicon.svg" alt="" aria-hidden="true" width="44" height="44" />
+            <img src="/images/Kyoru/Logo%20Kyoru.png" alt="" aria-hidden="true" width="44" height="44" />
           </span>
           <BrandCopy />
         </Link>
@@ -159,7 +159,6 @@ const Navbar: React.FC = () => {
               to={item.to}
               className={({ isActive }) => `kyoru-navbar__link${isActive ? " is-active" : ""}`}
             >
-              <span aria-hidden="true">{item.index}</span>
               <span>{item.label}</span>
             </NavLink>
           ))}
@@ -167,7 +166,7 @@ const Navbar: React.FC = () => {
             to="/contact"
             className={({ isActive }) => `kyoru-navbar__cta${isActive ? " is-active" : ""}`}
           >
-            <span>Hablemos</span>
+            <span>Let&apos;s Talk</span>
             <ArrowRight aria-hidden="true" />
           </NavLink>
         </div>
@@ -177,7 +176,7 @@ const Navbar: React.FC = () => {
           type="button"
           onClick={openDrawer}
           className="kyoru-navbar__menu-trigger"
-          aria-label="Abrir menú de navegación"
+          aria-label="Open navigation menu"
           aria-haspopup="dialog"
           aria-controls={dialogId}
           aria-expanded={isDrawerMounted}
@@ -194,7 +193,7 @@ const Navbar: React.FC = () => {
         <dialog
           ref={dialogRef}
           id={dialogId}
-          aria-label="Menú de navegación"
+          aria-label="Navigation menu"
           className={`kyoru-menu${isDrawerVisible ? " is-visible" : ""}`}
           onCancel={(event) => {
             event.preventDefault();
@@ -207,9 +206,9 @@ const Navbar: React.FC = () => {
           }}
         >
           <div className="kyoru-menu__header">
-            <Link to="/" onClick={handleMobileNavigation} className="kyoru-menu__brand" aria-label="Ir al inicio de Kyoru Studio">
+            <Link to="/" onClick={handleMobileNavigation} className="kyoru-menu__brand" aria-label="Go to the Kyoru Studio homepage">
               <span className="kyoru-navbar__mark">
-                <img src="/favicon.svg" alt="" aria-hidden="true" width="44" height="44" />
+                <img src="/images/Kyoru/Logo%20Kyoru.png" alt="" aria-hidden="true" width="44" height="44" />
               </span>
               <BrandCopy compact />
             </Link>
@@ -218,14 +217,14 @@ const Navbar: React.FC = () => {
               type="button"
               onClick={() => closeDrawer(true)}
               className="kyoru-menu__close"
-              aria-label="Cerrar menú de navegación"
+              aria-label="Close navigation menu"
             >
               <span>CLOSE</span>
               <X aria-hidden="true" />
             </button>
           </div>
 
-          <nav className="kyoru-menu__nav" aria-label="Navegación móvil">
+          <nav className="kyoru-menu__nav" aria-label="Mobile navigation">
             <ul>
               {mobileLinks.map((item) => (
                 <li key={item.to}>
