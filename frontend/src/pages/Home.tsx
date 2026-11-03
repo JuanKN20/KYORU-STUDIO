@@ -52,6 +52,7 @@ const shouldPlayKyoruIntro = () => {
 
 const Home: React.FC = () => {
   const [introActive, setIntroActive] = useState(shouldPlayKyoruIntro);
+  const [heroVideoPlaying, setHeroVideoPlaying] = useState(false);
   const disableIntro = useCallback(() => setIntroActive(false), []);
 
   return (
@@ -79,8 +80,24 @@ const Home: React.FC = () => {
           </p>
 
           <div className="kyoru-hero__media" aria-hidden="true">
-            <div className="kyoru-hero__media-plane" data-kyoru-media-stage="home-master">
-              <div className="kyoru-hero__media-source" data-kyoru-media-slot="future-home-video" />
+            <div
+              className={`kyoru-hero__media-plane ${heroVideoPlaying ? 'kyoru-hero__media-plane--video-playing' : ''}`}
+              data-kyoru-media-stage="home-master"
+            >
+              <div className="kyoru-hero__media-source">
+                <video
+                  className="kyoru-hero__media-video"
+                  src="/videos/Video 1 Home.web.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  tabIndex={-1}
+                  onPlaying={() => setHeroVideoPlaying(true)}
+                  onError={() => setHeroVideoPlaying(false)}
+                />
+              </div>
               <div className="kyoru-hero__media-overlay" />
               <div className="kyoru-hero__media-framing">
                 <span className="kyoru-hero__media-word kyoru-hero__media-word--unknown">UNKNOWN</span>
