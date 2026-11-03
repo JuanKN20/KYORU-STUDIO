@@ -1,287 +1,364 @@
-import React from 'react';
+import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Boxes, Clapperboard, Code2, Cpu, Sparkles, Target, Zap } from 'lucide-react';
-import ServicesCarousel from '../components/ServicesCarousel';
-import YorutsugiArtwork from '../components/YorutsugiArtwork';
+import { ArrowRight, ArrowUpRight } from 'lucide-react';
+import KyoruIntro from '../components/KyoruIntro';
 import { yorutsugi } from '../data/yorutsugi';
 
-const differentiators = [
+const capabilities = [
   {
-    title: 'Creatividad con enfoque técnico',
-    description: 'Diseñamos soluciones visuales con base sólida en arquitectura y desarrollo.',
-    icon: Zap,
+    index: '01',
+    title: 'DIGITAL',
+    detail: 'Development / Web / Interactive',
+    description: 'Web development and interface design for digital experiences with clarity and purpose.',
   },
   {
-    title: 'Experiencias visualmente impactantes',
-    description: 'Construimos productos con identidad estética fuerte y coherencia de marca.',
-    icon: Sparkles,
+    index: '02',
+    title: '3D',
+    detail: 'Modeling / Experiences',
+    description: '3D modeling, visualization and immersive experiences for ideas and environments.',
   },
   {
-    title: 'Soluciones adaptadas a cada proyecto',
-    description: 'Cada propuesta se ajusta a objetivos reales, alcance y tipo de audiencia.',
-    icon: Target,
-  },
-  {
-    title: 'Integración de arte, tecnología e innovación',
-    description: 'Unimos dirección creativa y ejecución técnica para producir experiencias premium.',
-    icon: Cpu,
+    index: '03',
+    title: 'MOTION',
+    detail: 'Animation / Digital Content',
+    description: 'Animation and digital content that brings stories into motion.',
   },
 ];
 
-const businessServices = [
+const creationProcess = [
+  { index: '00', title: 'THE UNKNOWN', description: 'The unknown is where every act of creation begins.' },
+  { index: '01', title: 'IMAGINE', description: 'Shaping a possibility into a direction.' },
+  { index: '02', title: 'DESIGN', description: 'Turning an idea into structure, language and experience.' },
+  { index: '03', title: 'BUILD', description: 'Making it functional, tangible and technically sound.' },
   {
-    title: 'Desarrollo Web',
-    description: 'Diseñamos y desarrollamos sitios web, plataformas y aplicaciones digitales adaptadas a las necesidades de cada proyecto.',
-    icon: Code2,
-  },
-  {
-    title: 'Modelado y Experiencias 3D',
-    description: 'Creamos modelos, entornos y experiencias tridimensionales para productos, espacios y proyectos digitales.',
-    icon: Boxes,
-  },
-  {
-    title: 'Animación y Contenido Digital',
-    description: 'Desarrollamos animaciones 2D y 3D, piezas audiovisuales y contenido visual para marcas, productos y proyectos creativos.',
-    icon: Clapperboard,
+    index: '04',
+    title: 'BRING IT TO LIFE',
+    description: 'Taking a concept from possibility to something real.',
   },
 ];
+
+const KYORU_INTRO_SESSION_KEY = 'kyoru-intro-seen-v1';
+
+const shouldPlayKyoruIntro = () => {
+  if (typeof window === 'undefined') return false;
+
+  try {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+    return window.sessionStorage.getItem(KYORU_INTRO_SESSION_KEY) !== 'true';
+  } catch {
+    return false;
+  }
+};
 
 const Home: React.FC = () => {
+  const [introActive, setIntroActive] = useState(shouldPlayKyoruIntro);
+  const [heroVideoPlaying, setHeroVideoPlaying] = useState(false);
+  const disableIntro = useCallback(() => setIntroActive(false), []);
+
   return (
     <div className="w-full">
-      <section className="relative isolate overflow-hidden pt-28 sm:pt-32 lg:pt-36">
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-30 bg-[radial-gradient(circle_at_18%_18%,rgba(179,23,47,0.24),transparent_44%),radial-gradient(circle_at_82%_22%,rgba(255,59,92,0.13),transparent_38%),linear-gradient(180deg,#0a0b0f_0%,#050506_58%,#08090d_100%)]"
-        />
-        <div aria-hidden="true" className="absolute inset-0 -z-20 bg-gradient-to-b from-black/75 via-black/80 to-black/95" />
-        <div
-          aria-hidden="true"
-          className="absolute inset-0 -z-10 bg-akai-grid bg-[length:32px_32px] opacity-[0.16] [mask-image:radial-gradient(circle_at_center,black_15%,transparent_78%)]"
-        />
+      <section className={`kyoru-hero ${introActive ? 'kyoru-hero--intro' : ''}`} aria-labelledby="home-hero-title">
+        <KyoruIntro active={introActive} sessionKey={KYORU_INTRO_SESSION_KEY} onStorageUnavailable={disableIntro} />
 
-        <div className="mx-auto max-w-7xl px-4 pb-16 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
-          <div className="grid gap-12 lg:grid-cols-[minmax(0,1.08fr)_minmax(22rem,0.92fr)] lg:items-center xl:gap-16">
-            <div className="space-y-7 animate-fade-up motion-reduce:animate-none sm:space-y-8">
-              <div className="flex items-center gap-3">
-                <div aria-hidden="true" className="h-px w-10 shrink-0 bg-gradient-to-r from-red-500/0 via-red-500/80 to-red-500/0 sm:w-16" />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.18em] text-red-300 sm:text-xs sm:tracking-[0.24em]">
-                  ESTUDIO CREATIVO Y TECNOLÓGICO.
-                </span>
+        <div className="kyoru-hero__inner">
+          <div className="kyoru-hero__meta">
+            <span>KYORU STUDIO / ART × TECHNOLOGY × STORY</span>
+          </div>
+
+          <h1 id="home-hero-title" className="kyoru-hero__title">
+            <span className="kyoru-hero__title-line">
+              <span>IMAGINE</span> <span>BEYOND.</span>
+            </span>
+            <span className="kyoru-hero__title-line kyoru-hero__title-line--offset">
+              <span>BUILD</span> <span>WHAT&apos;S</span> <span>NEXT.</span>
+            </span>
+          </h1>
+
+          <p className="kyoru-hero__copy">
+            Kyoru Studio creates digital experiences, visual productions and original worlds where art, technology and storytelling
+            become one.
+          </p>
+
+          <div className="kyoru-hero__media" aria-hidden="true">
+            <div
+              className={`kyoru-hero__media-plane ${heroVideoPlaying ? 'kyoru-hero__media-plane--video-playing' : ''}`}
+              data-kyoru-media-stage="home-master"
+            >
+              <div className="kyoru-hero__media-source">
+                <video
+                  className="kyoru-hero__media-video"
+                  src="/videos/Video 1 Home.web.mp4"
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  preload="metadata"
+                  tabIndex={-1}
+                  onPlaying={() => setHeroVideoPlaying(true)}
+                  onError={() => setHeroVideoPlaying(false)}
+                />
               </div>
-
-              <div>
-                <h1 className="max-w-4xl text-[2.35rem] font-black leading-[1.06] tracking-[-0.035em] text-white sm:text-5xl lg:text-[3.35rem] xl:text-6xl">
-                  Creamos experiencias digitales que conectan creatividad y tecnología.
-                </h1>
-                <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-300 sm:text-lg">
-                  Desarrollamos soluciones web, experiencias 3D y contenido animado que transforman ideas en proyectos visuales,
-                  funcionales y memorables.
-                </p>
+              <div className="kyoru-hero__media-overlay" />
+              <div className="kyoru-hero__media-framing">
+                <span className="kyoru-hero__media-word kyoru-hero__media-word--unknown">UNKNOWN</span>
+                <span className="kyoru-hero__media-word kyoru-hero__media-word--real">REAL</span>
+                <span className="kyoru-hero__media-origin" />
+                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--one" />
+                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--two" />
+                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--three" />
+                <span className="kyoru-hero__media-signal" />
+                <span className="kyoru-hero__media-cut" />
               </div>
+            </div>
+          </div>
 
-              <ul className="grid gap-3 sm:grid-cols-3" aria-label="Pilares de servicio de Kyoru Studio">
-                <li className="flex min-h-14 items-center gap-3 rounded-2xl border border-red-900/45 bg-black/35 p-3 backdrop-blur-sm">
-                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-red-500/35 bg-red-950/45 text-red-200">
-                    <Code2 className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                  <span className="text-sm font-semibold leading-snug text-zinc-100">Desarrollo Web</span>
-                </li>
-                <li className="flex min-h-14 items-center gap-3 rounded-2xl border border-red-900/45 bg-black/35 p-3 backdrop-blur-sm">
-                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-red-500/35 bg-red-950/45 text-red-200">
-                    <Boxes className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                  <span className="text-sm font-semibold leading-snug text-zinc-100">Modelado y Experiencias 3D</span>
-                </li>
-                <li className="flex min-h-14 items-center gap-3 rounded-2xl border border-red-900/45 bg-black/35 p-3 backdrop-blur-sm">
-                  <span className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-red-500/35 bg-red-950/45 text-red-200">
-                    <Clapperboard className="h-4 w-4" aria-hidden="true" />
-                  </span>
-                  <span className="text-sm font-semibold leading-snug text-zinc-100">Animación y Contenido Digital</span>
-                </li>
+          <div className="kyoru-hero__footer">
+            <div className="kyoru-hero__actions">
+              <Link to="/trabajos" className="kyoru-action kyoru-action--explore">
+                <span>VIEW WORK</span>
+                <span className="kyoru-action__line" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+              <Link to="/contact" className="kyoru-action kyoru-action--commercial">
+                <span>START A PROJECT</span>
+                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="kyoru-selected-work" aria-labelledby="selected-work-title">
+        <div className="kyoru-selected-work__inner">
+          <div className="kyoru-section-index">
+            <span>02</span>
+            <span>SELECTED WORK</span>
+          </div>
+
+          <article className="kyoru-selected-work__feature">
+            <div className="kyoru-selected-work__field" aria-hidden="true" data-kyoru-media-slot="yorutsugi-artwork">
+              <span className="kyoru-selected-work__field-index">01 / KYORU ORIGINAL</span>
+              <span className="kyoru-selected-work__field-title">YORUTSUGI</span>
+              <span className="kyoru-selected-work__field-signal" />
+              <span className="kyoru-selected-work__field-frame kyoru-selected-work__field-frame--one" />
+              <span className="kyoru-selected-work__field-frame kyoru-selected-work__field-frame--two" />
+              <span className="kyoru-selected-work__field-caption">ARTWORK / PENDING</span>
+            </div>
+
+            <div className="kyoru-selected-work__content">
+              <p className="kyoru-selected-work__eyebrow">01 / KYORU ORIGINAL</p>
+              <h2 id="selected-work-title" className="kyoru-selected-work__title">YORUTSUGI</h2>
+              <p className="kyoru-selected-work__type">Original Manga / Animation / Worldbuilding</p>
+              <p className="kyoru-selected-work__description">
+                YORUTSUGI is an original fantasy-action manga produced by Kyoru Studio and currently in development.
+              </p>
+              <Link to={yorutsugi.route} className="kyoru-inline-action">
+                <span>EXPLORE YORUTSUGI</span>
+                <span className="kyoru-inline-action__line" aria-hidden="true" />
+                <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section className="kyoru-capabilities" aria-labelledby="capabilities-title">
+        <div className="kyoru-capabilities__inner">
+          <div className="kyoru-capabilities__heading">
+            <div className="kyoru-section-index">
+              <span>03</span>
+              <span>CAPABILITIES</span>
+            </div>
+            <h2 id="capabilities-title">Craft across digital worlds.</h2>
+          </div>
+
+          <div className="kyoru-capabilities__list">
+            {capabilities.map((capability) => (
+              <Link key={capability.title} to="/services" className="kyoru-capability" aria-label={`Explore ${capability.title}`}>
+                <span className="kyoru-capability__index">{capability.index}</span>
+                <span className="kyoru-capability__title">{capability.title}</span>
+                <span className="kyoru-capability__detail">{capability.detail}</span>
+                <span className="kyoru-capability__description">{capability.description}</span>
+                <ArrowUpRight className="kyoru-capability__arrow h-5 w-5" aria-hidden="true" />
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="kyoru-original" aria-labelledby="home-original-title">
+        <div className="kyoru-original__inner">
+          <div className="kyoru-original__intro">
+            <div className="kyoru-section-index">
+              <span>04</span>
+              <span>KYORU ORIGINAL</span>
+            </div>
+            <p className="kyoru-original__status">A WORLD IN DEVELOPMENT</p>
+            <h2 id="home-original-title" className="kyoru-original__title">{yorutsugi.title}</h2>
+            <p className="kyoru-original__copy">
+              YORUTSUGI is Kyoru Studio&apos;s first original production: a fantasy-action manga currently in development.
+            </p>
+          </div>
+
+          <div className="kyoru-original__composition">
+            <div className="kyoru-original__visual" aria-hidden="true" data-kyoru-media-slot="yorutsugi-world">
+              <span className="kyoru-original__visual-word">WORLD</span>
+              <span className="kyoru-original__visual-signal" />
+              <span className="kyoru-original__visual-panel kyoru-original__visual-panel--world" />
+              <span className="kyoru-original__visual-panel kyoru-original__visual-panel--manga" />
+              <span className="kyoru-original__visual-panel kyoru-original__visual-panel--motion" />
+              <span className="kyoru-original__visual-index">ORIGINAL / 001</span>
+            </div>
+
+            <div className="kyoru-original__details">
+              <ul className="kyoru-original__disciplines" aria-label="YORUTSUGI disciplines">
+                {['MANGA', 'ANIMATION', 'WORLD', 'CHARACTERS'].map((discipline, index) => (
+                  <li key={discipline}>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <strong>{discipline}</strong>
+                  </li>
+                ))}
               </ul>
 
-              <div className="flex flex-wrap items-center gap-3">
-                <Link to="/services" className="akai-btn-primary motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-                  Explorar servicios
-                </Link>
-                <Link to="/trabajos" className="akai-btn-secondary motion-reduce:transition-none motion-reduce:hover:translate-y-0">
-                  Ver proyectos
-                </Link>
-              </div>
-            </div>
-
-            <div className="animate-fade-up motion-reduce:animate-none lg:[animation-delay:120ms]">
-              <div
-                aria-hidden="true"
-                className="relative mx-auto h-[260px] w-full max-w-[34rem] overflow-hidden rounded-[2rem] border border-red-500/20 bg-akai-gray/55 shadow-[0_28px_80px_rgba(0,0,0,0.5)] backdrop-blur-xl sm:h-[380px] lg:h-[440px]"
-              >
-                <div className="absolute inset-0 bg-akai-grid bg-[length:28px_28px] opacity-25 [mask-image:radial-gradient(circle_at_center,black_18%,transparent_82%)]" />
-                <div className="absolute -left-16 top-1/3 h-52 w-52 rounded-full bg-red-700/20 blur-3xl" />
-                <div className="absolute -right-20 bottom-0 h-64 w-64 rounded-full bg-red-500/10 blur-3xl" />
-
-                <div className="absolute inset-x-5 top-5 flex items-center justify-between gap-3 sm:inset-x-7 sm:top-7">
-                  <div className="flex items-center gap-1.5">
-                    <span className="h-1.5 w-1.5 rounded-full bg-red-300" />
-                    <span className="h-1.5 w-1.5 rounded-full bg-red-500/70" />
-                    <span className="h-1.5 w-1.5 rounded-full bg-zinc-600" />
-                  </div>
-                  <span className="text-[9px] font-semibold uppercase tracking-[0.2em] text-zinc-400 sm:text-[10px] sm:tracking-[0.28em]">
-                    Kyoru / Creative System
-                  </span>
+              <dl className="kyoru-original__metadata">
+                <div>
+                  <dt>FORMAT</dt>
+                  <dd>ORIGINAL MANGA</dd>
                 </div>
-
-                <div className="absolute left-1/2 top-[53%] aspect-square h-[74%] max-h-[320px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-red-500/15" />
-                <div className="absolute left-1/2 top-[53%] aspect-square h-[52%] max-h-[224px] -translate-x-1/2 -translate-y-1/2 rounded-full border border-dashed border-red-300/20" />
-                <div className="absolute left-[18%] right-[18%] top-[53%] h-px bg-gradient-to-r from-transparent via-red-400/45 to-transparent" />
-                <div className="absolute bottom-[12%] left-1/2 top-[28%] w-px bg-gradient-to-b from-transparent via-red-400/35 to-transparent" />
-
-                <div className="absolute left-1/2 top-[53%] flex h-24 w-24 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full border border-red-400/35 bg-black/70 shadow-[0_0_50px_rgba(179,23,47,0.28)] sm:h-32 sm:w-32">
-                  <div className="absolute inset-2 rounded-full border border-red-500/20" />
-                  <span className="text-3xl font-black tracking-[-0.08em] text-white sm:text-4xl">K</span>
-                  <span className="motion-safe:animate-pulse absolute right-[16%] top-[16%] h-2 w-2 rounded-full bg-red-300 shadow-[0_0_14px_rgba(252,165,165,0.9)]" />
+                <div>
+                  <dt>GENRE</dt>
+                  <dd>FANTASY / ACTION</dd>
                 </div>
-
-                <div className="absolute left-[6%] top-[23%] flex items-center gap-2 rounded-xl border border-red-500/25 bg-black/70 px-2.5 py-2 text-red-100 shadow-akai-soft sm:left-[8%] sm:px-3">
-                  <Code2 className="h-4 w-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.16em] sm:text-xs">Web</span>
-                </div>
-                <div className="absolute right-[6%] top-[23%] flex items-center gap-2 rounded-xl border border-red-500/25 bg-black/70 px-2.5 py-2 text-red-100 shadow-akai-soft sm:right-[8%] sm:px-3">
-                  <Boxes className="h-4 w-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.16em] sm:text-xs">3D</span>
-                </div>
-                <div className="absolute bottom-[7%] left-1/2 flex -translate-x-1/2 items-center gap-2 rounded-xl border border-red-500/25 bg-black/70 px-2.5 py-2 text-red-100 shadow-akai-soft sm:px-3">
-                  <Clapperboard className="h-4 w-4" />
-                  <span className="text-[10px] font-bold uppercase tracking-[0.16em] sm:text-xs">Animación</span>
-                </div>
-
-                <div className="absolute bottom-4 left-4 h-8 w-8 border-b border-l border-red-500/25 sm:bottom-6 sm:left-6" />
-                <div className="absolute right-4 top-16 h-8 w-8 border-r border-t border-red-500/25 sm:right-6 sm:top-20" />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="akai-page pt-8 md:pt-10">
-        <div className="flex items-center gap-3">
-          <div className="akai-hud-line" />
-          <p className="text-xs uppercase tracking-[0.24em] text-red-300">Qué hacemos</p>
-        </div>
-        <h2 className="akai-section-title mt-3">Líneas de negocio de Kyoru Studio</h2>
-        <p className="akai-section-subtitle">
-          Integramos tecnología, creatividad y producción multimedia para construir soluciones digitales con identidad y alto impacto
-          visual.
-        </p>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {businessServices.map((service) => {
-            const Icon = service.icon;
-            return (
-              <Link key={service.title} to="/services" className="akai-card block p-6" aria-label={`Ver servicios de ${service.title}`}>
-                <div className="inline-flex rounded-xl border border-red-500/35 bg-red-950/40 p-2 text-red-200">
-                  <Icon className="h-5 w-5" aria-hidden="true" />
-                </div>
-                <h3 className="mt-4 text-lg font-semibold text-white">{service.title}</h3>
-                <p className="mt-2 text-sm text-zinc-300">{service.description}</p>
-                <p className="mt-4 text-xs font-semibold uppercase tracking-[0.16em] text-red-200">Ver servicios</p>
-              </Link>
-            );
-          })}
-        </div>
-      </section>
-
-      <section className="akai-page pt-2 md:pt-2" aria-labelledby="home-original-title">
-        <div className="max-w-3xl">
-          <div className="flex items-center gap-3">
-            <div aria-hidden="true" className="akai-hud-line" />
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-300">PRODUCCIÓN ORIGINAL</p>
-          </div>
-          <h2 id="home-original-title" className="akai-section-title mt-3">
-            Nuestra primera obra original.
-          </h2>
-          <p className="akai-section-subtitle leading-relaxed">
-            YORUTSUGI es la primera producción original de Kyoru Studio: un manga de fantasía y acción actualmente en desarrollo.
-          </p>
-        </div>
-
-        <article
-          aria-labelledby="home-yorutsugi-title"
-          className="akai-panel mt-8 overflow-hidden p-4 sm:p-6 lg:p-8"
-        >
-          <div className="grid min-w-0 gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(20rem,0.95fr)] lg:items-center lg:gap-12">
-            <YorutsugiArtwork className="min-h-[22rem] sm:min-h-[26rem]" />
-
-            <div className="min-w-0 px-1 pb-2 sm:px-2 lg:px-0">
-              <div className="flex flex-wrap gap-2">
-                <span className="akai-chip">{yorutsugi.label}</span>
-                <span className="akai-chip">{yorutsugi.editorialStatus}</span>
-              </div>
-
-              <h3 id="home-yorutsugi-title" className="mt-6 break-words text-3xl font-black tracking-tight text-white sm:text-4xl">
-                {yorutsugi.title}
-              </h3>
-              <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:text-base">{yorutsugi.description}</p>
-
-              <dl className="mt-6 grid gap-3 sm:grid-cols-2">
-                <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
-                  <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-red-300">Formato</dt>
-                  <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.format}</dd>
-                </div>
-                <div className="rounded-2xl border border-red-900/35 bg-black/25 p-4">
-                  <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-red-300">Género</dt>
-                  <dd className="mt-2 text-sm font-semibold text-zinc-100">{yorutsugi.genres.join(' y ')}</dd>
+                <div>
+                  <dt>STATUS</dt>
+                  <dd>IN DEVELOPMENT</dd>
                 </div>
               </dl>
 
-              <Link
-                to={yorutsugi.route}
-                className="akai-btn-primary mt-7 gap-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0"
-              >
-                Descubrir {yorutsugi.title}
+              <Link to={yorutsugi.route} className="kyoru-inline-action kyoru-original__action">
+                <span>EXPLORE THE WORLD</span>
+                <span className="kyoru-inline-action__line" aria-hidden="true" />
                 <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </div>
           </div>
-        </article>
-      </section>
-
-      <section className="akai-page pt-2 md:pt-6">
-        <div className="flex items-center gap-3">
-          <div className="akai-hud-line" />
-          <p className="text-xs uppercase tracking-[0.24em] text-red-300">Diferenciales</p>
-        </div>
-        <h2 className="akai-section-title mt-3">Por qué Kyoru Studio</h2>
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {differentiators.map((item) => (
-            <article key={item.title} className="akai-card p-6">
-              <div className="inline-flex rounded-xl border border-red-500/35 bg-red-950/40 p-2 text-red-200">
-                <item.icon className="h-5 w-5" />
-              </div>
-              <h3 className="mt-4 text-lg font-semibold text-white">{item.title}</h3>
-              <p className="mt-2 text-sm text-zinc-300">{item.description}</p>
-            </article>
-          ))}
         </div>
       </section>
 
-      <ServicesCarousel />
+      <section className="kyoru-process" aria-labelledby="home-process-title">
+        <div className="kyoru-process__inner">
+          <header className="kyoru-process__header">
+            <div className="kyoru-section-index">
+              <span>05</span>
+              <span>PROCESS</span>
+            </div>
+            <h2 id="home-process-title" className="kyoru-process__title">
+              <span>FROM NOTHING</span>
+              <span>TO SOMETHING.</span>
+            </h2>
+            <p className="kyoru-process__intro">A signal becomes direction, structure and, ultimately, something real.</p>
+          </header>
 
-      <section className="akai-page pb-20 pt-2 md:pt-4">
-        <div className="akai-panel p-6 text-center md:p-8">
-          <p className="text-xs uppercase tracking-[0.24em] text-red-300">Siguiente paso</p>
-          <h2 className="mt-3 text-2xl font-bold text-white md:text-3xl">Hablemos de tu proyecto</h2>
-          <p className="mx-auto mt-3 max-w-3xl text-sm text-zinc-300 md:text-base">
-            Si estás construyendo una marca, producto o experiencia digital, en Kyoru Studio podemos ayudarte a diseñarlo y
-            desarrollarlo con un enfoque creativo y tecnológico.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link to="/contact" className="akai-btn-primary">
-              Iniciar conversación
-            </Link>
-            <Link to="/services" className="akai-btn-secondary">
-              Revisar servicios
-            </Link>
+          <ol className="kyoru-process__sequence">
+            {creationProcess.map((step, stage) => (
+              <li key={step.index} className="kyoru-process__step" data-stage={stage}>
+                <div className="kyoru-process__entity" aria-hidden="true">
+                  <span className="kyoru-process__entity-point" />
+                  <span className="kyoru-process__entity-signal" />
+                  <span className="kyoru-process__entity-frame" />
+                  <span className="kyoru-process__entity-plane" />
+                  <span className="kyoru-process__entity-result">REAL</span>
+                </div>
+                <div className="kyoru-process__step-copy">
+                  <span className="kyoru-process__step-index">{step.index}</span>
+                  <h3>{step.title}</h3>
+                  <p>{step.description}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section className="kyoru-studio" aria-labelledby="home-studio-title">
+        <div className="kyoru-studio__inner">
+          <div className="kyoru-section-index">
+            <span>06</span>
+            <span>STUDIO</span>
+          </div>
+
+          <div className="kyoru-studio__statement">
+            <h2 id="home-studio-title">
+              <span>WE DON'T WORK</span>
+              <span>IN ONE MEDIUM.</span>
+            </h2>
+            <p>
+              Kyoru Studio is a creative and technology studio building experiences, products and worlds through art direction,
+              development and multimedia production.
+            </p>
+          </div>
+
+          <div className="kyoru-studio__territories" aria-label="Kyoru Studio creative territories">
+            <p>ART <span aria-hidden="true">×</span> TECHNOLOGY <span aria-hidden="true">×</span> STORY</p>
+            <ul>
+              {['DIGITAL', 'MOTION', 'WORLDS'].map((territory, index) => (
+                <li key={territory}>
+                  <span>{String(index + 1).padStart(2, '0')}</span>
+                  <strong>{territory}</strong>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="kyoru-showreel" aria-labelledby="home-showreel-title">
+        <div className="kyoru-showreel__inner">
+          <div className="kyoru-showreel__header">
+            <div className="kyoru-section-index">
+              <span>07</span>
+              <span>MOTION / SHOWREEL</span>
+            </div>
+            <div>
+              <h2 id="home-showreel-title">KYORU IN MOTION</h2>
+              <p>Image, sound and motion brought together as a single experience.</p>
+            </div>
+          </div>
+
+          <div className="kyoru-showreel__stage" aria-hidden="true" data-kyoru-media-slot="showreel">
+            <span className="kyoru-showreel__word">MOTION</span>
+            <span className="kyoru-showreel__signal" />
+            <span className="kyoru-showreel__frame kyoru-showreel__frame--primary" />
+            <span className="kyoru-showreel__frame kyoru-showreel__frame--secondary" />
+            <span className="kyoru-showreel__label">KYORU / MOVING IMAGE</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="kyoru-contact-finale" aria-labelledby="home-contact-title">
+        <div className="kyoru-contact-finale__inner">
+          <div className="kyoru-section-index">
+            <span>08</span>
+            <span>START A PROJECT</span>
+          </div>
+
+          <div className="kyoru-contact-finale__statement">
+            <h2 id="home-contact-title">
+              <span>WHAT SHOULD</span>
+              <span>EXIST NEXT?</span>
+            </h2>
+            <p>Tell us what you&apos;re imagining. We can help turn that possibility into an experience, production or original world.</p>
+          </div>
+
+          <Link to="/contact" className="kyoru-contact-finale__action">
+            <span>START A PROJECT</span>
+            <span className="kyoru-contact-finale__action-line" aria-hidden="true" />
+            <ArrowUpRight className="h-7 w-7" aria-hidden="true" />
+          </Link>
+
+          <div className="kyoru-contact-finale__signal" aria-hidden="true">
+            <span>UNKNOWN</span>
+            <span>NEXT</span>
           </div>
         </div>
       </section>
