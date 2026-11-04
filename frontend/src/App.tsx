@@ -22,6 +22,7 @@ import AdminServices from './admin/services/AdminServices';
 import AdminProducts from './admin/products/AdminProducts';
 import AdminContacts from './admin/contacts/AdminContacts';
 import AdminRootRedirect from './admin/AdminRootRedirect';
+import RouteMetadata from './components/RouteMetadata';
 
 function AppContent() {
   const showInternalRoutes = import.meta.env.VITE_SHOW_INTERNAL_ROUTES === 'true';
@@ -30,6 +31,7 @@ function AppContent() {
 
   return (
     <div className="akai-shell flex min-h-screen flex-col">
+      <RouteMetadata pathname={location.pathname} />
       {!isAdminPath ? <Navbar /> : null}
       <main className="w-full flex-1">
         <Routes>

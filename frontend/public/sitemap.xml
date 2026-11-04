@@ -1,19 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <!-- Dominio propio pendiente: usar URL Cloudflare actual temporalmente -->
   <url>
-    <loc>https://kyoru-studio.juann200213.workers.dev/</loc>
+    <loc>https://kyorustudio.com/</loc>
   </url>
   <url>
-    <loc>https://kyoru-studio.juann200213.workers.dev/services</loc>
+    <loc>https://kyorustudio.com/services</loc>
   </url>
   <url>
-    <loc>https://kyoru-studio.juann200213.workers.dev/trabajos</loc>
+    <loc>https://kyorustudio.com/trabajos</loc>
   </url>
   <url>
-    <loc>https://kyoru-studio.juann200213.workers.dev/juegos</loc>
+    <loc>https://kyorustudio.com/trabajos/yorutsugi</loc>
   </url>
   <url>
-    <loc>https://kyoru-studio.juann200213.workers.dev/contact</loc>
+    <loc>https://kyorustudio.com/estudio</loc>
+  </url>
+  <url>
+    <loc>https://kyorustudio.com/juegos</loc>
+  </url>
+  <url>
+    <loc>https://kyorustudio.com/contact</loc>
   </url>
 </urlset>
