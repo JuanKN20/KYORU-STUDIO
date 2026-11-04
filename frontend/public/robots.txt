@@ -1,5 +1,4 @@
 User-agent: *
 Allow: /
 
-# Dominio propio pendiente: usar URL Cloudflare actual temporalmente
-Sitemap: https://kyoru-studio.juann200213.workers.dev/sitemap.xml
+Sitemap: https://kyorustudio.com/sitemap.xml
