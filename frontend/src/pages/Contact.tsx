@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Check, Mail, Send } from 'lucide-react';
-import { createContactMessage } from '../services/api';
+import { createContactMessage, isApiRequestError } from '../services/api';
 
 type ContactFormState = {
   name: string;
@@ -34,6 +34,31 @@ const officialServices = [
 ];
 
 const MIN_MESSAGE_LENGTH = 20;
+const LONG_REQUEST_NOTICE_MS = 8000;
+
+function getSubmissionErrorMessage(error: unknown): string {
+  if (!isApiRequestError(error)) {
+    return 'No pudimos confirmar el envío. Tus datos permanecen en el formulario; inténtalo nuevamente más tarde.';
+  }
+
+  if (error.kind === 'timeout') {
+    return 'El servidor no respondió dentro del tiempo esperado. Tus datos permanecen en el formulario; antes de reintentar, espera un momento para evitar un envío duplicado.';
+  }
+
+  if (error.kind === 'network') {
+    return 'No pudimos conectar con el servidor. Tus datos permanecen en el formulario; revisa tu conexión antes de intentarlo nuevamente.';
+  }
+
+  if (error.status === 429) {
+    return 'Se alcanzó el límite temporal de envíos. Espera 15 minutos antes de intentarlo nuevamente.';
+  }
+
+  if (error.status === 400 || error.status === 413) {
+    return 'El servidor rechazó el contenido del formulario. Revisa la longitud y el formato de los campos antes de intentarlo nuevamente.';
+  }
+
+  return 'No pudimos confirmar el envío. Tus datos permanecen en el formulario; inténtalo nuevamente más tarde.';
+}
 
 function isValidEmail(value: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -68,9 +93,11 @@ const Contact: React.FC = () => {
   const [form, setForm] = useState<ContactFormState>(initialFormState);
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [loading, setLoading] = useState(false);
+  const [takingLonger, setTakingLonger] = useState(false);
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const statusRef = useRef<HTMLDivElement>(null);
+  const submittingRef = useRef(false);
 
   const handleChange = (field: keyof ContactFormState, value: string) => {
     setForm((previous) => ({
@@ -91,7 +118,7 @@ const Contact: React.FC = () => {
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    if (loading) return;
+    if (submittingRef.current) return;
 
     const nextErrors = validateForm(form);
     if (Object.keys(nextErrors).length > 0) {
@@ -109,7 +136,12 @@ const Contact: React.FC = () => {
     setErrors({});
     setSuccessMessage('');
     setErrorMessage('');
+    submittingRef.current = true;
     setLoading(true);
+    setTakingLonger(false);
+    const longRequestNotice = window.setTimeout(() => {
+      setTakingLonger(true);
+    }, LONG_REQUEST_NOTICE_MS);
 
     try {
       await createContactMessage({
@@ -121,12 +153,13 @@ const Contact: React.FC = () => {
       setSuccessMessage('Recibimos tu mensaje correctamente. Gracias por compartir tu proyecto con Kyoru Studio.');
       setForm(initialFormState);
       focusStatusMessage();
-    } catch {
-      setErrorMessage(
-        'No pudimos confirmar el envío. Tus datos permanecen en el formulario; revisa tu conexión antes de intentarlo nuevamente.',
-      );
+    } catch (error) {
+      setErrorMessage(getSubmissionErrorMessage(error));
       focusStatusMessage();
     } finally {
+      window.clearTimeout(longRequestNotice);
+      submittingRef.current = false;
+      setTakingLonger(false);
       setLoading(false);
     }
   };
@@ -387,6 +420,12 @@ const Contact: React.FC = () => {
               >
                 {errorMessage || successMessage}
               </div>
+            ) : null}
+
+            {loading && takingLonger ? (
+              <p role="status" aria-live="polite" className="text-sm leading-relaxed text-zinc-300">
+                El servidor sigue procesando el mensaje y puede estar iniciándose. Mantén esta página abierta; el envío continúa en curso.
+              </p>
             ) : null}
 
             <button

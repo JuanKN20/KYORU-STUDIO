@@ -2,6 +2,25 @@ const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "https://yorurei-studio-backend1.onrender.com";
 const DEFAULT_TIMEOUT_MS = 8000;
+const CONTACT_TIMEOUT_MS = 90000;
+
+export type ApiRequestErrorKind = 'timeout' | 'network' | 'http' | 'response';
+
+export class ApiRequestError extends Error {
+  readonly kind: ApiRequestErrorKind;
+  readonly status?: number;
+
+  constructor(kind: ApiRequestErrorKind, message: string, status?: number) {
+    super(message);
+    this.name = 'ApiRequestError';
+    this.kind = kind;
+    this.status = status;
+  }
+}
+
+export function isApiRequestError(error: unknown): error is ApiRequestError {
+  return error instanceof ApiRequestError;
+}
 
 type ApiSuccess<T> = {
   ok: true;
@@ -119,10 +138,10 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
       signal: controller.signal,
     });
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      throw new Error('El servidor tardó demasiado en responder.');
+    if (controller.signal.aborted || (error instanceof DOMException && error.name === 'AbortError')) {
+      throw new ApiRequestError('timeout', 'El servidor tardó demasiado en responder.');
     }
-    throw new Error('No se pudo conectar con el backend.');
+    throw new ApiRequestError('network', 'No se pudo conectar con el backend.');
   } finally {
     clearTimeout(timeoutHandle);
   }
@@ -140,15 +159,15 @@ async function request<T>(path: string, options: RequestOptions = {}): Promise<T
 
   if (!response.ok) {
     const message = payload && !payload.ok ? payload.error : `Request failed with status ${response.status}`;
-    throw new Error(message);
+    throw new ApiRequestError('http', message, response.status);
   }
 
   if (!payload || typeof payload !== 'object' || !('ok' in payload)) {
-    throw new Error('Respuesta inesperada del backend.');
+    throw new ApiRequestError('response', 'Respuesta inesperada del backend.');
   }
 
   if (!payload.ok) {
-    throw new Error(payload.error || 'Error no controlado del backend.');
+    throw new ApiRequestError('response', payload.error || 'Error no controlado del backend.');
   }
 
   return payload.data;
@@ -170,6 +189,7 @@ export function createContactMessage(payload: ContactPayload) {
   return request('/api/contacts', {
     method: 'POST',
     body: JSON.stringify(payload),
+    timeoutMs: CONTACT_TIMEOUT_MS,
   });
 }
 
