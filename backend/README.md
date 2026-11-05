@@ -9,10 +9,10 @@ API backend en Node.js + Express + Prisma para gestionar contenido de Kyoru Stud
 
 ## URLs actuales
 
-- Frontend publico (Cloudflare Workers Static Assets): `https://kyoru-studio.juann200213.workers.dev`
+- Frontend oficial: `https://kyorustudio.com`
+- Worker tecnico (Cloudflare Workers Static Assets): `https://kyoru-studio.juann200213.workers.dev`
 - Backend publico (servicio Render `kyoru-studio-backend`; hostname tecnico actual): `https://yorurei-studio-backend1.onrender.com`
 
-Nota: el dominio propio de Kyoru Studio sigue pendiente.
 
 ## Stack local
 
@@ -50,7 +50,7 @@ Variables de configuración:
 Nota CORS en producción:
 
 - `FRONTEND_ORIGIN` acepta múltiples orígenes separados por coma.
-- Ejemplo: `FRONTEND_ORIGIN=https://kyoru-studio.juann200213.workers.dev,http://localhost:5173,http://localhost:5174`
+- Ejemplo: `FRONTEND_ORIGIN=https://kyorustudio.com,http://localhost:5173,http://localhost:5174`
 
 ### Supabase + Prisma
 

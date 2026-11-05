@@ -366,3 +366,24 @@ Never copy. Record what a reference solves, why that principle applies, how Kyor
 - **¿Esta web podría pertenecer, cambiando solamente el logo, a cualquier otra agencia o startup?**
 
 If yes, Kyoru's identity is still missing.
+
+## 26. Editorial Voice
+
+Kyoru writes with a professional, human, expressive, confident, cinematic, and direct voice. Copy should connect **ART × TECHNOLOGY × STORY** without turning the studio into a generic agency or presenting future ambition as current capability.
+
+### Rules
+
+- Lead with what Kyoru makes, how it works, or what the audience can experience.
+- Prefer short, concrete sentences and active verbs over inflated corporate language.
+- Keep commercial capability, original IP, and future R&D clearly distinguished.
+- Use cinematic language sparingly; clarity remains more important than atmosphere.
+- Preserve verified names, statuses, URLs, and production facts. Never invent clients, outcomes, metrics, releases, or expertise.
+- Keep interface labels concise and predictable. Narrative language belongs in editorial moments, not validation, navigation, or system feedback.
+- Preserve the approved statements `IMAGINE BEYOND.` and `BUILD WHAT'S NEXT.` unless a dedicated content review changes them.
+
+### Examples
+
+- Prefer `We build digital experiences and original worlds.` over `We deliver cutting-edge solutions that redefine innovation.`
+- Prefer `YORUTSUGI is in development.` over language that suggests it is already published.
+- Prefer `Start a project` over a vague action such as `Discover the possibilities`.
+- Prefer a specific capability such as `3D environments and interactive experiences` over an unsupported claim such as `anything you can imagine`.

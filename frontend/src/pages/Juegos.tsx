@@ -1,8 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Cpu, Gamepad2, Layers3, Palette, SlidersHorizontal, Sparkles } from 'lucide-react';
-import { fallbackProducts } from '../data/fallbackProducts';
-import { fallbackProjects } from '../data/fallbackProjects';
 import { getPublicProducts, getPublicProjects, ProductItem, ProjectItem } from '../services/api';
 
 type GameHighlight = {
@@ -16,6 +14,8 @@ type GameHighlight = {
   demoUrl?: string | null;
   repositoryUrl?: string | null;
 };
+
+type CatalogLoadState = 'loading' | 'ready' | 'error';
 
 const capabilities = [
   {
@@ -99,13 +99,17 @@ function canShowRepository(value: string | null | undefined): boolean {
   return String(value).toLowerCase().includes('github.com/');
 }
 
+function getPublicStatusLabel(status: ProjectItem['status']): string {
+  return status === 'coming_soon' ? 'En desarrollo' : 'Publicado';
+}
+
 function mapGameProject(project: ProjectItem): GameHighlight {
   return {
     id: `project-${project.id}`,
     title: project.title,
-    description: project.short_description || 'Proyecto interactivo desarrollado desde el estudio.',
+    description: project.short_description,
     meta: project.category || 'Proyecto',
-    status: project.status === 'coming_soon' ? 'Próximamente' : 'Publicado',
+    status: getPublicStatusLabel(project.status),
     source: 'project',
     tags: Array.isArray(project.technologies) ? project.technologies.filter(Boolean).slice(0, 4) : [],
     demoUrl: project.demo_url,
@@ -117,19 +121,18 @@ function mapGameProduct(product: ProductItem): GameHighlight {
   return {
     id: `product-${product.id}`,
     title: product.title,
-    description: product.short_description || 'Producto interactivo en evolución.',
+    description: product.short_description,
     meta: `Producto ${product.type}`,
-    status: product.status === 'coming_soon' ? 'Próximamente' : 'Publicado',
+    status: getPublicStatusLabel(product.status),
     source: 'product',
     tags: Array.isArray(product.tags) ? product.tags.filter(Boolean).slice(0, 4) : [],
   };
 }
 
 const Juegos: React.FC = () => {
-  const [projects, setProjects] = useState<ProjectItem[]>(fallbackProjects);
-  const [products, setProducts] = useState<ProductItem[]>(fallbackProducts);
-  const [isLoading, setIsLoading] = useState(true);
-  const [showCatalogNotice, setShowCatalogNotice] = useState(false);
+  const [projects, setProjects] = useState<ProjectItem[]>([]);
+  const [products, setProducts] = useState<ProductItem[]>([]);
+  const [catalogState, setCatalogState] = useState<CatalogLoadState>('loading');
 
   useEffect(() => {
     let mounted = true;
@@ -139,27 +142,14 @@ const Juegos: React.FC = () => {
         const [apiProjects, apiProducts] = await Promise.all([getPublicProjects(), getPublicProducts()]);
         if (!mounted) return;
 
-        const hasProjects = apiProjects.length > 0;
-        const hasProducts = apiProducts.length > 0;
-
-        if (hasProjects || hasProducts) {
-          if (hasProjects) setProjects(apiProjects);
-          if (hasProducts) setProducts(apiProducts);
-          setShowCatalogNotice(false);
-        } else {
-          setProjects(fallbackProjects);
-          setProducts(fallbackProducts);
-          setShowCatalogNotice(true);
-        }
+        setProjects(apiProjects);
+        setProducts(apiProducts);
+        setCatalogState('ready');
       } catch {
         if (!mounted) return;
-        setProjects(fallbackProjects);
-        setProducts(fallbackProducts);
-        setShowCatalogNotice(true);
-      } finally {
-        if (mounted) {
-          setIsLoading(false);
-        }
+        setProjects([]);
+        setProducts([]);
+        setCatalogState('error');
       }
     };
 
@@ -170,11 +160,13 @@ const Juegos: React.FC = () => {
     };
   }, []);
 
+  const isLoading = catalogState === 'loading';
+
   const highlights = useMemo(() => {
     const gameProjects = projects
       .filter(
         (item) =>
-          item.status !== 'draft' &&
+          (item.status === 'published' || item.status === 'coming_soon') &&
           (includesGameTerm(item.title) ||
             includesGameTerm(item.category) ||
             item.technologies.some((tech) => includesGameTerm(tech)) ||
@@ -189,7 +181,7 @@ const Juegos: React.FC = () => {
     const gameProducts = products
       .filter(
         (item) =>
-          item.status !== 'draft' &&
+          (item.status === 'published' || item.status === 'coming_soon') &&
           (item.type.toLowerCase() === 'game' ||
             item.tags.some((tag) => includesGameTerm(tag)) ||
             includesGameTerm(item.title) ||
@@ -244,11 +236,13 @@ const Juegos: React.FC = () => {
 
       {!isLoading ? (
         <>
-          {showCatalogNotice ? (
+          {catalogState === 'error' ? (
             <section className="mt-8">
               <article className="akai-card p-5">
-                <p className="text-sm text-zinc-300">
-                  Esta sección muestra referencias actuales de la línea de videojuegos del estudio.
+                <h2 className="text-lg font-semibold text-white">No pudimos cargar los proyectos</h2>
+                <p className="mt-2 text-sm text-zinc-300">
+                  El catálogo no está disponible en este momento. Para proteger la precisión del portafolio, no mostramos contenido
+                  provisional cuando falla la conexión.
                 </p>
               </article>
             </section>
@@ -300,7 +294,7 @@ const Juegos: React.FC = () => {
             </article>
           </section>
 
-          {highlights.length > 0 ? (
+          {catalogState === 'ready' && highlights.length > 0 ? (
             <section className="mt-10">
               <div className="flex items-center gap-3">
                 <div className="akai-hud-line" />
@@ -361,20 +355,22 @@ const Juegos: React.FC = () => {
                 })}
               </div>
             </section>
-          ) : (
+          ) : null}
+
+          {catalogState === 'ready' && highlights.length === 0 ? (
             <section className="mt-10">
               <article className="akai-card p-6">
-                <h2 className="text-lg font-semibold text-white">Referencias en evolución</h2>
+                <h2 className="text-lg font-semibold text-white">Aún no hay trabajos publicados en esta categoría</h2>
                 <p className="mt-2 text-sm text-zinc-300">
-                  Estamos consolidando nuevos casos para esta línea. Si tienes una idea de juego o experiencia interactiva, podemos
-                  evaluarla contigo y construir una ruta de desarrollo.
+                  Los proyectos aparecerán aquí cuando su publicación haya sido aprobada. Si tienes una idea de juego o experiencia
+                  interactiva, podemos evaluar su alcance contigo.
                 </p>
                 <Link to="/contact" className="mt-4 inline-flex text-sm font-semibold text-red-200 underline underline-offset-4">
                   Hablemos de una idea
                 </Link>
               </article>
             </section>
-          )}
+          ) : null}
         </>
       ) : null}
 
