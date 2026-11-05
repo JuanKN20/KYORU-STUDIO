@@ -2,10 +2,10 @@
 
 ## URLs actuales
 
-- Frontend publico (Cloudflare Workers Static Assets): `https://kyoru-studio.juann200213.workers.dev`
+- Frontend oficial: `https://kyorustudio.com`
+- Worker tecnico (Cloudflare Workers Static Assets): `https://kyoru-studio.juann200213.workers.dev`
 - Backend publico (servicio Render `kyoru-studio-backend`; hostname tecnico actual): `https://yorurei-studio-backend1.onrender.com`
 
-Nota: el dominio propio de Kyoru Studio sigue pendiente.
 
 ## 1) Backend (Render / Railway)
 
@@ -30,7 +30,7 @@ Variables de entorno:
 Nota CORS:
 
 - `FRONTEND_ORIGIN` puede incluir múltiples URLs separadas por coma.
-- Ejemplo: `FRONTEND_ORIGIN=https://kyoru-studio.juann200213.workers.dev,http://localhost:5173,http://localhost:5174`
+- Ejemplo: `FRONTEND_ORIGIN=https://kyorustudio.com,http://localhost:5173,http://localhost:5174`
 
 ## 2) Base de datos cloud (Supabase / Neon / Render Postgres)
 

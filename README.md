@@ -4,21 +4,20 @@ Repositorio principal de Kyoru Studio con separacion profesional de frontend y b
 
 ## URLs actuales
 
-- Frontend publico (Cloudflare Workers Static Assets): `https://kyoru-studio.juann200213.workers.dev`
+- Frontend oficial: `https://kyorustudio.com`
+- Worker tecnico (Cloudflare Workers Static Assets): `https://kyoru-studio.juann200213.workers.dev`
 - Backend publico (servicio Render `kyoru-studio-backend`; hostname tecnico actual): `https://yorurei-studio-backend1.onrender.com`
-
-Nota: el dominio propio de Kyoru Studio sigue pendiente. Mientras tanto se usa la URL real de Cloudflare.
 
 ## Estructura
 
 - `frontend/`: aplicacion web React + Vite + Tailwind desplegable con Cloudflare Workers Static Assets.
-- `backend/`: API local con Node.js/Express y PostgreSQL para endpoints de soporte (por ejemplo `/api/usuarios`).
+- `backend/`: API Node.js/Express y PostgreSQL para contenido publico, contactos, administracion y uploads.
 
 ## Frontend
 
 ```powershell
 cd frontend
-npm install
+npm ci
 npm run dev
 npm run lint
 npm run build
@@ -28,7 +27,7 @@ npm run build
 
 ```powershell
 cd backend
-npm install
+npm ci
 npm run dev
 ```
 

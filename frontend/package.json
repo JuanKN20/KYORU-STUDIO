@@ -15,7 +15,6 @@
     "lucide-react": "^0.542.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
-    "react-icons": "^5.4.0",
     "react-router-dom": "^7.18.2"
   },
   "devDependencies": {
@@ -34,9 +33,5 @@
     "typescript-eslint": "^8.15.0",
     "vite": "^6.4.3"
   },
-  "description": "This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.",
-  "main": "eslint.config.js",
-  "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "description": "Public website and administration interface for Kyoru Studio."
 }

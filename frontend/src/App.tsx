@@ -3,16 +3,13 @@ import Home from './pages/Home';
 import Services from './pages/Services';
 import Juegos from './pages/Juegos';
 import Contact from './pages/Contact';
-import Noticias from './pages/Noticias';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import Usuarios from './components/Usuarios';
 import Trabajos from './pages/Trabajos';
 import Yorutsugi from './pages/Yorutsugi';
 import Estudio from './pages/Estudio';
 import NotFound from './pages/NotFound';
 import ScrollToTop from './components/ScrollToTop';
-import Login from './pages/Login';
 import AdminLayout from './admin/AdminLayout';
 import AdminGuard from './admin/AdminGuard';
 import AdminLogin from './admin/AdminLogin';
@@ -45,9 +42,9 @@ function AppContent() {
 
           <Route path="/home" element={<Navigate to="/" replace />} />
 
-          <Route path="/usuarios" element={showInternalRoutes ? <Usuarios /> : <Navigate to="/" replace />} />
-          <Route path="/login" element={showInternalRoutes ? <Login /> : <Navigate to="/" replace />} />
-          <Route path="/noticias" element={showInternalRoutes ? <Noticias /> : <Navigate to="/" replace />} />
+          <Route path="/usuarios" element={<Navigate to="/" replace />} />
+          <Route path="/login" element={<Navigate to="/" replace />} />
+          <Route path="/noticias" element={<Navigate to="/" replace />} />
 
           {showInternalRoutes ? (
             <>
