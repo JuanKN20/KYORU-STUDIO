@@ -1,0 +1,85 @@
+@layer components {
+  .admin-shell {
+    @apply relative isolate min-h-screen overflow-hidden;
+  }
+
+  .admin-shell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(55% 40% at 14% 6%, rgba(179, 23, 47, 0.28), transparent 72%),
+      radial-gradient(50% 36% at 90% 12%, rgba(255, 59, 92, 0.18), transparent 74%),
+      linear-gradient(180deg, rgba(8, 9, 12, 0.95) 0%, rgba(6, 6, 8, 0.96) 52%, rgba(10, 10, 14, 0.95) 100%);
+  }
+
+  .admin-shell::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.028) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.28;
+    mask-image: radial-gradient(circle at center, black 42%, transparent 100%);
+  }
+
+  .admin-surface {
+    @apply rounded-2xl border border-red-800/45 bg-black/55 backdrop-blur-xl shadow-akai-soft;
+  }
+
+  .admin-kicker {
+    @apply text-[11px] font-semibold uppercase tracking-[0.24em] text-red-300/90;
+  }
+
+  .admin-label {
+    @apply mb-1.5 block text-xs font-semibold uppercase tracking-[0.08em] text-zinc-300;
+  }
+
+  .admin-input {
+    @apply w-full rounded-xl border border-red-900/40 bg-black/50 px-3 py-2.5 text-sm text-zinc-100 outline-none transition motion-reduce:transition-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-black;
+  }
+
+  .admin-input:focus {
+    @apply border-red-500/70 bg-black/60;
+  }
+
+  .admin-textarea {
+    @apply admin-input min-h-24 resize-y;
+  }
+
+  .admin-select {
+    @apply admin-input;
+  }
+
+  .admin-btn-primary {
+    @apply inline-flex items-center justify-center rounded-xl border border-red-500/55 bg-red-700 px-4 py-2.5 text-sm font-semibold text-white transition motion-reduce:transition-none hover:bg-red-600 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-70;
+  }
+
+  .admin-btn-secondary {
+    @apply inline-flex items-center justify-center rounded-xl border border-red-700/45 bg-black/35 px-4 py-2.5 text-sm text-zinc-100 transition motion-reduce:transition-none hover:border-red-500/70 hover:bg-red-950/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-70;
+  }
+
+  .admin-btn-danger {
+    @apply inline-flex items-center justify-center rounded-xl border border-red-700/55 bg-red-950/35 px-4 py-2.5 text-sm text-red-100 transition motion-reduce:transition-none hover:border-red-500/70 hover:bg-red-900/35 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-300 focus-visible:ring-offset-2 focus-visible:ring-offset-black disabled:cursor-not-allowed disabled:opacity-70;
+  }
+
+  .admin-note {
+    @apply text-xs leading-relaxed text-zinc-400;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .admin-shell .akai-card {
+      transition: none;
+    }
+
+    .admin-shell .akai-card:hover {
+      transform: none;
+    }
+  }
+}
