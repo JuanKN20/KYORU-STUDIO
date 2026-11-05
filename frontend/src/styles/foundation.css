@@ -1,0 +1,85 @@
+@layer base {
+  :root {
+    --akai-black: #050506;
+    --akai-red: #b3172f;
+    --akai-red-glow: #ff3b5c;
+    --akai-white: #f5f7fa;
+    --kyoru-font-display: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, Georgia, serif;
+    --kyoru-font-sans: "Inter", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    --kyoru-motion-instant: 120ms;
+    --kyoru-motion-fast: 180ms;
+    --kyoru-motion-standard: 420ms;
+    --kyoru-motion-deliberate: 720ms;
+    --kyoru-ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --kyoru-ease-cut: cubic-bezier(0.76, 0, 0.24, 1);
+    --kyoru-page-gutter: clamp(1rem, 4vw, 7rem);
+    --kyoru-content-max: 80rem;
+    --kyoru-content-wide-max: calc(var(--kyoru-content-max) * 2);
+    --kyoru-section-space-compact: clamp(3.5rem, 7vw, 7rem);
+    --kyoru-section-space: clamp(4.5rem, 9vw, 8rem);
+    --kyoru-section-space-major: clamp(5rem, 10vw, 9rem);
+    --kyoru-chapter-gap: clamp(3rem, 7vw, 6rem);
+    --kyoru-navbar-height: 5rem;
+    --kyoru-navbar-height-mobile: 4.5rem;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+    width: 100%;
+  }
+
+  body {
+    margin: 0;
+    font-family: var(--kyoru-font-sans);
+    color: var(--akai-white);
+    background-color: var(--akai-black);
+    overflow-x: hidden;
+    position: relative;
+    isolation: isolate;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    background:
+      radial-gradient(70% 50% at 15% 0%, rgba(179, 23, 47, 0.28), transparent 65%),
+      radial-gradient(60% 45% at 88% 6%, rgba(255, 59, 92, 0.16), transparent 72%),
+      linear-gradient(180deg, #0a0b0f 0%, #050506 58%, #08090d 100%);
+  }
+
+  body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+    background-size: 34px 34px;
+    opacity: 0.22;
+    mask-image: radial-gradient(circle at center, black 32%, transparent 100%);
+  }
+
+  a {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  :is(a, button, input, textarea, select):focus-visible {
+    outline: 2px solid rgba(255, 59, 92, 0.9);
+    outline-offset: 2px;
+  }
+}
