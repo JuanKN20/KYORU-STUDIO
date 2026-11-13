@@ -5,12 +5,77 @@
     isolation: isolate;
     min-height: max(44rem, 100svh);
     overflow: hidden;
-    background: #050506;
+    background: #030304;
     padding: clamp(7rem, 12vh, 9rem) 0 clamp(2rem, 4vh, 3rem);
   }
 
   .kyoru-hero--intro {
     --kyoru-hero-delay: 2050ms;
+  }
+
+  .kyoru-hero__atmosphere {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  .kyoru-hero__atmosphere::before,
+  .kyoru-hero__atmosphere::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+  }
+
+  .kyoru-hero__atmosphere::before {
+    background-image:
+      linear-gradient(180deg, transparent 0 49%, rgba(245, 247, 250, 0.025) 50%, transparent 51%),
+      radial-gradient(circle, rgba(245, 247, 250, 0.12) 0 0.45px, transparent 0.6px);
+    background-size: 100% 7px, 4px 4px;
+    opacity: 0.18;
+    mask-image: linear-gradient(90deg, transparent, #000 18%, #000 88%, transparent);
+  }
+
+  .kyoru-hero__atmosphere::after {
+    background:
+      radial-gradient(ellipse at center, transparent 25%, rgba(3, 3, 4, 0.24) 57%, rgba(3, 3, 4, 0.92) 100%),
+      linear-gradient(90deg, rgba(3, 3, 4, 0.68) 0%, transparent 38%, transparent 78%, rgba(3, 3, 4, 0.24) 100%);
+  }
+
+  .kyoru-hero__atmosphere-glow {
+    position: absolute;
+    top: -18%;
+    right: -8%;
+    width: min(72vw, 72rem);
+    aspect-ratio: 1.2;
+    background: radial-gradient(ellipse, rgba(179, 23, 47, 0.16), rgba(179, 23, 47, 0.045) 38%, transparent 70%);
+    opacity: 0.72;
+    transform: translate3d(0, 0, 0) scale(1);
+    animation: kyoru-hero-atmosphere-drift 14s ease-in-out infinite alternate;
+  }
+
+  .kyoru-hero__atmosphere-line {
+    position: absolute;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(179, 23, 47, 0.52), rgba(245, 247, 250, 0.08), transparent);
+    transform-origin: center;
+    opacity: 0.46;
+  }
+
+  .kyoru-hero__atmosphere-line--one {
+    top: 24%;
+    right: -10%;
+    width: 54%;
+    transform: rotate(-7deg);
+  }
+
+  .kyoru-hero__atmosphere-line--two {
+    right: 19%;
+    bottom: 12%;
+    width: 28%;
+    transform: rotate(82deg);
+    opacity: 0.2;
   }
 
   .kyoru-hero::before {
@@ -20,8 +85,9 @@
     z-index: -3;
     pointer-events: none;
     background:
+      radial-gradient(ellipse at 78% 38%, rgba(179, 23, 47, 0.1), transparent 38%),
       linear-gradient(105deg, rgba(255, 255, 255, 0.018) 0%, transparent 32%),
-      linear-gradient(180deg, #050506 0%, #070709 70%, #050506 100%);
+      linear-gradient(180deg, #030304 0%, #070709 67%, #040405 100%);
   }
 
   .kyoru-hero::after {
@@ -217,15 +283,90 @@
     transform: translateY(-50%);
   }
 
+  .kyoru-hero__chamber {
+    position: absolute;
+    z-index: 0;
+    inset: -1.15rem -1.3rem;
+    color: rgba(245, 247, 250, 0.34);
+    pointer-events: none;
+  }
+
+  .kyoru-hero__chamber::before,
+  .kyoru-hero__chamber::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+  }
+
+  .kyoru-hero__chamber::before {
+    top: 8%;
+    right: 0;
+    bottom: 15%;
+    width: 1px;
+    background: linear-gradient(180deg, transparent, rgba(245, 247, 250, 0.28) 15%, rgba(179, 23, 47, 0.72) 68%, transparent);
+  }
+
+  .kyoru-hero__chamber::after {
+    right: 0;
+    bottom: 15%;
+    width: clamp(3rem, 8vw, 7rem);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(179, 23, 47, 0.82));
+  }
+
+  .kyoru-hero__chamber-index,
+  .kyoru-hero__chamber-note {
+    position: absolute;
+    font-size: 0.48rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+  }
+
+  .kyoru-hero__chamber-index {
+    top: -0.15rem;
+    left: 7%;
+    color: rgba(245, 247, 250, 0.5);
+  }
+
+  .kyoru-hero__chamber-note {
+    right: 1rem;
+    bottom: -0.1rem;
+    color: rgba(179, 23, 47, 0.8);
+  }
+
+  .kyoru-hero__chamber-edge {
+    position: absolute;
+    display: block;
+    width: 16%;
+    height: 14%;
+    border-color: rgba(245, 247, 250, 0.28);
+  }
+
+  .kyoru-hero__chamber-edge--top {
+    top: 0;
+    left: 0;
+    border-top: 1px solid;
+    border-left: 1px solid;
+  }
+
+  .kyoru-hero__chamber-edge--bottom {
+    right: 0;
+    bottom: 0;
+    border-right: 1px solid;
+    border-bottom: 1px solid;
+  }
+
   .kyoru-hero__media-plane {
     position: absolute;
+    z-index: 1;
     inset: 0;
     isolation: isolate;
     overflow: hidden;
     border-top: 1px solid rgba(245, 247, 250, 0.1);
     border-bottom: 1px solid rgba(245, 247, 250, 0.08);
     background: #08090b;
-    clip-path: polygon(7% 0, 100% 0, 92% 100%, 0 100%);
+    clip-path: polygon(8% 0, 100% 0, 96% 84%, 88% 100%, 0 100%, 3% 13%);
+    filter: drop-shadow(0 26px 38px rgba(0, 0, 0, 0.52));
     animation: kyoru-media-reveal var(--kyoru-motion-deliberate) var(--kyoru-ease-cut) calc(var(--kyoru-hero-delay) + 70ms) both;
   }
 
@@ -258,8 +399,8 @@
   .kyoru-hero__media-overlay {
     z-index: 1;
     background:
-      linear-gradient(90deg, rgba(5, 5, 6, 0.46), rgba(5, 5, 6, 0.08) 48%, rgba(5, 5, 6, 0.2)),
-      linear-gradient(180deg, rgba(5, 5, 6, 0.16), transparent 38%, rgba(5, 5, 6, 0.42));
+      linear-gradient(90deg, rgba(5, 5, 6, 0.38), rgba(5, 5, 6, 0.04) 48%, rgba(5, 5, 6, 0.16)),
+      linear-gradient(180deg, rgba(5, 5, 6, 0.12), transparent 38%, rgba(5, 5, 6, 0.34));
   }
 
   .kyoru-hero__media-framing {
@@ -368,6 +509,405 @@
     .kyoru-hero__media-plane--video-playing .kyoru-hero__media-framing {
       display: none;
     }
+  }
+
+  .kyoru-immersive-hero {
+    --kyoru-immersive-delay: 0ms;
+    position: relative;
+    z-index: 1;
+    height: 100svh;
+    background: #030304;
+  }
+
+  .kyoru-immersive-hero--intro {
+    --kyoru-immersive-delay: 2050ms;
+  }
+
+  .kyoru-immersive-hero__viewport {
+    position: sticky;
+    top: 0;
+    isolation: isolate;
+    width: 100%;
+    height: 100svh;
+    overflow: hidden;
+    background: linear-gradient(112deg, #020203 0%, #08070a 58%, #040305 100%);
+  }
+
+  .kyoru-immersive-hero__viewport::before,
+  .kyoru-immersive-hero__viewport::after {
+    display: none;
+  }
+
+  .kyoru-immersive-hero__atmosphere {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    transform-origin: center;
+  }
+
+  .kyoru-immersive-hero__atmosphere::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    inset: 0;
+    background:
+      linear-gradient(90deg, rgba(2, 2, 3, 0.96) 0%, rgba(2, 2, 3, 0.76) 30%, rgba(2, 2, 3, 0.14) 62%, transparent 80%),
+      linear-gradient(180deg, rgba(2, 2, 3, 0.08) 0%, transparent 62%, rgba(2, 2, 3, 0.48) 100%);
+  }
+
+  .kyoru-immersive-hero__moon-scene {
+    position: absolute;
+    z-index: 0;
+    inset: -2.5%;
+    background-image: url("/images/Kyoru/hero/kyoru-hero-moon-leaves-v1.png");
+    background-position: center right;
+    background-repeat: no-repeat;
+    background-size: cover;
+    opacity: 0.78;
+    transform: translate3d(0, 0, 0) scale(1.025);
+    transform-origin: 68% 34%;
+  }
+
+  .kyoru-immersive-hero__ambient-video {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 280ms var(--kyoru-ease-out);
+  }
+
+  .kyoru-immersive-hero__atmosphere[data-ambient-video-playing="true"] .kyoru-immersive-hero__ambient-video {
+    opacity: 1;
+  }
+
+  .kyoru-immersive-hero__inner {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: minmax(21rem, 0.88fr) minmax(30rem, 1.12fr);
+    grid-template-rows: minmax(0, 1fr) auto;
+    column-gap: clamp(2rem, 5vw, 6rem);
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    padding: calc(var(--kyoru-navbar-height) + clamp(3rem, 7vh, 5.25rem)) var(--kyoru-page-gutter) clamp(2.5rem, 5vh, 4rem);
+  }
+
+  .kyoru-immersive-hero__title-frame {
+    z-index: 5;
+    grid-column: 1;
+    grid-row: 1;
+    width: 100%;
+    align-self: center;
+    transform-origin: left top;
+    will-change: transform, opacity;
+  }
+
+  .kyoru-immersive-hero__title {
+    margin: 0;
+    color: #f5f7fa;
+    font-size: clamp(3.75rem, 5.9vw, 6rem);
+    font-weight: 900;
+    letter-spacing: -0.035em;
+    line-height: 0.86;
+    text-transform: uppercase;
+  }
+
+  .kyoru-immersive-hero__title-line {
+    display: block;
+    width: max-content;
+    max-width: 100%;
+    padding-bottom: 0.07em;
+    white-space: normal;
+  }
+
+  .kyoru-immersive-hero__title-line > span {
+    display: inline-block;
+  }
+
+  .kyoru-immersive-hero__title-line--imagine {
+    font-family: var(--kyoru-font-display);
+    font-weight: 700;
+    letter-spacing: -0.035em;
+  }
+
+  .kyoru-immersive-hero__title-line--build {
+    margin-top: 0.28em;
+    color: rgba(245, 247, 250, 0.92);
+    font-size: 0.72em;
+    letter-spacing: -0.035em;
+  }
+
+  .kyoru-immersive-hero__media {
+    z-index: 2;
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    width: min(92%, 48rem);
+    aspect-ratio: 3 / 2;
+    align-self: center;
+    justify-self: end;
+    pointer-events: none;
+    transform-origin: right center;
+    will-change: transform;
+  }
+
+  .kyoru-immersive-hero__media::before {
+    content: "";
+    position: absolute;
+    z-index: 4;
+    top: 6%;
+    left: -1.15rem;
+    width: clamp(3rem, 5vw, 5.25rem);
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(179, 23, 47, 0.88) 42%, rgba(245, 247, 250, 0.14));
+    opacity: 0.78;
+    pointer-events: none;
+    transform: rotate(-3deg);
+    transform-origin: right center;
+  }
+
+  .kyoru-immersive-hero__media::after {
+    display: none;
+  }
+
+  .kyoru-immersive-hero__media-frame {
+    position: relative;
+    isolation: isolate;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #07080a;
+    box-shadow: 0 2rem 5rem -3rem rgba(0, 0, 0, 0.88);
+    clip-path: inset(0);
+    -webkit-mask-image:
+      linear-gradient(
+        to right,
+        transparent 0,
+        rgba(0, 0, 0, 0.42) 3%,
+        rgba(0, 0, 0, 0.88) 7%,
+        #000 10%,
+        #000 90%,
+        rgba(0, 0, 0, 0.88) 93%,
+        rgba(0, 0, 0, 0.42) 97%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        rgba(0, 0, 0, 0.38) 4%,
+        rgba(0, 0, 0, 0.88) 9%,
+        #000 13%,
+        #000 87%,
+        rgba(0, 0, 0, 0.88) 91%,
+        rgba(0, 0, 0, 0.38) 96%,
+        transparent 100%
+      );
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(
+        to right,
+        transparent 0,
+        rgba(0, 0, 0, 0.42) 3%,
+        rgba(0, 0, 0, 0.88) 7%,
+        #000 10%,
+        #000 90%,
+        rgba(0, 0, 0, 0.88) 93%,
+        rgba(0, 0, 0, 0.42) 97%,
+        transparent 100%
+      ),
+      linear-gradient(
+        to bottom,
+        transparent 0,
+        rgba(0, 0, 0, 0.38) 4%,
+        rgba(0, 0, 0, 0.88) 9%,
+        #000 13%,
+        #000 87%,
+        rgba(0, 0, 0, 0.88) 91%,
+        rgba(0, 0, 0, 0.38) 96%,
+        transparent 100%
+      );
+    mask-composite: intersect;
+  }
+
+  .kyoru-immersive-hero__media-frame::before {
+    content: "";
+    position: absolute;
+    z-index: 3;
+    inset: 0;
+    background: radial-gradient(ellipse at center, transparent 72%, rgba(3, 3, 4, 0.06) 87%, rgba(3, 3, 4, 0.16) 100%);
+    pointer-events: none;
+  }
+
+  .kyoru-immersive-hero__video,
+  .kyoru-immersive-hero__fallback {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .kyoru-immersive-hero__video {
+    z-index: 2;
+    display: block;
+    object-fit: cover;
+    object-position: 50% 50%;
+    background: #050506;
+    opacity: 0;
+    transition: opacity 420ms var(--kyoru-ease-out);
+  }
+
+  .kyoru-immersive-hero__media[data-video-playing="true"] .kyoru-immersive-hero__video {
+    opacity: 1;
+  }
+
+  .kyoru-immersive-hero__fallback {
+    z-index: 1;
+    overflow: hidden;
+    background:
+      linear-gradient(118deg, transparent 0 36%, rgba(179, 23, 47, 0.14) 36.2% 36.8%, transparent 37%),
+      linear-gradient(145deg, #101218, #07080a 52%, #030304);
+    opacity: 1;
+    transition: opacity 320ms var(--kyoru-ease-out);
+  }
+
+  .kyoru-immersive-hero__media[data-video-playing="true"] .kyoru-immersive-hero__fallback {
+    opacity: 0;
+  }
+
+  .kyoru-immersive-hero__fallback-word {
+    position: absolute;
+    font-weight: 900;
+    letter-spacing: -0.055em;
+    line-height: 0.78;
+    text-transform: uppercase;
+  }
+
+  .kyoru-immersive-hero__fallback-word--unknown {
+    top: 12%;
+    right: -2%;
+    color: transparent;
+    font-size: clamp(5rem, 13vw, 12rem);
+    -webkit-text-stroke: 1px rgba(245, 247, 250, 0.09);
+  }
+
+  .kyoru-immersive-hero__fallback-word--real {
+    right: 7%;
+    bottom: -2%;
+    color: rgba(245, 247, 250, 0.055);
+    font-size: clamp(8rem, 22vw, 18rem);
+  }
+
+  .kyoru-immersive-hero__fallback-origin {
+    position: absolute;
+    top: 53%;
+    left: 43%;
+    width: 0.45rem;
+    height: 0.45rem;
+    background: #b3172f;
+    box-shadow: 0 0 1.4rem rgba(179, 23, 47, 0.6);
+    transform: rotate(45deg);
+  }
+
+  .kyoru-immersive-hero__fallback-line {
+    position: absolute;
+    top: 54%;
+    left: 29%;
+    width: 62%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #b3172f 24%, rgba(245, 247, 250, 0.2), transparent);
+    transform: rotate(-7deg);
+    transform-origin: left;
+  }
+
+  .kyoru-immersive-hero__support {
+    z-index: 6;
+    grid-column: 1;
+    grid-row: 2;
+    width: min(100%, 32rem);
+    align-self: end;
+    will-change: transform, opacity;
+  }
+
+  .kyoru-immersive-hero__copy {
+    width: min(100%, 37rem);
+    margin: 0 0 clamp(1.25rem, 2.8vh, 2rem);
+    color: rgba(245, 247, 250, 0.82);
+    font-size: clamp(0.9rem, 1vw, 1.08rem);
+    line-height: 1.62;
+  }
+
+  .kyoru-immersive-hero__copy span {
+    display: block;
+  }
+
+  .kyoru-immersive-hero__copy span:first-child {
+    margin-bottom: 0.45rem;
+    color: #f5f7fa;
+    font-family: var(--kyoru-font-display);
+    font-size: 1.16em;
+    font-weight: 700;
+  }
+
+  .kyoru-immersive-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.25rem;
+  }
+
+  .kyoru-immersive-hero__scroll-cue {
+    position: absolute;
+    z-index: 6;
+    right: var(--kyoru-page-gutter);
+    bottom: clamp(2rem, 5vh, 4rem);
+    display: grid;
+    grid-template-columns: auto 4.5rem;
+    gap: 0.8rem;
+    align-items: center;
+    color: rgba(245, 247, 250, 0.34);
+    font-size: 0.5rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+  }
+
+  .kyoru-immersive-hero__scroll-cue i {
+    display: block;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(245, 247, 250, 0.16), #b3172f);
+    transform-origin: right;
+  }
+
+  .kyoru-immersive-hero__handoff {
+    position: absolute;
+    z-index: 7;
+    right: var(--kyoru-page-gutter);
+    bottom: clamp(2rem, 5vh, 4rem);
+    display: grid;
+    grid-template-columns: auto minmax(4rem, 9vw) auto;
+    gap: 0.85rem;
+    align-items: center;
+    color: rgba(245, 247, 250, 0.66);
+    font-size: 0.52rem;
+    font-weight: 800;
+    letter-spacing: 0.18em;
+    opacity: 0.66;
+  }
+
+  .kyoru-immersive-hero__handoff i {
+    display: block;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(245, 247, 250, 0.22), #b3172f);
+  }
+
+  .kyoru-immersive-hero__handoff span:last-child {
+    color: #d72b46;
   }
 
   .kyoru-selected-work {

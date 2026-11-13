@@ -159,7 +159,23 @@
 
   @keyframes kyoru-media-reveal {
     0% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
-    100% { clip-path: polygon(7% 0, 100% 0, 92% 100%, 0 100%); }
+    100% { clip-path: polygon(8% 0, 100% 0, 96% 84%, 88% 100%, 0 100%, 3% 13%); }
+  }
+
+  @keyframes kyoru-media-reveal-mobile {
+    0% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+    100% { clip-path: polygon(6% 0, 100% 0, 97% 82%, 90% 100%, 0 100%, 2% 14%); }
+  }
+
+  @keyframes kyoru-hero-atmosphere-drift {
+    0% {
+      opacity: 0.58;
+      transform: translate3d(0, 0, 0) scale(1);
+    }
+    100% {
+      opacity: 0.78;
+      transform: translate3d(-2.5%, 2%, 0) scale(1.035);
+    }
   }
 
   @media (min-width: 1800px) {
@@ -215,6 +231,12 @@
   }
 
   @media (max-width: 767px) {
+    .kyoru-immersive-hero__atmosphere::before {
+      background:
+        linear-gradient(180deg, rgba(2, 2, 3, 0.08) 0%, transparent 42%, rgba(2, 2, 3, 0.28) 60%, rgba(2, 2, 3, 0.78) 100%),
+        linear-gradient(90deg, rgba(2, 2, 3, 0.66) 0%, rgba(2, 2, 3, 0.18) 78%, transparent 100%);
+    }
+
     .kyoru-hero {
       min-height: max(39rem, 92svh);
       padding-top: 6.5rem;
@@ -273,11 +295,40 @@
 
     .kyoru-hero__media-plane {
       opacity: 0.88;
-      clip-path: polygon(6% 0, 100% 0, 94% 100%, 0 100%);
+      clip-path: polygon(6% 0, 100% 0, 97% 82%, 90% 100%, 0 100%, 2% 14%);
+      animation-name: kyoru-media-reveal-mobile;
     }
 
     .kyoru-hero__media {
       aspect-ratio: 16 / 7.2;
+    }
+
+    .kyoru-hero__chamber {
+      inset: -0.75rem -0.5rem;
+    }
+
+    .kyoru-hero__chamber-index {
+      left: 8%;
+    }
+
+    .kyoru-hero__chamber-note {
+      right: 0.5rem;
+    }
+
+    .kyoru-hero__atmosphere-glow {
+      top: 12%;
+      right: -32%;
+      width: 115vw;
+      opacity: 0.56;
+    }
+
+    .kyoru-hero__atmosphere-line--one {
+      top: 38%;
+      width: 76%;
+    }
+
+    .kyoru-hero__atmosphere-line--two {
+      display: none;
     }
 
     .kyoru-hero__media-word--unknown {
@@ -719,6 +770,310 @@
     }
   }
 
+  @keyframes kyoru-immersive-meta-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.75rem, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes kyoru-immersive-title-in {
+    from {
+      opacity: 0;
+      clip-path: inset(0 0 18% 0);
+      transform: translate3d(0, 0.24em, 0);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes kyoru-immersive-media-in {
+    from {
+      opacity: 0;
+      clip-path: inset(0 100% 0 0);
+      transform: translate3d(1rem, 0, 0);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes kyoru-immersive-support-in {
+    from {
+      opacity: 0;
+      transform: translate3d(0, 0.6rem, 0);
+    }
+    to {
+      opacity: 1;
+      transform: translate3d(0, 0, 0);
+    }
+  }
+
+  @keyframes kyoru-immersive-cue {
+    0%, 100% { transform: scaleX(0.42); }
+    55% { transform: scaleX(1); }
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .kyoru-immersive-hero__meta {
+      animation: kyoru-immersive-meta-in 460ms var(--kyoru-ease-out) calc(var(--kyoru-immersive-delay) + 40ms) both;
+    }
+
+    .kyoru-immersive-hero__title-line {
+      animation: kyoru-immersive-title-in 760ms var(--kyoru-ease-out) var(--kyoru-immersive-delay) both;
+    }
+
+    .kyoru-immersive-hero__title-line--build {
+      animation-delay: calc(var(--kyoru-immersive-delay) + 110ms);
+    }
+
+    .kyoru-immersive-hero__media-frame {
+      animation: kyoru-immersive-media-in 820ms var(--kyoru-ease-cut) calc(var(--kyoru-immersive-delay) + 190ms) both;
+    }
+
+    .kyoru-immersive-hero__copy,
+    .kyoru-immersive-hero__actions {
+      animation: kyoru-immersive-support-in 560ms var(--kyoru-ease-out) calc(var(--kyoru-immersive-delay) + 300ms) both;
+    }
+
+    .kyoru-immersive-hero__actions {
+      animation-delay: calc(var(--kyoru-immersive-delay) + 350ms);
+    }
+
+    .kyoru-immersive-hero__scroll-cue i {
+      animation: kyoru-immersive-cue 2.8s var(--kyoru-ease-cut) calc(var(--kyoru-immersive-delay) + 500ms) infinite;
+    }
+  }
+
+  @media (max-width: 1023px) {
+    .kyoru-immersive-hero {
+      height: auto;
+    }
+
+    .kyoru-immersive-hero__viewport {
+      position: relative;
+      height: auto;
+      min-height: 100svh;
+    }
+
+    .kyoru-immersive-hero__inner {
+      display: flex;
+      min-height: 100svh;
+      padding-top: calc(var(--kyoru-navbar-height) + clamp(2.5rem, 6vh, 4.5rem));
+      flex-direction: column;
+      justify-content: flex-start;
+    }
+
+    .kyoru-immersive-hero__meta,
+    .kyoru-immersive-hero__title-frame,
+    .kyoru-immersive-hero__media,
+    .kyoru-immersive-hero__support {
+      position: relative;
+      inset: auto;
+    }
+
+    .kyoru-immersive-hero__meta {
+      order: 1;
+    }
+
+    .kyoru-immersive-hero__title-frame {
+      order: 2;
+      width: 100%;
+      margin-top: clamp(2.5rem, 6vh, 4rem);
+      transform: none;
+    }
+
+    .kyoru-immersive-hero__title {
+      font-size: clamp(4.1rem, 10.2vw, 6rem);
+    }
+
+    .kyoru-immersive-hero__title-line--build {
+      margin-left: clamp(0rem, 5vw, 3rem);
+      font-size: 0.78em;
+    }
+
+    .kyoru-immersive-hero__media {
+      order: 3;
+      width: 100%;
+      margin-top: clamp(2rem, 5vh, 3rem);
+      transform: none;
+    }
+
+    .kyoru-immersive-hero__support {
+      order: 4;
+      width: min(100%, 40rem);
+      margin-top: clamp(2rem, 5vh, 3rem);
+      padding-bottom: clamp(2rem, 6vh, 4rem);
+      transform: none;
+    }
+
+    .kyoru-immersive-hero__scroll-cue,
+    .kyoru-immersive-hero__handoff {
+      display: none;
+    }
+
+    .kyoru-immersive-hero__moon-scene {
+      inset: -1%;
+      background-position: 66% center;
+      opacity: 0.58;
+    }
+
+    .kyoru-immersive-hero__ambient-video {
+      object-position: 58% center;
+    }
+
+    .kyoru-immersive-hero__depth-line--two {
+      display: none;
+    }
+  }
+
+  @media (max-width: 767px) {
+    .kyoru-immersive-hero__inner {
+      padding-top: calc(var(--kyoru-navbar-height) + 2.25rem);
+      padding-bottom: 0;
+    }
+
+    .kyoru-immersive-hero__meta {
+      max-width: 24rem;
+      font-size: 0.54rem;
+      letter-spacing: 0.14em;
+    }
+
+    .kyoru-immersive-hero__title-frame {
+      margin-top: 2.25rem;
+    }
+
+    .kyoru-immersive-hero__title {
+      font-size: clamp(2.75rem, 13vw, 4rem);
+      line-height: 0.86;
+    }
+
+    .kyoru-immersive-hero__title-line {
+      width: 100%;
+    }
+
+    .kyoru-immersive-hero__title-line--build {
+      margin-top: 0.18em;
+      margin-left: 0;
+      font-size: 0.78em;
+    }
+
+    .kyoru-immersive-hero__media {
+      margin-top: 1.75rem;
+      aspect-ratio: 16 / 10;
+    }
+
+    .kyoru-immersive-hero__media::before {
+      top: 5%;
+      left: -0.65rem;
+      width: clamp(2.5rem, 18vw, 4rem);
+    }
+
+    .kyoru-immersive-hero__media::after {
+      display: none;
+    }
+
+    .kyoru-immersive-hero__media-frame {
+      clip-path: inset(0);
+      -webkit-mask-image:
+        linear-gradient(
+          to right,
+          transparent 0,
+          rgba(0, 0, 0, 0.48) 3%,
+          rgba(0, 0, 0, 0.9) 6.5%,
+          #000 9%,
+          #000 91%,
+          rgba(0, 0, 0, 0.9) 93.5%,
+          rgba(0, 0, 0, 0.48) 97%,
+          transparent 100%
+        ),
+        linear-gradient(
+          to bottom,
+          transparent 0,
+          rgba(0, 0, 0, 0.42) 4%,
+          rgba(0, 0, 0, 0.9) 8.5%,
+          #000 12%,
+          #000 88%,
+          rgba(0, 0, 0, 0.9) 91.5%,
+          rgba(0, 0, 0, 0.42) 96%,
+          transparent 100%
+        );
+      -webkit-mask-composite: source-in;
+      mask-image:
+        linear-gradient(
+          to right,
+          transparent 0,
+          rgba(0, 0, 0, 0.48) 3%,
+          rgba(0, 0, 0, 0.9) 6.5%,
+          #000 9%,
+          #000 91%,
+          rgba(0, 0, 0, 0.9) 93.5%,
+          rgba(0, 0, 0, 0.48) 97%,
+          transparent 100%
+        ),
+        linear-gradient(
+          to bottom,
+          transparent 0,
+          rgba(0, 0, 0, 0.42) 4%,
+          rgba(0, 0, 0, 0.9) 8.5%,
+          #000 12%,
+          #000 88%,
+          rgba(0, 0, 0, 0.9) 91.5%,
+          rgba(0, 0, 0, 0.42) 96%,
+          transparent 100%
+        );
+      mask-composite: intersect;
+    }
+
+    .kyoru-immersive-hero__support {
+      margin-top: 1.75rem;
+      padding-bottom: 2rem;
+    }
+
+    .kyoru-immersive-hero__copy {
+      margin-bottom: 1.5rem;
+      font-size: 0.92rem;
+      line-height: 1.58;
+    }
+
+    .kyoru-immersive-hero__actions {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0.75rem;
+    }
+
+    .kyoru-immersive-hero__actions .kyoru-action {
+      width: 100%;
+    }
+
+    .kyoru-immersive-hero__moon-scene {
+      inset: 0;
+      background-position: 72% center;
+      opacity: 0.5;
+      animation: none;
+    }
+
+    .kyoru-immersive-hero__ambient-video {
+      object-position: 52% center;
+    }
+
+    .kyoru-immersive-hero__depth-line--one {
+      top: 32%;
+      right: -18%;
+      width: 82%;
+      opacity: 0.42;
+    }
+  }
+
   @keyframes kyoru-view-signal {
     from { transform: scaleX(0); }
     to { transform: scaleX(1); }
@@ -891,23 +1246,87 @@
     }
   }
 
+  @keyframes kyoru-navbar-enter {
+    from {
+      opacity: 0;
+      clip-path: inset(0 0 100% 0);
+      transform: translateY(-0.45rem);
+    }
+    to {
+      opacity: 1;
+      clip-path: inset(0);
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes kyoru-projects-panel-in {
+    from {
+      opacity: 0;
+      transform: translateY(-0.45rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .kyoru-navbar__brand {
+    animation: kyoru-navbar-enter 420ms var(--kyoru-ease-out) both;
+  }
+
+  .kyoru-navbar__link,
+  .kyoru-navbar__projects-toggle {
+    animation: kyoru-navbar-enter 440ms var(--kyoru-ease-out) 55ms both;
+  }
+
+  .kyoru-navbar__cta,
+  .kyoru-navbar__menu-trigger {
+    animation: kyoru-navbar-enter 460ms var(--kyoru-ease-out) 105ms both;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     .kyoru-navbar__brand:hover .kyoru-navbar__mark,
     .kyoru-menu__brand:hover .kyoru-navbar__mark {
-      transform: scale(1.04);
+      transform: scale(1.025);
+    }
+
+    .kyoru-navbar__brand:hover::after {
+      opacity: 1;
+      transform: scaleX(1);
     }
 
     .kyoru-navbar__link:hover {
       color: #f5f7fa;
     }
 
-    .kyoru-navbar__link:hover::after,
+    .kyoru-navbar__link:hover::after {
+      transform: scaleX(1);
+      transform-origin: left;
+    }
+
+    .kyoru-navbar__projects-toggle:hover {
+      background: rgba(245, 247, 250, 0.045);
+      color: #f5f7fa;
+    }
+
+    .kyoru-projects-panel__link:hover::before {
+      transform: scaleX(1);
+    }
+
+    .kyoru-projects-panel__link:hover svg {
+      color: #f5f7fa;
+      transform: translate(0.18rem, -0.18rem);
+    }
+
     .kyoru-navbar__cta:hover::before {
       transform: scaleX(1);
       transform-origin: left;
     }
 
-    .kyoru-navbar__cta:hover svg,
+    .kyoru-navbar__cta:hover svg {
+      transform: translate(0.22rem, -0.22rem);
+    }
+
     .kyoru-menu__original:hover svg {
       transform: translateX(0.3rem);
     }
@@ -1005,6 +1424,63 @@
       display: none;
     }
 
+    .kyoru-immersive-hero {
+      height: auto;
+    }
+
+    .kyoru-immersive-hero__viewport {
+      position: relative;
+      height: 100svh;
+      min-height: 100svh;
+    }
+
+    .kyoru-immersive-hero__media {
+      transform: none;
+    }
+
+    .kyoru-immersive-hero__video {
+      display: none;
+    }
+
+    .kyoru-immersive-hero__ambient-video {
+      display: none;
+    }
+
+    .kyoru-immersive-hero__fallback,
+    .kyoru-immersive-hero__media[data-video-playing="true"] .kyoru-immersive-hero__fallback {
+      opacity: 1;
+    }
+
+    .kyoru-immersive-hero__meta,
+    .kyoru-immersive-hero__title-line,
+    .kyoru-immersive-hero__media-frame,
+    .kyoru-immersive-hero__copy,
+    .kyoru-immersive-hero__actions,
+    .kyoru-immersive-hero__moon-scene,
+    .kyoru-immersive-hero__scroll-cue i {
+      animation: none;
+    }
+
+    .kyoru-immersive-hero__moon-scene { opacity: 0.78; }
+
+    .kyoru-immersive-hero__title-frame,
+    .kyoru-immersive-hero__support,
+    .kyoru-immersive-hero__atmosphere,
+    .kyoru-immersive-hero__handoff,
+    .kyoru-immersive-hero__scroll-cue {
+      transform: none;
+    }
+
+    .kyoru-immersive-hero__handoff {
+      display: none;
+    }
+
+    .kyoru-hero__atmosphere-glow {
+      animation: none;
+      opacity: 0.58;
+      transform: none;
+    }
+
     .kyoru-hero__meta,
     .kyoru-hero__title-line,
     .kyoru-hero__copy,
@@ -1054,8 +1530,20 @@
     .kyoru-footer__nav a,
     .kyoru-footer__original > a,
     .kyoru-navbar__mark,
+    .kyoru-navbar,
+    .kyoru-navbar::after,
+    .kyoru-navbar__inner,
+    .kyoru-navbar__brand,
+    .kyoru-navbar__brand::after,
     .kyoru-navbar__link,
     .kyoru-navbar__link::after,
+    .kyoru-navbar__link-index,
+    .kyoru-navbar__link-label,
+    .kyoru-navbar__projects-toggle,
+    .kyoru-navbar__projects-toggle svg,
+    .kyoru-projects-panel,
+    .kyoru-projects-panel__link::before,
+    .kyoru-projects-panel__link svg,
     .kyoru-navbar__cta,
     .kyoru-navbar__cta::before,
     .kyoru-navbar__cta svg,
@@ -1068,9 +1556,38 @@
       transition: none;
     }
 
+    .kyoru-navbar__brand,
+    .kyoru-navbar__link,
+    .kyoru-navbar__projects-toggle,
+    .kyoru-navbar__cta,
+    .kyoru-navbar__menu-trigger,
+    .kyoru-projects-panel {
+      animation: none;
+      clip-path: none;
+      opacity: 1;
+      transform: none;
+    }
+
+    .kyoru-menu__nav li {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+
     .kyoru-process__entity {
       animation: none;
       opacity: 1;
+      transform: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) and (max-width: 1023px) {
+    .kyoru-immersive-hero__viewport {
+      height: auto;
+      min-height: 100svh;
+    }
+
+    .kyoru-immersive-hero__media {
       transform: none;
     }
   }
