@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useId, useRef, useState } from "react";
 import { Link, NavLink, useLocation } from "react-router-dom";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, ArrowUpRight, ChevronDown, X } from "lucide-react";
 
 const businessLinks = [
   { to: "/services", label: "Services" },
@@ -9,18 +9,19 @@ const businessLinks = [
 ];
 
 const mobileLinks = [
-  { to: "/", label: "Home", index: "01" },
-  { to: "/services", label: "Services", index: "02" },
-  { to: "/trabajos", label: "Projects", index: "03" },
-  { to: "/estudio", label: "Studio", index: "04" },
-  { to: "/contact", label: "Contact", index: "05" },
+  { to: "/services", label: "Services" },
+  { to: "/trabajos", label: "Projects" },
+  { to: "/estudio", label: "Studio" },
+  { to: "/contact", label: "Let's Talk" },
 ];
 
 const BRAND_NAME = "KYORU STUDIO";
-const BRAND_DESCRIPTOR = "Creative & Technology Studio";
+const BRAND_DESCRIPTOR = "Independent Multimedia Studio";
 const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const DRAWER_TRANSITION_MS = 300;
+const NAVBAR_SCROLL_THRESHOLD = 28;
+const PROJECTS_CLOSE_DELAY_MS = 140;
 
 type BrandCopyProps = { compact?: boolean };
 
@@ -34,14 +35,21 @@ const BrandCopy: React.FC<BrandCopyProps> = ({ compact = false }) => (
 const Navbar: React.FC = () => {
   const [isDrawerMounted, setDrawerMounted] = useState(false);
   const [isDrawerVisible, setDrawerVisible] = useState(false);
+  const [isProjectsOpen, setProjectsOpen] = useState(false);
+  const [isScrolled, setScrolled] = useState(() => typeof window !== "undefined" && window.scrollY > NAVBAR_SCROLL_THRESHOLD);
   const { pathname } = useLocation();
   const dialogId = useId();
+  const projectsPanelId = useId();
   const previousPathnameRef = useRef(pathname);
   const menuButtonRef = useRef<HTMLButtonElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const projectsGroupRef = useRef<HTMLDivElement>(null);
+  const projectsToggleRef = useRef<HTMLButtonElement>(null);
   const openFrameRef = useRef<number | null>(null);
   const closeTimerRef = useRef<number | null>(null);
+  const projectsCloseTimerRef = useRef<number | null>(null);
+  const scrollFrameRef = useRef<number | null>(null);
   const restoreFocusRef = useRef(false);
 
   const clearOpenFrame = useCallback(() => {
@@ -57,6 +65,31 @@ const Navbar: React.FC = () => {
       closeTimerRef.current = null;
     }
   }, []);
+
+  const clearProjectsCloseTimer = useCallback(() => {
+    if (projectsCloseTimerRef.current !== null) {
+      window.clearTimeout(projectsCloseTimerRef.current);
+      projectsCloseTimerRef.current = null;
+    }
+  }, []);
+
+  const openProjects = useCallback(() => {
+    clearProjectsCloseTimer();
+    setProjectsOpen(true);
+  }, [clearProjectsCloseTimer]);
+
+  const closeProjects = useCallback(() => {
+    clearProjectsCloseTimer();
+    setProjectsOpen(false);
+  }, [clearProjectsCloseTimer]);
+
+  const scheduleProjectsClose = useCallback(() => {
+    clearProjectsCloseTimer();
+    projectsCloseTimerRef.current = window.setTimeout(() => {
+      setProjectsOpen(false);
+      projectsCloseTimerRef.current = null;
+    }, PROJECTS_CLOSE_DELAY_MS);
+  }, [clearProjectsCloseTimer]);
 
   const finishDrawerClose = useCallback(() => {
     clearOpenFrame();
@@ -119,31 +152,78 @@ const Navbar: React.FC = () => {
   useEffect(() => {
     if (previousPathnameRef.current === pathname) return;
     previousPathnameRef.current = pathname;
+    closeProjects();
     if (isDrawerMounted) closeDrawer(true);
-  }, [closeDrawer, isDrawerMounted, pathname]);
+  }, [closeDrawer, closeProjects, isDrawerMounted, pathname]);
+
+  useEffect(() => {
+    const updateScrolledState = () => {
+      scrollFrameRef.current = null;
+      const nextScrolled = window.scrollY > NAVBAR_SCROLL_THRESHOLD;
+      setScrolled((current) => (current === nextScrolled ? current : nextScrolled));
+    };
+    const handleScroll = () => {
+      if (scrollFrameRef.current === null) {
+        scrollFrameRef.current = window.requestAnimationFrame(updateScrolledState);
+      }
+    };
+
+    updateScrolledState();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      if (scrollFrameRef.current !== null) window.cancelAnimationFrame(scrollFrameRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!isProjectsOpen) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!projectsGroupRef.current?.contains(event.target as Node)) closeProjects();
+    };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      closeProjects();
+      projectsToggleRef.current?.focus();
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", handlePointerDown);
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [closeProjects, isProjectsOpen]);
 
   useEffect(() => {
     const desktopQuery = window.matchMedia(DESKTOP_MEDIA_QUERY);
-    const closeAtDesktop = () => {
-      if (desktopQuery.matches) closeDrawer(false, true);
+    const handleBreakpointChange = () => {
+      if (desktopQuery.matches) {
+        closeDrawer(false, true);
+      } else {
+        closeProjects();
+      }
     };
-    closeAtDesktop();
-    desktopQuery.addEventListener("change", closeAtDesktop);
-    return () => desktopQuery.removeEventListener("change", closeAtDesktop);
-  }, [closeDrawer]);
+    handleBreakpointChange();
+    desktopQuery.addEventListener("change", handleBreakpointChange);
+    return () => desktopQuery.removeEventListener("change", handleBreakpointChange);
+  }, [closeDrawer, closeProjects]);
 
   useEffect(
     () => () => {
       clearOpenFrame();
       clearCloseTimer();
+      clearProjectsCloseTimer();
     },
-    [clearCloseTimer, clearOpenFrame],
+    [clearCloseTimer, clearOpenFrame, clearProjectsCloseTimer],
   );
 
   const handleMobileNavigation = () => closeDrawer(true);
 
   return (
-    <header className="kyoru-navbar">
+    <header className={`kyoru-navbar${isScrolled ? " is-scrolled" : ""}`}>
       <nav className="kyoru-navbar__inner" aria-label="Primary navigation">
         <Link to="/" className="kyoru-navbar__brand" aria-label="Go to the Kyoru Studio homepage">
           <span className="kyoru-navbar__mark">
@@ -153,21 +233,76 @@ const Navbar: React.FC = () => {
         </Link>
 
         <div className="kyoru-navbar__desktop">
-          {businessLinks.map((item) => (
-            <NavLink
-              key={item.to}
-              to={item.to}
-              className={({ isActive }) => `kyoru-navbar__link${isActive ? " is-active" : ""}`}
-            >
-              <span>{item.label}</span>
-            </NavLink>
-          ))}
+          {businessLinks.map((item) =>
+            item.to === "/trabajos" ? (
+              <div
+                key={item.to}
+                ref={projectsGroupRef}
+                className={`kyoru-navbar__projects${isProjectsOpen ? " is-open" : ""}`}
+                onMouseEnter={openProjects}
+                onMouseLeave={scheduleProjectsClose}
+                onFocusCapture={clearProjectsCloseTimer}
+                onBlurCapture={(event) => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) closeProjects();
+                }}
+              >
+                <NavLink
+                  to={item.to}
+                  className={({ isActive }) => `kyoru-navbar__link${isActive ? " is-active" : ""}`}
+                  onClick={closeProjects}
+                >
+                  <span className="kyoru-navbar__link-label">{item.label}</span>
+                </NavLink>
+                <button
+                  ref={projectsToggleRef}
+                  type="button"
+                  className="kyoru-navbar__projects-toggle"
+                  aria-label={`${isProjectsOpen ? "Close" : "Open"} Projects destinations`}
+                  aria-expanded={isProjectsOpen}
+                  aria-controls={projectsPanelId}
+                  onClick={() => (isProjectsOpen ? closeProjects() : openProjects())}
+                >
+                  <ChevronDown aria-hidden="true" />
+                </button>
+
+                {isProjectsOpen ? (
+                  <div id={projectsPanelId} className="kyoru-projects-panel" aria-label="Project destinations">
+                    <div className="kyoru-projects-panel__heading" aria-hidden="true">
+                      <span>PROJECTS</span>
+                    </div>
+                    <Link to="/trabajos" className="kyoru-projects-panel__link" onClick={closeProjects}>
+                      <span>
+                        <strong>Selected Work</strong>
+                        <small>Explore our projects</small>
+                      </span>
+                      <ArrowUpRight aria-hidden="true" />
+                    </Link>
+                    <Link to="/trabajos/yorutsugi" className="kyoru-projects-panel__link" onClick={closeProjects}>
+                      <span>
+                        <strong>Kyoru Originals</strong>
+                        <small>Enter the world of YORUTSUGI</small>
+                      </span>
+                      <ArrowUpRight aria-hidden="true" />
+                    </Link>
+                  </div>
+                ) : null}
+              </div>
+            ) : (
+              <NavLink
+                key={item.to}
+                to={item.to}
+                className={({ isActive }) => `kyoru-navbar__link${isActive ? " is-active" : ""}`}
+              >
+                <span className="kyoru-navbar__link-label">{item.label}</span>
+              </NavLink>
+            ),
+          )}
           <NavLink
             to="/contact"
             className={({ isActive }) => `kyoru-navbar__cta${isActive ? " is-active" : ""}`}
           >
             <span>Let&apos;s Talk</span>
-            <ArrowRight aria-hidden="true" />
+            <ArrowUpRight aria-hidden="true" />
           </NavLink>
         </div>
 
@@ -236,7 +371,6 @@ const Navbar: React.FC = () => {
                     }
                     onClick={handleMobileNavigation}
                   >
-                    <span aria-hidden="true">{item.index}</span>
                     <strong>{item.label}</strong>
                     <ArrowRight aria-hidden="true" />
                   </NavLink>

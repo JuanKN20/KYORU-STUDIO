@@ -1,7 +1,7 @@
-import React, { useCallback, useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
-import KyoruIntro from '../components/KyoruIntro';
+import KyoruHero from '../components/KyoruHero';
 import { yorutsugi } from '../data/yorutsugi';
 
 const capabilities = [
@@ -37,96 +37,10 @@ const creationProcess = [
   },
 ];
 
-const KYORU_INTRO_SESSION_KEY = 'kyoru-intro-seen-v1';
-
-const shouldPlayKyoruIntro = () => {
-  if (typeof window === 'undefined') return false;
-
-  try {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
-    return window.sessionStorage.getItem(KYORU_INTRO_SESSION_KEY) !== 'true';
-  } catch {
-    return false;
-  }
-};
-
 const Home: React.FC = () => {
-  const [introActive, setIntroActive] = useState(shouldPlayKyoruIntro);
-  const [heroVideoPlaying, setHeroVideoPlaying] = useState(false);
-  const disableIntro = useCallback(() => setIntroActive(false), []);
-
   return (
     <div className="w-full">
-      <section className={`kyoru-hero ${introActive ? 'kyoru-hero--intro' : ''}`} aria-labelledby="home-hero-title">
-        <KyoruIntro active={introActive} sessionKey={KYORU_INTRO_SESSION_KEY} onStorageUnavailable={disableIntro} />
-
-        <div className="kyoru-hero__inner">
-          <div className="kyoru-hero__meta">
-            <span>KYORU STUDIO / ART × TECHNOLOGY × STORY</span>
-          </div>
-
-          <h1 id="home-hero-title" className="kyoru-hero__title">
-            <span className="kyoru-hero__title-line">
-              <span>IMAGINE</span> <span>BEYOND.</span>
-            </span>
-            <span className="kyoru-hero__title-line kyoru-hero__title-line--offset">
-              <span>BUILD</span> <span>WHAT&apos;S</span> <span>NEXT.</span>
-            </span>
-          </h1>
-
-          <p className="kyoru-hero__copy">
-            Kyoru Studio creates digital experiences, visual productions and original worlds where art, technology and storytelling
-            become one.
-          </p>
-
-          <div className="kyoru-hero__media" aria-hidden="true">
-            <div
-              className={`kyoru-hero__media-plane ${heroVideoPlaying ? 'kyoru-hero__media-plane--video-playing' : ''}`}
-              data-kyoru-media-stage="home-master"
-            >
-              <div className="kyoru-hero__media-source">
-                <video
-                  className="kyoru-hero__media-video"
-                  src="/videos/Video 1 Home.web.mp4"
-                  autoPlay
-                  muted
-                  loop
-                  playsInline
-                  preload="metadata"
-                  tabIndex={-1}
-                  onPlaying={() => setHeroVideoPlaying(true)}
-                  onError={() => setHeroVideoPlaying(false)}
-                />
-              </div>
-              <div className="kyoru-hero__media-overlay" />
-              <div className="kyoru-hero__media-framing">
-                <span className="kyoru-hero__media-word kyoru-hero__media-word--unknown">UNKNOWN</span>
-                <span className="kyoru-hero__media-word kyoru-hero__media-word--real">REAL</span>
-                <span className="kyoru-hero__media-origin" />
-                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--one" />
-                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--two" />
-                <span className="kyoru-hero__media-fragment kyoru-hero__media-fragment--three" />
-                <span className="kyoru-hero__media-signal" />
-                <span className="kyoru-hero__media-cut" />
-              </div>
-            </div>
-          </div>
-
-          <div className="kyoru-hero__footer">
-            <div className="kyoru-hero__actions">
-              <Link to="/trabajos" className="kyoru-action kyoru-action--explore">
-                <span>VIEW WORK</span>
-                <span className="kyoru-action__line" aria-hidden="true" />
-                <ArrowRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-              <Link to="/contact" className="kyoru-action kyoru-action--commercial">
-                <span>START A PROJECT</span>
-                <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
+      <KyoruHero />
 
       <section className="kyoru-selected-work" aria-labelledby="selected-work-title">
         <div className="kyoru-selected-work__inner">
