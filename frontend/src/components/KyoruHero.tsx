@@ -27,8 +27,10 @@ const KyoruHero: React.FC = () => {
   const [heroVideoPlaying, setHeroVideoPlaying] = useState(false);
   const [ambientVideoAllowed, setAmbientVideoAllowed] = useState(shouldPlayAmbientVideo);
   const [ambientVideoPlaying, setAmbientVideoPlaying] = useState(false);
+  const [ambientFallback, setAmbientFallback] = useState(false);
   const heroRef = useRef<HTMLElement>(null);
   const ambientVideoRef = useRef<HTMLVideoElement>(null);
+  const filmRef = useRef<HTMLVideoElement>(null);
   const disableIntro = useCallback(() => setIntroActive(false), []);
 
   useEffect(() => {
@@ -44,28 +46,70 @@ const KyoruHero: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const video = ambientVideoRef.current;
+    if (!ambientVideoAllowed || !video) return;
+    let disposed = false;
+    let frameId: number | undefined;
+    let paintId: number | undefined;
+    const reveal = () => {
+      if (!disposed && video.readyState >= 2) {
+        setAmbientVideoPlaying(true);
+        setAmbientFallback(false);
+        window.clearTimeout(timeout);
+      }
+    };
+    const frameReady = () => {
+      if (frameId !== undefined) video.cancelVideoFrameCallback(frameId);
+      if ('requestVideoFrameCallback' in video) frameId = video.requestVideoFrameCallback(reveal);
+      else paintId = window.requestAnimationFrame(reveal);
+    };
+    const fail = () => {
+      if (!disposed) {
+        setAmbientVideoPlaying(false);
+        setAmbientFallback(true);
+      }
+    };
+    const timeout = window.setTimeout(fail, 8000);
+    video.addEventListener('playing', frameReady);
+    video.addEventListener('error', fail);
+    if (!video.paused && video.readyState >= 2) frameReady();
+    return () => {
+      disposed = true;
+      window.clearTimeout(timeout);
+      if (frameId !== undefined) video.cancelVideoFrameCallback(frameId);
+      if (paintId !== undefined) window.cancelAnimationFrame(paintId);
+      video.removeEventListener('playing', frameReady);
+      video.removeEventListener('error', fail);
+    };
+  }, [ambientVideoAllowed]);
+
+  useEffect(() => {
     const hero = heroRef.current;
     if (!hero || typeof IntersectionObserver === 'undefined') return;
 
+    let inView = true;
+    const syncPlayback = () => {
+      const active = inView && !document.hidden && !window.matchMedia(REDUCED_MOTION_QUERY).matches;
+      hero.dataset.atmosphereActive = String(active);
+      for (const video of [ambientVideoRef.current, filmRef.current]) {
+        if (!video) continue;
+        if (active) void video.play().catch(() => {
+          if (video === ambientVideoRef.current) setAmbientFallback(true);
+        });
+        else video.pause();
+      }
+    };
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        hero.dataset.atmosphereActive = String(entry.isIntersecting);
-
-        const ambientVideo = ambientVideoRef.current;
-        if (!ambientVideoAllowed || !ambientVideo) return;
-
-        if (entry.isIntersecting) {
-          void ambientVideo.play().catch(() => setAmbientVideoPlaying(false));
-        } else {
-          ambientVideo.pause();
-          setAmbientVideoPlaying(false);
-        }
-      },
+      ([entry]) => { inView = entry.isIntersecting; syncPlayback(); },
       { rootMargin: '12% 0px' },
     );
 
     observer.observe(hero);
-    return () => observer.disconnect();
+    document.addEventListener('visibilitychange', syncPlayback);
+    return () => {
+      observer.disconnect();
+      document.removeEventListener('visibilitychange', syncPlayback);
+    };
   }, [ambientVideoAllowed]);
 
   return (
@@ -81,6 +125,7 @@ const KyoruHero: React.FC = () => {
         <div
           className="kyoru-immersive-hero__atmosphere"
           data-ambient-video-playing={ambientVideoPlaying ? 'true' : 'false'}
+          data-static-fallback={!ambientVideoAllowed || ambientFallback ? 'true' : 'false'}
           aria-hidden="true"
         >
           <span className="kyoru-immersive-hero__moon-scene" />
@@ -95,9 +140,6 @@ const KyoruHero: React.FC = () => {
               playsInline
               preload="metadata"
               tabIndex={-1}
-              onPlaying={() => setAmbientVideoPlaying(true)}
-              onPause={() => setAmbientVideoPlaying(false)}
-              onError={() => setAmbientVideoPlaying(false)}
             />
           )}
         </div>
@@ -127,6 +169,7 @@ const KyoruHero: React.FC = () => {
                 <span className="kyoru-immersive-hero__fallback-line" />
               </div>
               <video
+                ref={filmRef}
                 className="kyoru-immersive-hero__video"
                 src="/videos/Video 1 Home.web.mp4"
                 autoPlay

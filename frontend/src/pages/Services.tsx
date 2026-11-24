@@ -1,41 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Boxes, Check, Clapperboard, Code2 } from 'lucide-react';
+import { ArrowRight, Boxes, Check, Clapperboard, Code2, Gamepad2, Palette, PenTool } from 'lucide-react';
+import { disciplines, positioning, servicePath } from '../data/disciplines';
 
-const officialServices = [
-  {
-    id: 'desarrollo-web',
-    number: '01',
-    title: 'Desarrollo Web',
-    description:
-      'Diseñamos y desarrollamos soluciones web adaptadas a los objetivos, contenidos y necesidades de cada proyecto, desde una presencia corporativa hasta productos digitales interactivos.',
-    capabilities: ['Sitios corporativos', 'Landing pages', 'Plataformas y aplicaciones web', 'Interfaces e interactividad'],
-    icon: Code2,
-  },
-  {
-    id: 'modelado-experiencias-3d',
-    number: '02',
-    title: 'Modelado y Experiencias 3D',
-    description:
-      'Creamos recursos, espacios y experiencias tridimensionales para comunicar productos, visualizar ideas y desarrollar propuestas digitales inmersivas.',
-    capabilities: [
-      'Modelado 3D',
-      'Visualización y renderizado 3D',
-      'Entornos digitales',
-      'Experiencias tridimensionales interactivas',
-    ],
-    icon: Boxes,
-  },
-  {
-    id: 'animacion-contenido-digital',
-    number: '03',
-    title: 'Animación y Contenido Digital',
-    description:
-      'Damos movimiento a ideas y mensajes mediante piezas visuales pensadas para marcas, productos y proyectos creativos.',
-    capabilities: ['Animación 2D y 3D', 'Motion graphics', 'Piezas audiovisuales', 'Contenido visual digital'],
-    icon: Clapperboard,
-  },
-];
+const commercialServices = disciplines.filter(({ position }) => position === 'commercial');
+const disciplineIcons = { digital: Code2, design: Palette, illustration: PenTool, '3d': Boxes, motion: Clapperboard, games: Gamepad2 };
 
 const Services: React.FC = () => {
   return (
@@ -100,13 +69,13 @@ const Services: React.FC = () => {
                   </p>
 
                   <ul className="mt-6 space-y-3" aria-label="Servicios oficiales de Kyoru Studio">
-                    {officialServices.map((service) => (
+                    {commercialServices.map((service, index) => (
                       <li
                         key={service.id}
                         className="flex items-center gap-4 rounded-2xl border border-red-900/40 bg-black/30 px-4 py-3"
                       >
-                        <span className="text-xs font-bold tracking-[0.18em] text-red-300">{service.number}</span>
-                        <span className="text-sm font-semibold text-zinc-100">{service.title}</span>
+                        <span className="text-xs font-bold tracking-[0.18em] text-red-300">{String(index + 1).padStart(2, '0')}</span>
+                        <span className="text-sm font-semibold text-zinc-100">{service.detail.title}</span>
                       </li>
                     ))}
                   </ul>
@@ -128,25 +97,25 @@ const Services: React.FC = () => {
             <p className="text-xs font-semibold uppercase tracking-[0.24em] text-red-300">ÁREAS DE TRABAJO</p>
           </div>
           <h2 id="services-categories-title" className="akai-section-title mt-3">
-            Tres servicios para construir, visualizar y comunicar.
+            Seis disciplinas para construir, visualizar y comunicar.
           </h2>
           <p className="akai-section-subtitle max-w-3xl leading-relaxed">
-            Cada línea se adapta al alcance y a la etapa de tu proyecto. Podemos abordar una necesidad concreta o combinar capacidades
-            cuando la propuesta lo requiera.
+            Explora nuestros servicios comerciales, las capacidades disponibles bajo consulta, la producción original y las áreas de investigación del estudio.
           </p>
         </div>
 
         <div className="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {officialServices.map((service) => {
-            const Icon = service.icon;
+          {disciplines.map((service) => {
+            const Icon = disciplineIcons[service.id as keyof typeof disciplineIcons];
             const titleId = `${service.id}-title`;
 
             return (
               <article
                 key={service.id}
-                id={service.id}
+                id={service.legacyAnchor ?? service.slug}
+                tabIndex={-1}
                 aria-labelledby={titleId}
-                className="akai-card relative flex h-full min-w-0 flex-col overflow-hidden p-6 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:p-7 md:last:col-span-2 lg:last:col-span-1"
+                className="akai-card relative flex h-full min-w-0 scroll-mt-24 flex-col overflow-hidden p-6 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:scroll-mt-28 sm:p-7"
               >
                 <div
                   aria-hidden="true"
@@ -156,18 +125,18 @@ const Services: React.FC = () => {
                   <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl border border-red-500/35 bg-red-950/45 text-red-100">
                     <Icon className="h-5 w-5" aria-hidden="true" />
                   </span>
-                  <span className="text-sm font-black tracking-[0.22em] text-red-300">{service.number}</span>
+                  <span className="text-sm font-black tracking-[0.22em] text-red-300">{positioning[service.position].es}</span>
                 </div>
 
                 <h3 id={titleId} className="mt-6 text-2xl font-bold leading-tight text-white">
-                  {service.title}
+                  {service.detail.title}
                 </h3>
-                <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:text-base">{service.description}</p>
+                <p className="mt-4 text-sm leading-relaxed text-zinc-300 sm:text-base">{service.detail.description}</p>
 
                 <div className="mt-6 border-t border-red-900/35 pt-5">
                   <h4 className="text-xs font-semibold uppercase tracking-[0.2em] text-red-300">Capacidades</h4>
                   <ul className="mt-4 space-y-3">
-                    {service.capabilities.map((capability) => (
+                    {service.detail.capabilities.map((capability) => (
                       <li key={capability} className="flex items-start gap-3 text-sm leading-relaxed text-zinc-200">
                         <Check className="mt-0.5 h-4 w-4 shrink-0 text-red-300" aria-hidden="true" />
                         <span>{capability}</span>
@@ -178,11 +147,11 @@ const Services: React.FC = () => {
 
                 <div className="mt-auto pt-8">
                   <Link
-                    to="/contact"
-                    aria-label={`Consultar sobre ${service.title}`}
+                    to={servicePath(service.slug)}
+                    aria-label={`Explorar ${service.detail.title}`}
                     className="akai-btn-secondary w-full gap-2 motion-reduce:transition-none motion-reduce:hover:translate-y-0 sm:w-auto lg:w-full xl:w-auto"
                   >
-                    Consultar servicio
+                    Explorar disciplina
                     <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Link>
                 </div>

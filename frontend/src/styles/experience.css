@@ -1591,4 +1591,28 @@
       transform: none;
     }
   }
+
+  /* Frame-backed loading stays dark until the ambient film is paintable. */
+  .kyoru-immersive-hero__atmosphere[data-static-fallback="false"] .kyoru-immersive-hero__moon-scene { opacity: 0; }
+
+  @keyframes kyoru-world-depth { from { transform: scale(1.025); } to { transform: scale(1); } }
+  @media (prefers-reduced-motion: no-preference) {
+    .kyoru-selected-work--world .kyoru-selected-work__feature {
+      opacity: var(--work-reveal, 1);
+      transform: translateY(var(--work-offset, 0px));
+    }
+    .kyoru-selected-work--world:focus-within .kyoru-selected-work__feature { opacity: 1; transform: none; }
+    @supports (animation-timeline: view()) {
+      .kyoru-selected-work--world .kyoru-selected-work__art {
+        animation: kyoru-world-depth linear both;
+        animation-timeline: view();
+        animation-range: entry 0% cover 40%;
+      }
+    }
+    @media (hover: hover) and (pointer: fine) {
+      .kyoru-selected-work__art { transition: object-position 250ms var(--kyoru-ease-out); }
+      .kyoru-selected-work__feature:hover .kyoru-selected-work__art { object-position: 71% center; }
+    }
+  }
+
 }
