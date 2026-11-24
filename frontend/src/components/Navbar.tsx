@@ -16,7 +16,7 @@ const mobileLinks = [
 ];
 
 const BRAND_NAME = "KYORU STUDIO";
-const BRAND_DESCRIPTOR = "Independent Multimedia Studio";
+const BRAND_DESCRIPTOR = "ART × TECHNOLOGY × STORY";
 const DESKTOP_MEDIA_QUERY = "(min-width: 1024px)";
 const REDUCED_MOTION_QUERY = "(prefers-reduced-motion: reduce)";
 const DRAWER_TRANSITION_MS = 300;

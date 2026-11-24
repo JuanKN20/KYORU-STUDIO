@@ -1,4 +1,6 @@
 import { useEffect } from 'react';
+import { matchPath } from 'react-router-dom';
+import { findDiscipline, servicePath } from '../data/disciplines';
 
 const SITE_URL = 'https://kyorustudio.com';
 const SOCIAL_IMAGE_URL = `${SITE_URL}/images/Kyoru/Logo%20Kyoru.png`;
@@ -87,7 +89,14 @@ type RouteMetadataProps = {
 
 export default function RouteMetadata({ pathname }: RouteMetadataProps) {
   useEffect(() => {
-    const metadata = routeMetadata[pathname];
+    const detailMatch = matchPath('/services/:slug', pathname);
+    const discipline = findDiscipline(detailMatch?.params.slug);
+    const metadata: RouteMetadataEntry | undefined = discipline ? {
+      title: `${discipline.detail.title} | Kyoru Studio`,
+      description: discipline.detail.description,
+      language: 'es',
+      locale: 'es_CO',
+    } : routeMetadata[pathname];
     const isIndexable = Boolean(metadata);
     const title = metadata?.title ?? 'Página no encontrada | Kyoru Studio';
     const description =
@@ -97,12 +106,13 @@ export default function RouteMetadata({ pathname }: RouteMetadataProps) {
     document.title = title;
     document.documentElement.lang = metadata?.language ?? 'es';
 
-    setCanonical(isIndexable ? new URL(pathname, SITE_URL).toString() : null);
+    const pageUrl = new URL(discipline ? servicePath(discipline.slug) : pathname, SITE_URL).toString();
+    setCanonical(isIndexable ? pageUrl : null);
     setMetaContent('meta[name="robots"]', isIndexable ? 'index,follow' : 'noindex,follow');
     setMetaContent('meta[name="description"]', description);
     setMetaContent('meta[property="og:title"]', title);
     setMetaContent('meta[property="og:description"]', description);
-    setMetaContent('meta[property="og:url"]', isIndexable ? new URL(pathname, SITE_URL).toString() : SITE_URL);
+    setMetaContent('meta[property="og:url"]', isIndexable ? pageUrl : SITE_URL);
     setMetaContent('meta[property="og:locale"]', locale);
     setMetaContent('meta[property="og:locale:alternate"]', locale === 'en_US' ? 'es_CO' : 'en_US');
     setMetaContent('meta[property="og:image"]', SOCIAL_IMAGE_URL);

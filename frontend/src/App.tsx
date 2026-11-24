@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Navigate, Route, Routes, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Services from './pages/Services';
+import ServiceDetail from './pages/ServiceDetail';
 import Juegos from './pages/Juegos';
 import Contact from './pages/Contact';
 import Navbar from './components/Navbar';
@@ -34,6 +35,7 @@ function AppContent() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/services" element={<Services />} />
+          <Route path="/services/:slug" element={<ServiceDetail />} />
           <Route path="/trabajos" element={<Trabajos />} />
           <Route path="/trabajos/yorutsugi" element={<Yorutsugi />} />
           <Route path="/estudio" element={<Estudio />} />

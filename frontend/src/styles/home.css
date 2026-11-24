@@ -565,10 +565,13 @@
     background-position: center right;
     background-repeat: no-repeat;
     background-size: cover;
-    opacity: 0.78;
+    opacity: 0;
     transform: translate3d(0, 0, 0) scale(1.025);
     transform-origin: 68% 34%;
+    transition: opacity 700ms var(--kyoru-ease-out);
   }
+
+  .kyoru-immersive-hero__atmosphere[data-static-fallback="true"] .kyoru-immersive-hero__moon-scene { opacity: 0.78; }
 
   .kyoru-immersive-hero__ambient-video {
     position: absolute;
@@ -580,7 +583,7 @@
     object-position: center;
     opacity: 0;
     pointer-events: none;
-    transition: opacity 280ms var(--kyoru-ease-out);
+    transition: opacity 700ms var(--kyoru-ease-out);
   }
 
   .kyoru-immersive-hero__atmosphere[data-ambient-video-playing="true"] .kyoru-immersive-hero__ambient-video {
@@ -947,13 +950,13 @@
     line-height: 1;
   }
 
-  .kyoru-section-index span:first-child {
-    display: inline-grid;
+  .kyoru-section-index::before {
+    content: "";
+    display: block;
     width: 1.8rem;
-    height: 1.8rem;
-    place-items: center;
-    border: 1px solid rgba(179, 23, 47, 0.72);
-    color: #f5f7fa;
+    height: 2px;
+    flex: none;
+    background: #b3172f;
   }
 
   .kyoru-selected-work__feature {
@@ -1151,10 +1154,6 @@
     color: rgba(9, 9, 12, 0.62);
   }
 
-  .kyoru-capabilities .kyoru-section-index span:first-child {
-    border-color: rgba(179, 23, 47, 0.8);
-    color: #09090c;
-  }
 
   .kyoru-capabilities__heading {
     display: grid;
@@ -1525,9 +1524,6 @@
     color: rgba(9, 9, 12, 0.58);
   }
 
-  .kyoru-process .kyoru-section-index span:first-child {
-    color: #09090c;
-  }
 
   .kyoru-process__title {
     margin: clamp(3rem, 6vw, 5.5rem) 0 0;
@@ -1738,9 +1734,6 @@
     color: rgba(9, 9, 12, 0.58);
   }
 
-  .kyoru-studio .kyoru-section-index span:first-child {
-    color: #09090c;
-  }
 
   .kyoru-studio__statement {
     display: grid;
@@ -2239,5 +2232,105 @@
     line-height: 1.6;
     letter-spacing: 0.12em;
     text-transform: uppercase;
+  }
+
+  .kyoru-capabilities--editorial .kyoru-capabilities__heading { align-items: start; }
+  .kyoru-capabilities--editorial .kyoru-capabilities__heading h2 { max-width: 16ch; line-height: .98; letter-spacing: -.04em; }
+  .kyoru-disciplines__intro { margin-top: 1.5rem; font-size: clamp(1rem, 1.7vw, 1.4rem); color: #49494e; }
+  .kyoru-disciplines { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 5rem); max-width: var(--kyoru-content-wide-max); margin: 3rem auto 0; }
+  .kyoru-discipline { border-top: 1px solid #b9b9be; }
+  .kyoru-discipline:last-child { border-bottom: 1px solid #b9b9be; }
+  .kyoru-discipline h3 { margin: 0; }
+  .kyoru-discipline button { display: flex; justify-content: space-between; align-items: center; gap: 1rem; width: 100%; min-height: 5rem; padding: 1.4rem 0; text-align: left; color: #09090c; font-size: clamp(1.2rem, 2.1vw, 2rem); font-weight: 800; letter-spacing: -.025em; line-height: 1.15; }
+  .kyoru-discipline button[aria-expanded="true"] { color: #a2132b; }
+  .kyoru-discipline button svg { flex: none; transition: transform 200ms var(--kyoru-ease-out); }
+  .kyoru-discipline button svg.is-open { transform: rotate(45deg); }
+  .kyoru-discipline__panel { display: grid; grid-template-rows: 0fr; visibility: hidden; transition: grid-template-rows 250ms var(--kyoru-ease-out), visibility 250ms; }
+  .kyoru-discipline__panel.is-open { grid-template-rows: 1fr; visibility: visible; }
+  .kyoru-discipline__panel > div { overflow: hidden; min-height: 0; }
+  .kyoru-discipline__body { padding: 0 0 1.75rem; color: #424249; line-height: 1.7; max-width: 60ch; }
+  .kyoru-discipline__body ul { margin: 1rem 0; padding-left: 1.2rem; list-style: disc; columns: 2; }
+  .kyoru-discipline__body li { break-inside: avoid; }
+  .kyoru-discipline__body a, .kyoru-disciplines__footer a { display: inline-flex; align-items: center; gap: .5rem; min-height: 44px; color: #901127; text-decoration: underline; text-underline-offset: .3em; font-weight: 700; }
+  .kyoru-disciplines button:focus-visible, .kyoru-disciplines a:focus-visible, .kyoru-disciplines__footer a:focus-visible { outline: 2px solid #a2132b; outline-offset: 5px; }
+  .kyoru-disciplines__preview { display: flex; flex-direction: column; justify-content: space-between; gap: 3rem; padding: 2rem 0 0; }
+  .kyoru-disciplines__label { color: #901127; font-size: .75rem; font-weight: 800; letter-spacing: .08em; line-height: 1.6; }
+  .kyoru-disciplines__statement { margin: 1.5rem 0; font-family: var(--kyoru-font-display); font-size: clamp(2.3rem, 4vw, 4.5rem); line-height: 1.05; letter-spacing: -.03em; }
+  .kyoru-disciplines__preview-copy > p:not([class]), .kyoru-disciplines__technology p { color: #49494e; line-height: 1.7; }
+  .kyoru-disciplines__technology { padding-top: 1.5rem; border-top: 1px solid #b9b9be; }
+  .kyoru-disciplines__technology h3 { font-size: .85rem; font-weight: 800; margin-bottom: .75rem; }
+  .kyoru-disciplines__footer { max-width: var(--kyoru-content-wide-max); margin: 2.5rem auto 0; color: #49494e; }
+  @keyframes kyoru-discipline-copy { from { opacity: .4; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @media (prefers-reduced-motion: no-preference) { .kyoru-disciplines__preview-copy { animation: kyoru-discipline-copy 250ms var(--kyoru-ease-out); } }
+  @media (hover: hover) and (pointer: fine) { .kyoru-discipline button:hover { color: #a2132b; } }
+  @media (max-width: 767px) { .kyoru-disciplines { grid-template-columns: minmax(0, 1fr); gap: 2rem; } .kyoru-discipline__body ul { columns: 1; } .kyoru-disciplines__preview { padding-top: 0; } }
+  @media (prefers-reduced-motion: reduce) { .kyoru-discipline__panel, .kyoru-discipline button svg { transition: none; } }
+
+  .kyoru-selected-work--world { background: #050506; }
+  .kyoru-selected-work--world .kyoru-selected-work__feature {
+    position: relative;
+    display: grid;
+    min-height: clamp(38rem, 52vw, 50rem);
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    isolation: isolate;
+  }
+  .kyoru-selected-work--world .kyoru-selected-work__field {
+    position: absolute;
+    inset: -8% 0;
+    min-height: 0;
+    border: 0;
+    background: transparent;
+    animation: none;
+    -webkit-mask-image: linear-gradient(to right, transparent 0, rgba(0,0,0,.42) 3%, rgba(0,0,0,.88) 7%, #000 10%, #000 90%, rgba(0,0,0,.88) 93%, rgba(0,0,0,.42) 97%, transparent 100%), linear-gradient(to bottom, transparent 0, rgba(0,0,0,.38) 4%, rgba(0,0,0,.88) 9%, #000 13%, #000 87%, rgba(0,0,0,.88) 91%, rgba(0,0,0,.38) 96%, transparent 100%);
+    -webkit-mask-composite: source-in;
+    mask-image: linear-gradient(to right, transparent 0, rgba(0,0,0,.42) 3%, rgba(0,0,0,.88) 7%, #000 10%, #000 90%, rgba(0,0,0,.88) 93%, rgba(0,0,0,.42) 97%, transparent 100%), linear-gradient(to bottom, transparent 0, rgba(0,0,0,.38) 4%, rgba(0,0,0,.88) 9%, #000 13%, #000 87%, rgba(0,0,0,.88) 91%, rgba(0,0,0,.38) 96%, transparent 100%);
+    mask-composite: intersect;
+  }
+  .kyoru-selected-work--world .kyoru-selected-work__field::before { display: none; }
+  .kyoru-selected-work__art { width: 100%; height: 100%; object-fit: cover; object-position: 70% center; }
+  .kyoru-selected-work--world .kyoru-selected-work__content {
+    align-self: end;
+    isolation: isolate;
+    width: min(48%, 37rem);
+    padding: clamp(2rem, 4vw, 4rem) 0 clamp(3rem, 5vw, 5rem) clamp(1rem, 3vw, 3rem);
+    animation: none;
+    text-shadow: 0 2px 12px rgba(0,0,0,.8);
+  }
+  .kyoru-selected-work--world .kyoru-selected-work__content::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: -2rem -5rem -2rem -2rem;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(5,5,8,.78), rgba(5,5,8,.66) 52%, transparent 100%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+    mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 88%, transparent);
+  }
+  .kyoru-selected-work--world .kyoru-selected-work__eyebrow,
+  .kyoru-selected-work--world .kyoru-selected-work__type { color: #ffd5dc; }
+  .kyoru-selected-work--world .kyoru-inline-action { min-height: 3rem; padding-inline: .25rem; color: #fff; text-decoration: underline; text-decoration-color: rgba(255,255,255,.55); text-underline-offset: .35em; }
+  .kyoru-selected-work--world .kyoru-inline-action__line { background: rgba(255,255,255,.9); }
+  .kyoru-selected-work--world .kyoru-inline-action:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+  @media (hover: hover) and (pointer: fine) {
+    .kyoru-selected-work--world .kyoru-inline-action:hover { text-decoration-color: #fff; }
+  }
+  .kyoru-selected-work--world .kyoru-selected-work__title { font-size: clamp(2.6rem, 5vw, 5.8rem); line-height: 1.05; white-space: nowrap; }
+  .kyoru-selected-work__status { margin-top: 1rem; color: #f5f7fa; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+  .kyoru-selected-work--world .kyoru-selected-work__description { color: #e1dfe1; }
+  @media (max-width: 767px) {
+    .kyoru-selected-work--world .kyoru-selected-work__feature { min-height: 0; }
+    .kyoru-selected-work--world .kyoru-selected-work__field {
+      position: relative;
+      inset: auto;
+      width: 100%;
+      aspect-ratio: 1.15;
+      -webkit-mask-image: linear-gradient(to right, transparent 0, rgba(0,0,0,.48) 3%, rgba(0,0,0,.9) 6.5%, #000 9%, #000 91%, rgba(0,0,0,.9) 93.5%, rgba(0,0,0,.48) 97%, transparent 100%), linear-gradient(to bottom, transparent 0, rgba(0,0,0,.42) 4%, rgba(0,0,0,.9) 8.5%, #000 12%, #000 88%, rgba(0,0,0,.9) 91.5%, rgba(0,0,0,.42) 96%, transparent 100%);
+      mask-image: linear-gradient(to right, transparent 0, rgba(0,0,0,.48) 3%, rgba(0,0,0,.9) 6.5%, #000 9%, #000 91%, rgba(0,0,0,.9) 93.5%, rgba(0,0,0,.48) 97%, transparent 100%), linear-gradient(to bottom, transparent 0, rgba(0,0,0,.42) 4%, rgba(0,0,0,.9) 8.5%, #000 12%, #000 88%, rgba(0,0,0,.9) 91.5%, rgba(0,0,0,.42) 96%, transparent 100%);
+    }
+    .kyoru-selected-work__art { object-position: 80% center; }
+    .kyoru-selected-work--world .kyoru-selected-work__content { width: 100%; padding: 1rem 0 0; }
+    .kyoru-selected-work--world .kyoru-selected-work__content::before { display: none; }
+    .kyoru-selected-work--world .kyoru-selected-work__title { font-size: clamp(2.3rem, 10.5vw, 4.5rem); }
   }
 }

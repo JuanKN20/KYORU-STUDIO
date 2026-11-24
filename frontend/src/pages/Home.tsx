@@ -1,29 +1,9 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ArrowUpRight } from 'lucide-react';
 import KyoruHero from '../components/KyoruHero';
+import HomeCapabilities from '../components/HomeCapabilities';
 import { yorutsugi } from '../data/yorutsugi';
-
-const capabilities = [
-  {
-    index: '01',
-    title: 'DIGITAL',
-    detail: 'Development / Web / Interactive',
-    description: 'Web development and interface design for digital experiences with clarity and purpose.',
-  },
-  {
-    index: '02',
-    title: '3D',
-    detail: 'Modeling / Experiences',
-    description: '3D modeling, visualization and immersive experiences for ideas and environments.',
-  },
-  {
-    index: '03',
-    title: 'MOTION',
-    detail: 'Animation / Digital Content',
-    description: 'Animation and digital content that brings stories into motion.',
-  },
-];
 
 const creationProcess = [
   { index: '00', title: 'THE UNKNOWN', description: 'The unknown is where every act of creation begins.' },
@@ -38,33 +18,68 @@ const creationProcess = [
 ];
 
 const Home: React.FC = () => {
+  const selectedWorkRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    const feature = selectedWorkRef.current;
+    if (!feature) return;
+    const motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      if (motion.matches) {
+        feature.style.removeProperty('--work-reveal');
+        feature.style.removeProperty('--work-offset');
+        return;
+      }
+      const bounds = feature.getBoundingClientRect();
+      const height = window.innerHeight;
+      const clamp = (value: number) => Math.max(0, Math.min(1, value));
+      const entry = clamp((height - bounds.top) / (height * 0.5));
+      const exit = clamp(bounds.bottom / (height * 0.35));
+      const visibility = Math.min(entry, exit);
+      feature.style.setProperty('--work-reveal', String(0.3 + visibility * 0.7));
+      feature.style.setProperty('--work-offset', `${((1 - entry) * 12 - (1 - exit) * 8).toFixed(1)}px`);
+    };
+    const schedule = () => { if (!frame) frame = window.requestAnimationFrame(update); };
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    motion.addEventListener('change', schedule);
+    schedule();
+    return () => {
+      if (frame) window.cancelAnimationFrame(frame);
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      motion.removeEventListener('change', schedule);
+      feature.style.removeProperty('--work-reveal');
+      feature.style.removeProperty('--work-offset');
+    };
+  }, []);
+
   return (
     <div className="w-full">
       <KyoruHero />
 
-      <section className="kyoru-selected-work" aria-labelledby="selected-work-title">
+      <section className="kyoru-selected-work kyoru-selected-work--world" aria-labelledby="selected-work-title">
         <div className="kyoru-selected-work__inner">
           <div className="kyoru-section-index">
-            <span>02</span>
             <span>SELECTED WORK</span>
           </div>
 
-          <article className="kyoru-selected-work__feature">
-            <div className="kyoru-selected-work__field" aria-hidden="true" data-kyoru-media-slot="yorutsugi-artwork">
-              <span className="kyoru-selected-work__field-index">01 / KYORU ORIGINAL</span>
-              <span className="kyoru-selected-work__field-title">YORUTSUGI</span>
-              <span className="kyoru-selected-work__field-signal" />
-              <span className="kyoru-selected-work__field-frame kyoru-selected-work__field-frame--one" />
-              <span className="kyoru-selected-work__field-frame kyoru-selected-work__field-frame--two" />
-              <span className="kyoru-selected-work__field-caption">ARTWORK / PENDING</span>
+          <article ref={selectedWorkRef} className="kyoru-selected-work__feature">
+            <div className="kyoru-selected-work__field">
+              <img className="kyoru-selected-work__art" src="/images/Yorutsugi 1.png"
+                alt="Official YORUTSUGI artwork: a red-haired character overlooking a city at sunset."
+                width={1672} height={941} loading="lazy" decoding="async" />
             </div>
 
             <div className="kyoru-selected-work__content">
-              <p className="kyoru-selected-work__eyebrow">01 / KYORU ORIGINAL</p>
+              <p className="kyoru-selected-work__eyebrow">KYORU ORIGINAL / 001</p>
               <h2 id="selected-work-title" className="kyoru-selected-work__title">YORUTSUGI</h2>
-              <p className="kyoru-selected-work__type">Original Manga / Animation / Worldbuilding</p>
+              <p className="kyoru-selected-work__type">Original Manga / Fantasy / Action</p>
+              <p className="kyoru-selected-work__status">In Development</p>
               <p className="kyoru-selected-work__description">
-                YORUTSUGI is an original fantasy-action manga produced by Kyoru Studio and currently in development.
+                A world taking shape. An original fantasy-action manga by Kyoru Studio.
               </p>
               <Link to={yorutsugi.route} className="kyoru-inline-action">
                 <span>EXPLORE YORUTSUGI</span>
@@ -76,35 +91,12 @@ const Home: React.FC = () => {
         </div>
       </section>
 
-      <section className="kyoru-capabilities" aria-labelledby="capabilities-title">
-        <div className="kyoru-capabilities__inner">
-          <div className="kyoru-capabilities__heading">
-            <div className="kyoru-section-index">
-              <span>03</span>
-              <span>CAPABILITIES</span>
-            </div>
-            <h2 id="capabilities-title">Craft across digital worlds.</h2>
-          </div>
-
-          <div className="kyoru-capabilities__list">
-            {capabilities.map((capability) => (
-              <Link key={capability.title} to="/services" className="kyoru-capability" aria-label={`Explore ${capability.title}`}>
-                <span className="kyoru-capability__index">{capability.index}</span>
-                <span className="kyoru-capability__title">{capability.title}</span>
-                <span className="kyoru-capability__detail">{capability.detail}</span>
-                <span className="kyoru-capability__description">{capability.description}</span>
-                <ArrowUpRight className="kyoru-capability__arrow h-5 w-5" aria-hidden="true" />
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
+      <HomeCapabilities />
 
       <section className="kyoru-original" aria-labelledby="home-original-title">
         <div className="kyoru-original__inner">
           <div className="kyoru-original__intro">
             <div className="kyoru-section-index">
-              <span>04</span>
               <span>KYORU ORIGINAL</span>
             </div>
             <p className="kyoru-original__status">A WORLD IN DEVELOPMENT</p>
@@ -163,7 +155,6 @@ const Home: React.FC = () => {
         <div className="kyoru-process__inner">
           <header className="kyoru-process__header">
             <div className="kyoru-section-index">
-              <span>05</span>
               <span>PROCESS</span>
             </div>
             <h2 id="home-process-title" className="kyoru-process__title">
@@ -197,7 +188,6 @@ const Home: React.FC = () => {
       <section className="kyoru-studio" aria-labelledby="home-studio-title">
         <div className="kyoru-studio__inner">
           <div className="kyoru-section-index">
-            <span>06</span>
             <span>STUDIO</span>
           </div>
 
@@ -230,7 +220,6 @@ const Home: React.FC = () => {
         <div className="kyoru-showreel__inner">
           <div className="kyoru-showreel__header">
             <div className="kyoru-section-index">
-              <span>07</span>
               <span>MOTION / SHOWREEL</span>
             </div>
             <div>
@@ -252,7 +241,6 @@ const Home: React.FC = () => {
       <section className="kyoru-contact-finale" aria-labelledby="home-contact-title">
         <div className="kyoru-contact-finale__inner">
           <div className="kyoru-section-index">
-            <span>08</span>
             <span>START A PROJECT</span>
           </div>
 
