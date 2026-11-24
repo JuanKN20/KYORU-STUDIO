@@ -13,6 +13,18 @@ Repositorio principal de Kyoru Studio con separacion profesional de frontend y b
 - `frontend/`: aplicacion web React + Vite + Tailwind desplegable con Cloudflare Workers Static Assets.
 - `backend/`: API Node.js/Express y PostgreSQL para contenido publico, contactos, administracion y uploads.
 
+## Flujo de trabajo
+
+Hay tres ramas permanentes, cada una con el repositorio completo:
+
+- `frontend`: desarrollo de la web, componentes, estilos, UX/UI y recursos web.
+- `backend`: desarrollo del servidor, API, datos y seguridad.
+- `main`: única rama oficial de integración y publicación. No se desarrolla directamente en ella.
+
+Jira registra tareas, sprints y funcionalidades; no se crea una rama por ticket. Las excepciones requieren autorización expresa. Validar antes de integrar (`npm run validate` para frontend, pruebas pertinentes para backend y `git diff --check`). Con autorización del responsable, crear commits descriptivos (Conventional Commits), publicar la rama y abrir una PR hacia `main`. Preferir un merge commit, respetar los checks y las protecciones, y sincronizar las ramas permanentes después. No usar force push ni desplegar sin autorización.
+
+En este equipo, los entregables creativos pendientes de integración se guardan en `C:\Users\Pc\Documents\Trabajos\Produccion\KYORU-STUDIO`. Los masters, mockups, capturas y archivos temporales se generan fuera del repositorio; retirar solo los temporales descartables al cerrar el trabajo. En Git se incorporan únicamente los assets web aprobados y necesarios. Consultar [AGENTS.md](AGENTS.md) para las reglas de seguridad y preservación de cambios locales.
+
 ## Frontend
 
 ```powershell
